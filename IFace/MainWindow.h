@@ -4,7 +4,11 @@
 #include <QWidget>
 #include <QStatusBar>
 #include <QMenuBar>
+#include <QTabBar>
 #include <QMenu>
+#include <QSplitter>
+#include <QTreeView>
+#include <QTableView>
 
 #include "ProjectManager.h"
 
@@ -23,6 +27,10 @@ class MainWindow : public QWidget {
 
     void initStatusBar();
     void initMenu();
+    void initSplitters();
+    void initProjectTree();
+    void initCodeTabs();
+    void initErrorTable();
     QMenu *createFileMenu();
 
 public:
