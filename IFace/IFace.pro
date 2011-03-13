@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     lib_json/json_reader.cpp \
     lib_json/json_internalmap.inl \
     lib_json/json_internalarray.inl \
-    ProjectManager.cpp
+    ProjectManager.cpp \
+    CodeEditor.cpp \
+    LeftArea.cpp
 
 HEADERS  += MainWindow.h \
     Project.h \
@@ -33,6 +35,8 @@ HEADERS  += MainWindow.h \
     lib_json/json/autolink.h \
     lib_json/json_tool.h \
     lib_json/json_batchallocator.h \
-    ProjectManager.h
+    ProjectManager.h \
+    CodeEditor.h \
+    LeftArea.h
 
 FORMS    += MainWindow.ui

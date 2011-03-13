@@ -7,6 +7,8 @@
 #include <QAction>
 #include <QFile>
 
+#include "CodeEditor.h"
+
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
   ui->setupUi(this);
@@ -52,7 +54,16 @@ void MainWindow::initMenu() {
 
 void MainWindow::initProjectTree() {}
 
-void MainWindow::initCodeTabs() {}
+void MainWindow::initCodeTabs() {
+
+  ui->codeTabs->widget(0)->setLayout(new QVBoxLayout(ui->codeTabs->widget(0)));
+  ui->codeTabs->widget(0)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(0)));
+  ui->codeTabs->widget(0)->layout()->setMargin(0);
+
+  ui->codeTabs->widget(1)->setLayout(new QVBoxLayout(ui->codeTabs->widget(1)));
+  ui->codeTabs->widget(1)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(1)));
+  ui->codeTabs->widget(1)->layout()->setMargin(0);
+}
 
 void MainWindow::initErrorTable() {}
 
@@ -87,7 +98,7 @@ void MainWindow::newProjectSlot() {
       fileName = dialog.selectedFiles().at(0);
 
       if (m_currentProjectManager != NULL) {
-          // TODO: ask about saving ald proj
+          // TODO: ask about saving old proj
           delete m_currentProjectManager;
       }
 
