@@ -30,3 +30,26 @@ bool ProjectManager::createProject(const QString &path) {
     }
     return false;
 }
+
+void ProjectManager::addProjectFile(ProjectFile &projectFile) {
+
+  m_project->addProjectFile(projectFile);
+  m_project->saveProject();
+
+  if (m_tabsHelper != NULL) {
+    m_tabsHelper->addTabWithFile(projectFile);
+  }
+}
+
+void ProjectManager::removeProjectFile(const ProjectFile &projectFile) {
+
+  m_project->removeProjectFile(projectFile);
+  m_project->saveProject();
+}
+
+void ProjectManager::assignTabWidget(QTabWidget *tabWidget) {
+
+  if (tabWidget != NULL) {
+    m_tabsHelper = new TabsHelper(tabWidget);
+  }
+}

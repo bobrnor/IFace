@@ -56,13 +56,13 @@ void MainWindow::initProjectTree() {}
 
 void MainWindow::initCodeTabs() {
 
-  ui->codeTabs->widget(0)->setLayout(new QVBoxLayout(ui->codeTabs->widget(0)));
-  ui->codeTabs->widget(0)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(0)));
-  ui->codeTabs->widget(0)->layout()->setMargin(0);
+//  ui->codeTabs->widget(0)->setLayout();
+//  ui->codeTabs->widget(0)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(0)));
+//  ui->codeTabs->widget(0)->layout()->setMargin(0);
 
-  ui->codeTabs->widget(1)->setLayout(new QVBoxLayout(ui->codeTabs->widget(1)));
-  ui->codeTabs->widget(1)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(1)));
-  ui->codeTabs->widget(1)->layout()->setMargin(0);
+//  ui->codeTabs->widget(1)->setLayout(new QVBoxLayout(ui->codeTabs->widget(1)));
+//  ui->codeTabs->widget(1)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(1)));
+//  ui->codeTabs->widget(1)->layout()->setMargin(0);
 }
 
 void MainWindow::initErrorTable() {}
@@ -70,8 +70,18 @@ void MainWindow::initErrorTable() {}
 QMenu *MainWindow::createFileMenu() {
 
   QMenu *menu = new QMenu(tr("&File"), m_menuBar);
+
   QAction *action = menu->addAction("New project...");
   connect(action, SIGNAL(triggered()), this, SLOT(newProjectSlot()));
+
+  action = menu->addAction("Open project...");
+  connect(action, SIGNAL(triggered()), this, SLOT(openProjectSlot()));
+
+  action = menu->addAction("New file...");
+  connect(action, SIGNAL(triggered()), this, SLOT(newProjectFileSlot()));
+
+  action = menu->addAction("Open file...");
+  connect(action, SIGNAL(triggered()), this, SLOT(openProjectFileSlot()));
 
   return menu;
 }
@@ -107,6 +117,81 @@ void MainWindow::newProjectSlot() {
           Q_ASSERT(ok);
       }
       m_currentProjectManager = new ProjectManager(fileName);
+      m_currentProjectManager->assignTabWidget(ui->codeTabs);
+      // TODO: update all
+  }
+}
+
+void MainWindow::newProjectFileSlot() {
+
+  Q_ASSERT(m_currentProjectManager != NULL);
+
+  QFileDialog dialog(this);
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setViewMode(QFileDialog::Detail);
+  dialog.setAcceptMode(QFileDialog::AcceptSave);
+  dialog.setConfirmOverwrite(true);
+  dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+
+  QString fileName;
+  if (dialog.exec()) {
+      qDebug() << dialog.selectedFiles();
+      fileName = dialog.selectedFiles().at(0);
+
+      if (QFile::exists(fileName)) {
+          bool ok = QFile::remove(fileName);
+          Q_ASSERT(ok);
+      }
+
+      ProjectFile projectFile(fileName);
+      m_currentProjectManager->addProjectFile(projectFile);
+      // TODO: update all
+  }
+}
+
+void MainWindow::openProjectSlot() {
+
+  QFileDialog dialog(this);
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setViewMode(QFileDialog::Detail);
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+  dialog.setConfirmOverwrite(true);
+  dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+
+  QString fileName;
+  if (dialog.exec()) {
+      qDebug() << dialog.selectedFiles();
+      fileName = dialog.selectedFiles().at(0);
+
+      if (m_currentProjectManager != NULL) {
+          // TODO: ask about saving old proj
+          delete m_currentProjectManager;
+      }
+
+      m_currentProjectManager = new ProjectManager(fileName);
+      m_currentProjectManager->assignTabWidget(ui->codeTabs);
+      // TODO: update all
+  }
+}
+
+void MainWindow::openProjectFileSlot() {
+
+  Q_ASSERT(m_currentProjectManager != NULL);
+
+  QFileDialog dialog(this);
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setViewMode(QFileDialog::Detail);
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+  dialog.setConfirmOverwrite(true);
+  dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+
+  QString fileName;
+  if (dialog.exec()) {
+      qDebug() << dialog.selectedFiles();
+      fileName = dialog.selectedFiles().at(0);
+
+      ProjectFile projectFile(fileName);
+      m_currentProjectManager->addProjectFile(projectFile);
       // TODO: update all
   }
 }

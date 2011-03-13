@@ -3,10 +3,15 @@
 
 #include <QPlainTextEdit>
 
+#include "ProjectFile.h"
+
 class CodeEditor : public QPlainTextEdit {
   Q_OBJECT
 
   QWidget *m_leftArea;
+  ProjectFile *m_projectFile;
+
+  void loadProjectFile();
 
 protected:
   void resizeEvent(QResizeEvent *e);
@@ -16,6 +21,9 @@ public:
 
   void leftAreaPaintEvent(QPaintEvent *event);
   int leftAreaWidth();
+
+  ProjectFile *projectFile() const;
+  void setProjectFile(ProjectFile *projectFile);
 
 signals:
 

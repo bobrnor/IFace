@@ -4,15 +4,18 @@
 #include <QDebug>
 #include <QTextEdit>
 #include <QList>
+#include <QFile>
 #include <QColor>
 #include <QPainter>
 #include <QTextBlock>
+#include <QVBoxLayout>
 
 #include <LeftArea.h>
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
   setWordWrapMode(QTextOption::NoWrap);
+  setLayout(new QVBoxLayout(this));
 
   m_leftArea = new LeftArea(this);
 
@@ -100,5 +103,32 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
     top = bottom;
     bottom = top + (int) blockBoundingRect(block).height();
     ++blockNumber;
+  }
+}
+
+ProjectFile *CodeEditor::projectFile() const {
+
+  return m_projectFile;
+}
+
+void CodeEditor::setProjectFile(ProjectFile *projectFile) {
+
+  m_projectFile = projectFile;
+  loadProjectFile();
+}
+
+void CodeEditor::loadProjectFile() {
+
+  if (m_projectFile != NULL) {
+
+    QFile file(m_projectFile->path());
+    if (file.open(QIODevice::ReadOnly)) {
+
+      QTextStream stream(&file);
+      while (!stream.atEnd()) {
+        QString codeline = stream.readLine();
+        insertPlainText(codeline);
+      }
+    }
   }
 }

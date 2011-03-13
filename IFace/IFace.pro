@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     lib_json/json_internalarray.inl \
     ProjectManager.cpp \
     CodeEditor.cpp \
-    LeftArea.cpp
+    LeftArea.cpp \
+    TabsHelper.cpp \
+    ProjectFile.cpp
 
 HEADERS  += MainWindow.h \
     Project.h \
@@ -37,6 +39,8 @@ HEADERS  += MainWindow.h \
     lib_json/json_batchallocator.h \
     ProjectManager.h \
     CodeEditor.h \
-    LeftArea.h
+    LeftArea.h \
+    TabsHelper.h \
+    ProjectFile.h
 
 FORMS    += MainWindow.ui
