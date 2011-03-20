@@ -101,9 +101,15 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 		painter.setPen(Qt::black);
 		painter.drawText(0, top, m_leftArea->width(), fontMetrics().height(),
 						 Qt::AlignRight, number);
-		// if checked = red + bg
-		// else = black without bg
-		painter.drawRect(6, top + 3, 10, 6);
+
+		bool isWithBreakPoint = m_projectFile->checkLineForBreakPoints(blockNumber);
+		if (isWithBreakPoint) {
+			painter.drawRect(6, top + 3, 10, 6);
+			painter.fillRect(6, top + 3, 10, 6, Qt::green);
+		}
+		else {
+			painter.drawRect(6, top + 3, 10, 6);
+		}		
 	  }
 
     block = block.next();

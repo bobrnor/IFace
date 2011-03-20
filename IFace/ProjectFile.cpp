@@ -1,11 +1,16 @@
 #include "ProjectFile.h"
 
+#include <QDebug>
 #include <QFile>
 
 ProjectFile::ProjectFile(const QString &path) {
 
   m_path = path;
   createIfNotExists();
+}
+
+ProjectFile::~ProjectFile() {
+
 }
 
 bool ProjectFile::createIfNotExists() {
@@ -27,5 +32,22 @@ bool ProjectFile::createIfNotExists() {
 
 bool ProjectFile::operator==(const ProjectFile &projectFile) const {
 
-  return m_path == projectFile.path();
+	return m_path == projectFile.path();
+}
+
+bool ProjectFile::checkLineForBreakPoints(int lineNumber) {
+
+	return m_breakPoints.count() > 0 && m_breakPoints.contains(lineNumber);
+}
+
+void ProjectFile::addBreakPoint(int lineNumber) {
+
+	if (!checkLineForBreakPoints(lineNumber)) {
+		m_breakPoints.append(lineNumber);
+	}	
+}
+
+void ProjectFile::removeBreakPoint(int lineNumber) {
+
+	m_breakPoints.removeAll(lineNumber);
 }

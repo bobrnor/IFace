@@ -19,6 +19,17 @@ CodeEditorWidget::CodeEditorWidget(QWidget *parent) : QWidget(parent), ui(new Ui
 	ui->_codeCommentsWidget->layout()->setMargin(0);
 }
 
+CodeEditorWidget::~CodeEditorWidget() {
+
+	delete ui;
+	if (m_codeEditor != NULL) {
+		delete m_codeEditor;
+	}	
+	if (m_commentsArea != NULL) {
+		delete m_commentsArea;
+	}	
+}
+
 CodeEditor *CodeEditorWidget::codeEditor() const {
 
 	return m_codeEditor;

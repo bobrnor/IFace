@@ -21,6 +21,7 @@ protected:
 
 public:
 	CodeEditorWidget(QWidget *parent);
+	~CodeEditorWidget();
 
 	CodeEditor *codeEditor() const;
 	void setCodeEditor(CodeEditor *codeEditor);
