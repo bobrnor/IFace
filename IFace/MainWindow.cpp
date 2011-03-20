@@ -7,7 +7,6 @@
 #include <QAction>
 #include <QFile>
 
-#include "CodeEditor.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
@@ -57,7 +56,9 @@ void MainWindow::initSplitters() {
 
 }
 
-void MainWindow::initProjectTree() {}
+void MainWindow::initProjectTree() {
+
+}
 
 void MainWindow::initCodeTabs() {
 

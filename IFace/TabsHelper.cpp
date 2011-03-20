@@ -1,5 +1,9 @@
 #include "TabsHelper.h"
 
+#include "CodeEditor.h"
+#include "CommentsArea.h"
+#include "CodeEditorWidget.h"
+
 TabsHelper::TabsHelper() {
 
   m_tabWidget = NULL;
@@ -14,8 +18,13 @@ void TabsHelper::addTabWithFile(ProjectFile &file) {
 
   Q_ASSERT(m_tabWidget != NULL);
 
-  CodeEditor *codeEditor = new CodeEditor(m_tabWidget);
-  codeEditor->setProjectFile(&file);
+  CodeEditorWidget *widget = new CodeEditorWidget(m_tabWidget);
 
-  m_tabWidget->addTab(codeEditor, file.path());
+  CodeEditor *codeEditor = new CodeEditor(widget);
+  codeEditor->setProjectFile(&file);
+  widget->setCodeEditor(codeEditor);
+  CommentsArea *commentsArea = new CommentsArea(widget);
+  widget->setCommentsArea(commentsArea);
+
+  m_tabWidget->addTab(widget, file.path());
 }

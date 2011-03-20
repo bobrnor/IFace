@@ -4,7 +4,6 @@
 #include <QTabWidget>
 #include <QList>
 
-#include "CodeEditor.h"
 #include "ProjectFile.h"
 
 class ProjectFile;
