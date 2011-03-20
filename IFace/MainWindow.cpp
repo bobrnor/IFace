@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
   initStatusBar();
   initMenu();
+  initSplitters();
   initProjectTree();
   initCodeTabs();
   initErrorTable();
@@ -50,6 +51,10 @@ void MainWindow::initMenu() {
 
   m_menuBar->addMenu(fileMenu);
   m_menuBar->setMaximumHeight(100);
+}
+
+void MainWindow::initSplitters() {
+
 }
 
 void MainWindow::initProjectTree() {}

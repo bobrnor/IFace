@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IFace", "IFace.vcproj", "{059551E8-9A1B-3A34-A589-F2C02CA98703}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{059551E8-9A1B-3A34-A589-F2C02CA98703}.Debug|Win32.ActiveCfg = Debug|Win32
+		{059551E8-9A1B-3A34-A589-F2C02CA98703}.Debug|Win32.Build.0 = Debug|Win32
+		{059551E8-9A1B-3A34-A589-F2C02CA98703}.Release|Win32.ActiveCfg = Release|Win32
+		{059551E8-9A1B-3A34-A589-F2C02CA98703}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

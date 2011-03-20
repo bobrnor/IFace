@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QVBoxLayout>
+#include <QCheckBox>
 
 #include <LeftArea.h>
 
@@ -25,15 +26,18 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
   updateLeftAreaWidthSlot(0);
   highlightCurrentLineSlot();
+
+  qDebug() << "font: " << fontMetrics().height() << " : " 
+	  << fontMetrics().width(QLatin1Char('9'));
 }
 
 int CodeEditor::leftAreaWidth() {
 
   int max = qMax(1, blockCount());
-  int digits = 1 + log10(max);
+  int digits = 1 + log10((double) max);
   qDebug() << "Digit count: " << digits;
 
-  return 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+  return 25 + fontMetrics().width(QLatin1Char('9')) * digits;
 }
 
 void CodeEditor::updateLeftAreaWidthSlot(int newBlockCount) {
@@ -93,11 +97,14 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 
   while (block.isValid() && top <= event->rect().bottom()) {
     if (block.isVisible() && bottom >= event->rect().top()) {
-        QString number = QString::number(blockNumber + 1);
-        painter.setPen(Qt::black);
-        painter.drawText(0, top, m_leftArea->width(), fontMetrics().height(),
-                         Qt::AlignRight, number);
-      }
+		QString number = QString::number(blockNumber + 1);
+		painter.setPen(Qt::black);
+		painter.drawText(0, top, m_leftArea->width(), fontMetrics().height(),
+						 Qt::AlignRight, number);
+		// if checked = red + bg
+		// else = black without bg
+		painter.drawRect(6, top + 3, 10, 6);
+	  }
 
     block = block.next();
     top = bottom;

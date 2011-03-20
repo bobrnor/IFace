@@ -1,0 +1,6 @@
+IFace-build-desktop
+IFace/Debug
+IFace/Release
+ui_*
+*.idb
+*.pdb

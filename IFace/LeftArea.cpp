@@ -1,10 +1,14 @@
 #include "LeftArea.h"
 
+#include <QVBoxLayout>
+
 #include "CodeEditor.h"
+
 
 LeftArea::LeftArea(CodeEditor *codeEditor) : QWidget(codeEditor) {
 
   m_codeEditor = codeEditor;
+  setLayout(new QVBoxLayout(this));
 }
 
 QSize LeftArea::sizeHint() const {
