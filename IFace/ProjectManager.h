@@ -6,23 +6,30 @@
 #include "Project.h"
 #include "ProjectFile.h"
 #include "TabsHelper.h"
+#include "ProjectTreeHelper.h"
 
-class ProjectManager {
+class ProjectManager : QObject {
+	Q_OBJECT
 
-  Project *m_project;
-  TabsHelper *m_tabsHelper;
+	Project *m_project;
+	TabsHelper *m_tabsHelper;
+	ProjectTreeHelper *m_projectTreeHelper;
 
 public:
-    ProjectManager();
-    ProjectManager(const QString &path);
-    ~ProjectManager();
+	ProjectManager();
+	ProjectManager(const QString &path);
+	~ProjectManager();
 
-    bool createProject(const QString &path);
+	bool createProject(const QString &path);
 
-    void addProjectFile(ProjectFile &projectFile);
-    void removeProjectFile(const ProjectFile &projectFile);
+	void addProjectFile(SProjectFile projectFile);
+	void removeProjectFile(SProjectFile projectFile);
 
-    void assignTabWidget(QTabWidget *tabWidget);
+	void assignTabWidget(QTabWidget *tabWidget);
+	void assignProjectTreeWidget(QTreeWidget *projectTree);
+
+	public slots:
+		void onTreeItemDoubleClickedSlot(QTreeWidgetItem *item);
 };
 
 #endif // PROJECTMANAGER_H

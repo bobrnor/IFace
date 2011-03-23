@@ -11,22 +11,18 @@ class ProjectFile;
 class TabsHelper {
 
   QTabWidget *m_tabWidget;
-  QList<ProjectFile> m_openFiles;
+  QList<SProjectFile> m_openFiles;
+
+  bool isFileAlreadyOpen(ProjectFile *file) const;
 
 public:
     TabsHelper();
     TabsHelper(QTabWidget *tabWidget);
 
-    void addTabWithFile(ProjectFile &file);
+    void addTabWithFile(SProjectFile file);
 
-    QTabWidget *tabWidget() {
-
-      return m_tabWidget;
-    }
-    void setTabWidget(QTabWidget *tabWidget) {
-
-      m_tabWidget = tabWidget;
-    }
+    QTabWidget *tabWidget() { return m_tabWidget; }
+    void setTabWidget(QTabWidget *tabWidget) { m_tabWidget = tabWidget; }
 };
 
 #endif // TABSHELPER_H

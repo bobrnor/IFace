@@ -9,7 +9,7 @@ class CodeEditor : public QPlainTextEdit {
   Q_OBJECT
 
   QWidget *m_leftArea;
-  ProjectFile *m_projectFile;
+  SProjectFile m_projectFile;
 
   void loadProjectFile();
 
@@ -22,8 +22,8 @@ public:
   void leftAreaPaintEvent(QPaintEvent *event);
   int leftAreaWidth();
 
-  ProjectFile *projectFile() const;
-  void setProjectFile(ProjectFile *projectFile);
+  SProjectFile projectFile() const;
+  void setProjectFile(SProjectFile projectFile);
 
 signals:
 

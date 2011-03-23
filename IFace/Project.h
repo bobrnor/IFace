@@ -9,18 +9,23 @@
 class Project {
 
     QString m_projectFilePath;
-    QList<ProjectFile> m_projectFiles;
+    QList<SProjectFile> m_projectFiles;
 
     void initEmptyProject();
     void loadFromFile();
+
+	bool isFileAlreadyInProject(ProjectFile *projectFile);
 
 public:
     Project(const QString &path);
     ~Project();
 
     bool saveProject();
-    void addProjectFile(const ProjectFile &projectFile);
-    void removeProjectFile(const ProjectFile &projectFile);
+    void addProjectFile(SProjectFile projectFile);
+    void removeProjectFile(SProjectFile projectFile);
+
+	QString path() const { return m_projectFilePath; }
+	QList<SProjectFile> projectFiles() const { return m_projectFiles; }
 };
 
 #endif // PROJECT_H

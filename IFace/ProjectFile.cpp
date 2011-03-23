@@ -3,51 +3,64 @@
 #include <QDebug>
 #include <QFile>
 
+ProjectFile::ProjectFile() {}
+
 ProjectFile::ProjectFile(const QString &path) {
 
-  m_path = path;
-  createIfNotExists();
+	qDebug() << __FUNCSIG__;
+	m_path = path;
+	createIfNotExists();
 }
 
 ProjectFile::~ProjectFile() {
 
+	qDebug() << __FUNCSIG__;
+}
+
+void ProjectFile::setPath(const QString &path) {
+
+	m_path = path;
+	createIfNotExists();
 }
 
 bool ProjectFile::createIfNotExists() {
 
-  if (!QFile::exists(m_path)) {
-    QFile file(m_path);
-    bool ok = file.open(QIODevice::WriteOnly);
+	qDebug() << __FUNCSIG__;
+	if (!QFile::exists(m_path)) {
+		QFile file(m_path);
+		bool ok = file.open(QIODevice::WriteOnly);
 
-    Q_ASSERT(ok);
+		Q_ASSERT(ok);
 
-    if (ok) {
-      file.close();
-    }
+		if (ok) {
+			file.close();
+		}
 
-    return ok;
-  }
-  return true;
+		return ok;
+	}
+	return true;
 }
 
 bool ProjectFile::operator==(const ProjectFile &projectFile) const {
 
+	qDebug() << __FUNCSIG__;
 	return m_path == projectFile.path();
 }
 
-bool ProjectFile::checkLineForBreakPoints(int lineNumber) {
+bool ProjectFile::checkLineForBreakPoints(int lineNumber) const {
 
-	return m_breakPoints.count() > 0 && m_breakPoints.contains(lineNumber);
+	qDebug() << __FUNCSIG__;
+	return m_breakPoints.contains(lineNumber);
 }
 
 void ProjectFile::addBreakPoint(int lineNumber) {
 
-	if (!checkLineForBreakPoints(lineNumber)) {
-		m_breakPoints.append(lineNumber);
-	}	
+	qDebug() << __FUNCSIG__;
+	m_breakPoints.insert(lineNumber);
 }
 
 void ProjectFile::removeBreakPoint(int lineNumber) {
 
-	m_breakPoints.removeAll(lineNumber);
+	qDebug() << __FUNCSIG__;
+	m_breakPoints.remove(lineNumber);
 }

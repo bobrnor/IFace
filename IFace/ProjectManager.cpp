@@ -1,5 +1,7 @@
 #include "ProjectManager.h"
 
+Q_DECLARE_METATYPE(SProjectFile)
+
 ProjectManager::ProjectManager() {
 
     m_project = NULL;
@@ -31,7 +33,7 @@ bool ProjectManager::createProject(const QString &path) {
     return false;
 }
 
-void ProjectManager::addProjectFile(ProjectFile &projectFile) {
+void ProjectManager::addProjectFile(SProjectFile projectFile) {
 
   m_project->addProjectFile(projectFile);
   m_project->saveProject();
@@ -39,12 +41,18 @@ void ProjectManager::addProjectFile(ProjectFile &projectFile) {
   if (m_tabsHelper != NULL) {
     m_tabsHelper->addTabWithFile(projectFile);
   }
+  if (m_projectTreeHelper != NULL) {
+	  m_projectTreeHelper->update();
+  }
 }
 
-void ProjectManager::removeProjectFile(const ProjectFile &projectFile) {
+void ProjectManager::removeProjectFile(SProjectFile projectFile) {
 
   m_project->removeProjectFile(projectFile);
   m_project->saveProject();
+  if (m_projectTreeHelper != NULL) {
+	  m_projectTreeHelper->update();
+  }
 }
 
 void ProjectManager::assignTabWidget(QTabWidget *tabWidget) {
@@ -52,4 +60,25 @@ void ProjectManager::assignTabWidget(QTabWidget *tabWidget) {
   if (tabWidget != NULL) {
     m_tabsHelper = new TabsHelper(tabWidget);
   }
+}
+
+void ProjectManager::assignProjectTreeWidget(QTreeWidget *projectTree) {
+
+	if (projectTree != NULL) {
+		m_projectTreeHelper = new ProjectTreeHelper(projectTree);
+		m_projectTreeHelper->setProject(m_project);
+		connect(m_projectTreeHelper->linkedTreeWidget(), SIGNAL(itemActivated(QTreeWidgetItem*, int)), 
+			this, SLOT(onTreeItemDoubleClickedSlot(QTreeWidgetItem*)));
+	}
+}
+
+void ProjectManager::onTreeItemDoubleClickedSlot(QTreeWidgetItem *item) {
+
+	if (item != NULL) {
+		QVariant data = item->data(0, Qt::UserRole);
+		if (!data.isNull() && data.isValid()) {
+			SProjectFile projectFile = data.value<SProjectFile>();
+			m_tabsHelper->addTabWithFile(projectFile);
+		}		
+	}
 }

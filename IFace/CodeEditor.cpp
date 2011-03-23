@@ -119,12 +119,12 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
   }
 }
 
-ProjectFile *CodeEditor::projectFile() const {
+SProjectFile CodeEditor::projectFile() const {
 
   return m_projectFile;
 }
 
-void CodeEditor::setProjectFile(ProjectFile *projectFile) {
+void CodeEditor::setProjectFile(SProjectFile projectFile) {
 
   m_projectFile = projectFile;
   loadProjectFile();

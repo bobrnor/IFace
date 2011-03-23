@@ -5,3 +5,5 @@ tests
 ui_*
 *.idb
 *.pdb
+*.ncb
+*.user

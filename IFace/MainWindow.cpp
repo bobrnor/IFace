@@ -124,6 +124,7 @@ void MainWindow::newProjectSlot() {
       }
       m_currentProjectManager = new ProjectManager(fileName);
       m_currentProjectManager->assignTabWidget(ui->codeTabs);
+	  m_currentProjectManager->assignProjectTreeWidget(ui->projectTree);
       // TODO: update all
   }
 }
@@ -149,8 +150,8 @@ void MainWindow::newProjectFileSlot() {
           Q_ASSERT(ok);
       }
 
-      ProjectFile projectFile(fileName);
-      m_currentProjectManager->addProjectFile(projectFile);
+      ProjectFile *projectFile = new ProjectFile(fileName);
+      m_currentProjectManager->addProjectFile(SProjectFile(projectFile));
       // TODO: update all
   }
 }
@@ -176,6 +177,7 @@ void MainWindow::openProjectSlot() {
 
       m_currentProjectManager = new ProjectManager(fileName);
       m_currentProjectManager->assignTabWidget(ui->codeTabs);
+	  m_currentProjectManager->assignProjectTreeWidget(ui->projectTree);
       // TODO: update all
   }
 }
@@ -196,8 +198,8 @@ void MainWindow::openProjectFileSlot() {
       qDebug() << dialog.selectedFiles();
       fileName = dialog.selectedFiles().at(0);
 
-      ProjectFile projectFile(fileName);
-      m_currentProjectManager->addProjectFile(projectFile);
+      ProjectFile *projectFile = new ProjectFile(fileName);
+      m_currentProjectManager->addProjectFile(SProjectFile(projectFile));
       // TODO: update all
   }
 }
