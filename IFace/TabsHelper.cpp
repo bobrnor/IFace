@@ -1,21 +1,26 @@
 #include "TabsHelper.h"
 
+#include <QDebug>
+
 #include "CodeEditor.h"
-#include "CommentsArea.h"
+#include "CommentsEditor.h"
 #include "CodeEditorWidget.h"
 
 TabsHelper::TabsHelper() {
 
+	qDebug() << __FUNCSIG__;
 	m_tabWidget = NULL;
 }
 
 TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
+	qDebug() << __FUNCSIG__;
 	m_tabWidget = tabWidget;
 }
 
 void TabsHelper::addTabWithFile(SProjectFile file) {
 
+	qDebug() << __FUNCSIG__;
 	Q_ASSERT(m_tabWidget != NULL);
 
 	if (!isFileAlreadyOpen(file.data())) {
@@ -24,7 +29,8 @@ void TabsHelper::addTabWithFile(SProjectFile file) {
 		CodeEditor *codeEditor = new CodeEditor(widget);
 		codeEditor->setProjectFile(file);
 		widget->setCodeEditor(codeEditor);
-		CommentsArea *commentsArea = new CommentsArea(widget);
+		CommentsEditor *commentsArea = new CommentsEditor(widget);
+		commentsArea->setProjectFile(file);
 		widget->setCommentsArea(commentsArea);
 
 		m_tabWidget->addTab(widget, file->path());
@@ -34,6 +40,7 @@ void TabsHelper::addTabWithFile(SProjectFile file) {
 
 bool TabsHelper::isFileAlreadyOpen(ProjectFile *file) const {
 
+	qDebug() << __FUNCSIG__;
 	bool result = false;
 	foreach (SProjectFile sfile, m_openFiles) {
 		if (sfile->path() == file->path()) {

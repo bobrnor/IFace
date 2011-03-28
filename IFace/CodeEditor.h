@@ -1,6 +1,8 @@
 #ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
+#include <QMap>
+#include <QString>
 #include <QPlainTextEdit>
 
 #include "ProjectFile.h"
@@ -11,10 +13,15 @@ class CodeEditor : public QPlainTextEdit {
   QWidget *m_leftArea;
   SProjectFile m_projectFile;
 
+  bool m_isLastUpdateRequestFromComments;
+
   void loadProjectFile();
+  void updateBreakPointAndComments();
 
 protected:
   void resizeEvent(QResizeEvent *e);
+  void focusInEvent(QFocusEvent *e);
+  void focusOutEvent(QFocusEvent *e);
 
 public:
   explicit CodeEditor(QWidget *parent = 0);
@@ -26,11 +33,14 @@ public:
   void setProjectFile(SProjectFile projectFile);
 
 signals:
+  void commentsScrollRequestSignal(int y);
+  void commentsUpdateRequestSignal(int blockCount);
 
 private slots:
-  void updateLeftAreaWidthSlot(int newBlockCount);
+  void blockCountChangedSlot(int newBlockCount);
   void highlightCurrentLineSlot();
-  void updateLeftAreaSlot(const QRect &rect, int dy);
+  void updateRequestSlot(const QRect &rect, int dy);
+  void scrolledSlot(int y);
 
 public slots:
 

@@ -19,6 +19,7 @@ ProjectFile::~ProjectFile() {
 
 void ProjectFile::setPath(const QString &path) {
 
+	qDebug() << __FUNCSIG__;
 	m_path = path;
 	createIfNotExists();
 }
@@ -59,8 +60,35 @@ void ProjectFile::addBreakPoint(int lineNumber) {
 	m_breakPoints.insert(lineNumber);
 }
 
-void ProjectFile::removeBreakPoint(int lineNumber) {
+void ProjectFile::removeBreakPointIfExists(int lineNumber) {
 
 	qDebug() << __FUNCSIG__;
-	m_breakPoints.remove(lineNumber);
+	if (m_breakPoints.contains(lineNumber)) {
+		m_breakPoints.remove(lineNumber);
+	}	
+}
+
+QString ProjectFile::commentInLine(int lineNumber) {
+
+	qDebug() << __FUNCSIG__;
+	if (m_comments.contains(lineNumber)) {
+		return m_comments.take(lineNumber);
+	}
+	else {
+		return QString("");
+	}
+}
+
+void ProjectFile::addOrReplaceComment(int lineNumber, QString comment) {
+
+	qDebug() << __FUNCSIG__;
+	m_comments[lineNumber] = comment;
+}
+
+void ProjectFile::removeCommentIfExists(int lineNumber) {
+
+	qDebug() << __FUNCSIG__;
+	if (m_comments.contains(lineNumber)) {
+		m_comments.remove(lineNumber);
+	}
 }

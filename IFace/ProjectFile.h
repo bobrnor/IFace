@@ -2,6 +2,7 @@
 #define PROJECTFILE_H
 
 #include <QSet>
+#include <QMap>
 #include <QString>
 #include <QSharedPointer>
 
@@ -11,6 +12,7 @@ class ProjectFile {
 
   QString m_path;
   QSet<int> m_breakPoints;
+  QMap<int, QString> m_comments;
 
   bool createIfNotExists();
 
@@ -24,7 +26,11 @@ public:
 
 	bool checkLineForBreakPoints(int lineNumber) const;
 	void addBreakPoint(int lineNumber);
-	void removeBreakPoint(int lineNumber);
+	void removeBreakPointIfExists(int lineNumber);
+
+	QString commentInLine(int lineNumber);
+	void addOrReplaceComment(int lineNumber, QString comment);
+	void removeCommentIfExists(int lineNumber);
 
     bool operator==(const ProjectFile &projectFile) const;
 };

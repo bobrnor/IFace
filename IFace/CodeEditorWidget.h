@@ -3,7 +3,7 @@
 #include <QWidget>
 
 class CodeEditor;
-class CommentsArea;
+class CommentsEditor;
 
 namespace Ui {
 	class CodeEditorWidget;
@@ -15,9 +15,10 @@ class CodeEditorWidget : public QWidget {
 	Ui::CodeEditorWidget *ui;
 
 	CodeEditor *m_codeEditor;
-	CommentsArea *m_commentsArea;
+	CommentsEditor *m_commentsArea;
 
 protected:
+	void linkCodeWithComments();
 
 public:
 	CodeEditorWidget(QWidget *parent);
@@ -25,7 +26,7 @@ public:
 
 	CodeEditor *codeEditor() const;
 	void setCodeEditor(CodeEditor *codeEditor);
-	CommentsArea *commentsArea() const;
-	void setCommentsArea(CommentsArea *commentsArea);
+	CommentsEditor *commentsArea() const;
+	void setCommentsArea(CommentsEditor *commentsArea);
 
 };
