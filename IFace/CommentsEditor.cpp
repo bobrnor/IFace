@@ -10,6 +10,8 @@ CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(paren
 
 	qDebug() << __FUNCSIG__;
 	m_codeBlockCount = 0;
+	setWordWrapMode(QTextOption::NoWrap);
+	setMaximumBlockCount(0);
 
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 
@@ -69,12 +71,10 @@ void CommentsEditor::codeBlockCountChangedSlot(int newBlockCount) {
 	qDebug() << __FUNCSIG__;
 
 	if (newBlockCount > 0) {
-		QTextCursor cursor = textCursor();
+		setMaximumBlockCount(newBlockCount);
+		QTextCursor cursor(firstVisibleBlock());
 
-		int lastBlockNumber = cursor.blockNumber();
-		while (cursor.movePosition(QTextCursor::NextBlock)) {
-			lastBlockNumber = cursor.blockNumber();			
-		}
+		int lastBlockNumber = gotoEnd(cursor);
 
 		if (lastBlockNumber != newBlockCount - 1) {
 			if (lastBlockNumber > newBlockCount - 1) {
@@ -92,4 +92,46 @@ void CommentsEditor::codeBlockCountChangedSlot(int newBlockCount) {
 			}
 		}
 	}
+
+	updateComments();
+}
+
+void CommentsEditor::gotoBegin(QTextCursor &cursor) {
+
+	qDebug() << __FUNCSIG__;
+	while (cursor.movePosition(QTextCursor::PreviousBlock)) {}
+}
+
+int CommentsEditor::gotoEnd(QTextCursor &cursor) {
+
+	qDebug() << __FUNCSIG__;
+	int lastBlockNumber = cursor.blockNumber();
+	while (cursor.movePosition(QTextCursor::NextBlock)) {
+		lastBlockNumber = cursor.blockNumber();			
+	}
+	return lastBlockNumber;
+}
+
+void CommentsEditor::replaceCurrentBlockText(QTextCursor &cursor, const QString &text) {
+
+	qDebug() << __FUNCSIG__;
+	cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+	cursor.insertText(text);
+}
+
+void CommentsEditor::updateComments() {
+
+	qDebug() << __FUNCSIG__;
+	QTextCursor cursor(firstVisibleBlock());
+	gotoBegin(cursor);
+
+	do {
+		QString comment = m_projectFile->commentInLine(cursor.blockNumber());
+		if (comment.isEmpty()) {
+			replaceCurrentBlockText(cursor, "");
+		}
+		else {
+			replaceCurrentBlockText(cursor, comment);
+		}
+	} while (cursor.movePosition(QTextCursor::NextBlock));
 }

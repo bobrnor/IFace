@@ -13,6 +13,11 @@ class CommentsEditor : public QPlainTextEdit {
 
 	int m_codeBlockCount;
 
+	void gotoBegin(QTextCursor &cursor);
+	int gotoEnd(QTextCursor &cursor);
+	void replaceCurrentBlockText(QTextCursor &cursor, const QString &text);
+	void updateComments();
+
 protected:
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
