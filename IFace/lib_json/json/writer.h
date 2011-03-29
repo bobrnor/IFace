@@ -179,5 +179,4 @@ namespace Json {
 } // namespace Json
 
 
-
 #endif // JSON_WRITER_H_INCLUDED

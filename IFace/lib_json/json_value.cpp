@@ -35,10 +35,8 @@ const LargestInt Value::minLargestInt = LargestInt( ~(LargestUInt(-1)/2) );
 const LargestInt Value::maxLargestInt = LargestInt( LargestUInt(-1)/2 );
 const LargestUInt Value::maxLargestUInt = LargestUInt(-1);
 
-
 /// Unknown size marker
 enum { unknown = (unsigned)-1 };
-
 
 /** Duplicates the specified string value.
  * @param value Pointer to the string to duplicate. Must be zero-terminated if
@@ -59,7 +57,6 @@ duplicateStringValue( const char *value,
    return newString;
 }
 
-
 /** Free the string duplicated by duplicateStringValue().
  */
 static inline void 
@@ -68,7 +65,6 @@ releaseStringValue( char *value )
    if ( value )
       free( value );
 }
-
 
 
 // //////////////////////////////////////////////////////////////////
@@ -85,7 +81,6 @@ releaseStringValue( char *value )
 
 # include "json_valueiterator.inl"
 
-
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -93,7 +88,6 @@ releaseStringValue( char *value )
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
-
 
 Value::CommentInfo::CommentInfo()
    : comment_( 0 )
@@ -106,7 +100,6 @@ Value::CommentInfo::~CommentInfo()
       releaseStringValue( comment_ );
 }
 
-
 void 
 Value::CommentInfo::setComment( const char *text )
 {
@@ -117,7 +110,6 @@ Value::CommentInfo::setComment( const char *text )
    // It seems that /**/ style comments are acceptable as well.
    comment_ = duplicateStringValue( text );
 }
-
 
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -190,13 +182,11 @@ Value::CZString::operator==( const CZString &other ) const
    return index_ == other.index_;
 }
 
-
 ArrayIndex 
 Value::CZString::index() const
 {
    return index_;
 }
-
 
 const char *
 Value::CZString::c_str() const
@@ -211,7 +201,6 @@ Value::CZString::isStaticString() const
 }
 
 #endif // ifndef JSON_VALUE_USE_INTERNAL_MAP
-
 
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -268,7 +257,6 @@ Value::Value( ValueType type )
    }
 }
 
-
 #if defined(JSON_HAS_INT64)
 Value::Value( UInt value )
    : type_( uintValue )
@@ -292,7 +280,6 @@ Value::Value( Int value )
 
 #endif // if defined(JSON_HAS_INT64)
 
-
 Value::Value( Int64 value )
    : type_( intValue )
    , comments_( 0 )
@@ -302,7 +289,6 @@ Value::Value( Int64 value )
 {
    value_.int_ = value;
 }
-
 
 Value::Value( UInt64 value )
    : type_( uintValue )
@@ -335,7 +321,6 @@ Value::Value( const char *value )
    value_.string_ = duplicateStringValue( value );
 }
 
-
 Value::Value( const char *beginValue, 
               const char *endValue )
    : type_( stringValue )
@@ -348,7 +333,6 @@ Value::Value( const char *beginValue,
    value_.string_ = duplicateStringValue( beginValue, 
                                           (unsigned int)(endValue - beginValue) );
 }
-
 
 Value::Value( const std::string &value )
    : type_( stringValue )
@@ -374,7 +358,6 @@ Value::Value( const StaticString &value )
    value_.string_ = const_cast<char *>( value.c_str() );
 }
 
-
 # ifdef JSON_USE_CPPTL
 Value::Value( const CppTL::ConstString &value )
    : type_( stringValue )
@@ -397,7 +380,6 @@ Value::Value( bool value )
 {
    value_.bool_ = value;
 }
-
 
 Value::Value( const Value &other )
    : type_( other.type_ )
@@ -451,7 +433,6 @@ Value::Value( const Value &other )
       }
    }
 }
-
 
 Value::~Value()
 {
@@ -513,7 +494,6 @@ Value::type() const
 {
    return type_;
 }
-
 
 int 
 Value::compare( const Value &other )
@@ -664,7 +644,6 @@ Value::asCString() const
    return value_.string_;
 }
 
-
 std::string 
 Value::asString() const
 {
@@ -696,7 +675,6 @@ Value::asConstString() const
 }
 # endif
 
-
 Value::Int 
 Value::asInt() const
 {
@@ -724,7 +702,6 @@ Value::asInt() const
    }
    return 0; // unreachable;
 }
-
 
 Value::UInt 
 Value::asUInt() const
@@ -755,7 +732,6 @@ Value::asUInt() const
    return 0; // unreachable;
 }
 
-
 # if defined(JSON_HAS_INT64)
 
 Value::Int64
@@ -785,7 +761,6 @@ Value::asInt64() const
    return 0; // unreachable;
 }
 
-
 Value::UInt64
 Value::asUInt64() const
 {
@@ -814,7 +789,6 @@ Value::asUInt64() const
 }
 # endif // if defined(JSON_HAS_INT64)
 
-
 LargestInt 
 Value::asLargestInt() const
 {
@@ -825,7 +799,6 @@ Value::asLargestInt() const
 #endif
 }
 
-
 LargestUInt 
 Value::asLargestUInt() const
 {
@@ -835,7 +808,6 @@ Value::asLargestUInt() const
 	return asUInt64();
 #endif
 }
-
 
 double 
 Value::asDouble() const
@@ -920,7 +892,6 @@ Value::asBool() const
    return false; // unreachable;
 }
 
-
 bool 
 Value::isConvertibleTo( ValueType other ) const
 {
@@ -971,7 +942,6 @@ Value::isConvertibleTo( ValueType other ) const
    return false; // unreachable;
 }
 
-
 /// Number of values in array or object
 ArrayIndex 
 Value::size() const
@@ -1008,7 +978,6 @@ Value::size() const
    return 0; // unreachable;
 }
 
-
 bool 
 Value::empty() const
 {
@@ -1018,13 +987,11 @@ Value::empty() const
       return false;
 }
 
-
 bool
 Value::operator!() const
 {
    return isNull();
 }
-
 
 void 
 Value::clear()
@@ -1076,7 +1043,6 @@ Value::resize( ArrayIndex newSize )
 #endif
 }
 
-
 Value &
 Value::operator[]( ArrayIndex index )
 {
@@ -1097,14 +1063,12 @@ Value::operator[]( ArrayIndex index )
 #endif
 }
 
-
 Value &
 Value::operator[]( int index )
 {
    JSON_ASSERT( index >= 0 );
    return (*this)[ ArrayIndex(index) ];
 }
-
 
 const Value &
 Value::operator[]( ArrayIndex index ) const
@@ -1124,7 +1088,6 @@ Value::operator[]( ArrayIndex index ) const
 #endif
 }
 
-
 const Value &
 Value::operator[]( int index ) const
 {
@@ -1132,13 +1095,11 @@ Value::operator[]( int index ) const
    return (*this)[ ArrayIndex(index) ];
 }
 
-
 Value &
 Value::operator[]( const char *key )
 {
    return resolveReference( key, false );
 }
-
 
 Value &
 Value::resolveReference( const char *key, 
@@ -1163,7 +1124,6 @@ Value::resolveReference( const char *key,
 #endif
 }
 
-
 Value 
 Value::get( ArrayIndex index, 
             const Value &defaultValue ) const
@@ -1172,13 +1132,11 @@ Value::get( ArrayIndex index,
    return value == &null ? defaultValue : *value;
 }
 
-
 bool 
 Value::isValidIndex( ArrayIndex index ) const
 {
    return index < size();
 }
-
 
 
 const Value &
@@ -1199,13 +1157,11 @@ Value::operator[]( const char *key ) const
 #endif
 }
 
-
 Value &
 Value::operator[]( const std::string &key )
 {
    return (*this)[ key.c_str() ];
 }
-
 
 const Value &
 Value::operator[]( const std::string &key ) const
@@ -1219,14 +1175,12 @@ Value::operator[]( const StaticString &key )
    return resolveReference( key, true );
 }
 
-
 # ifdef JSON_USE_CPPTL
 Value &
 Value::operator[]( const CppTL::ConstString &key )
 {
    return (*this)[ key.c_str() ];
 }
-
 
 const Value &
 Value::operator[]( const CppTL::ConstString &key ) const
@@ -1235,13 +1189,11 @@ Value::operator[]( const CppTL::ConstString &key ) const
 }
 # endif
 
-
 Value &
 Value::append( const Value &value )
 {
    return (*this)[size()] = value;
 }
-
 
 Value 
 Value::get( const char *key, 
@@ -1250,7 +1202,6 @@ Value::get( const char *key,
    const Value *value = &((*this)[key]);
    return value == &null ? defaultValue : *value;
 }
-
 
 Value 
 Value::get( const std::string &key,
@@ -1307,13 +1258,11 @@ Value::isMember( const char *key ) const
    return value != &null;
 }
 
-
 bool 
 Value::isMember( const std::string &key ) const
 {
    return isMember( key.c_str() );
 }
-
 
 # ifdef JSON_USE_CPPTL
 bool 
@@ -1372,13 +1321,11 @@ Value::getMemberNames() const
 //
 //# endif
 
-
 bool
 Value::isNull() const
 {
    return type_ == nullValue;
 }
-
 
 bool 
 Value::isBool() const
@@ -1386,20 +1333,17 @@ Value::isBool() const
    return type_ == booleanValue;
 }
 
-
 bool 
 Value::isInt() const
 {
    return type_ == intValue;
 }
 
-
 bool 
 Value::isUInt() const
 {
    return type_ == uintValue;
 }
-
 
 bool 
 Value::isIntegral() const
@@ -1409,13 +1353,11 @@ Value::isIntegral() const
           ||  type_ == booleanValue;
 }
 
-
 bool 
 Value::isDouble() const
 {
    return type_ == realValue;
 }
-
 
 bool 
 Value::isNumeric() const
@@ -1423,13 +1365,11 @@ Value::isNumeric() const
    return isIntegral() || isDouble();
 }
 
-
 bool 
 Value::isString() const
 {
    return type_ == stringValue;
 }
-
 
 bool 
 Value::isArray() const
@@ -1437,13 +1377,11 @@ Value::isArray() const
    return type_ == nullValue  ||  type_ == arrayValue;
 }
 
-
 bool 
 Value::isObject() const
 {
    return type_ == nullValue  ||  type_ == objectValue;
 }
-
 
 void 
 Value::setComment( const char *comment,
@@ -1454,14 +1392,12 @@ Value::setComment( const char *comment,
    comments_[placement].setComment( comment );
 }
 
-
 void 
 Value::setComment( const std::string &comment,
                    CommentPlacement placement )
 {
    setComment( comment.c_str(), placement );
 }
-
 
 bool 
 Value::hasComment( CommentPlacement placement ) const
@@ -1477,14 +1413,12 @@ Value::getComment( CommentPlacement placement ) const
    return "";
 }
 
-
 std::string 
 Value::toStyledString() const
 {
    StyledWriter writer;
    return writer.write( *this );
 }
-
 
 Value::const_iterator 
 Value::begin() const
@@ -1556,7 +1490,6 @@ Value::end() const
    return const_iterator();
 }
 
-
 Value::iterator 
 Value::begin()
 {
@@ -1627,7 +1560,6 @@ Value::end()
    return iterator();
 }
 
-
 // class PathArgument
 // //////////////////////////////////////////////////////////////////
 
@@ -1636,20 +1568,17 @@ PathArgument::PathArgument()
 {
 }
 
-
 PathArgument::PathArgument( ArrayIndex index )
    : index_( index )
    , kind_( kindIndex )
 {
 }
 
-
 PathArgument::PathArgument( const char *key )
    : key_( key )
    , kind_( kindKey )
 {
 }
-
 
 PathArgument::PathArgument( const std::string &key )
    : key_( key.c_str() )
@@ -1675,7 +1604,6 @@ Path::Path( const std::string &path,
    in.push_back( &a5 );
    makePath( path, in );
 }
-
 
 void 
 Path::makePath( const std::string &path,
@@ -1720,7 +1648,6 @@ Path::makePath( const std::string &path,
    }
 }
 
-
 void 
 Path::addPathInArg( const std::string &path, 
                     const InArgs &in, 
@@ -1741,14 +1668,12 @@ Path::addPathInArg( const std::string &path,
    }
 }
 
-
 void 
 Path::invalidPath( const std::string &path, 
                    int location )
 {
    // Error: invalid path.
 }
-
 
 const Value &
 Path::resolve( const Value &root ) const
@@ -1781,7 +1706,6 @@ Path::resolve( const Value &root ) const
    return *node;
 }
 
-
 Value 
 Path::resolve( const Value &root, 
                const Value &defaultValue ) const
@@ -1807,7 +1731,6 @@ Path::resolve( const Value &root,
    }
    return *node;
 }
-
 
 Value &
 Path::make( Value &root ) const
@@ -1835,6 +1758,5 @@ Path::make( Value &root ) const
    }
    return *node;
 }
-
 
 } // namespace Json

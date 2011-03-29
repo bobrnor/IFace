@@ -4,7 +4,6 @@
 
 #include "CodeEditor.h"
 
-
 LeftArea::LeftArea(CodeEditor *codeEditor) : QWidget(codeEditor) {
 
   m_codeEditor = codeEditor;

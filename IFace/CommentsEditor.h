@@ -12,11 +12,16 @@ class CommentsEditor : public QPlainTextEdit {
 	SProjectFile m_projectFile;
 
 	int m_codeBlockCount;
+	bool m_isCommentsChanged;
+	bool m_changingBlockCount;
+	bool m_isLastUpdateRequestFromCode;
 
 	void gotoBegin(QTextCursor &cursor);
 	int gotoEnd(QTextCursor &cursor);
 	void replaceCurrentBlockText(QTextCursor &cursor, const QString &text);
+	void makeProperLineCount(int lineCount);
 	void updateComments();
+	void saveComments();
 
 protected:
 	void focusInEvent(QFocusEvent *e);
@@ -31,7 +36,16 @@ public:
 
 private slots:
 	void highlightCurrentLineSlot();
+	void blockCountChangedSlot(int newBlockCount);
+	void commentsChanged();
+
+public slots:
+	void scrolledSlot(int y);
 	void codeScrolledSlot(int y);
 	void codeBlockCountChangedSlot(int newBlockCount);
+
+signals:
+	void applyCommentsSignal();
+	void codeScrollRequestSignal(int y);
 
 };

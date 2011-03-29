@@ -38,5 +38,4 @@ namespace Json {
 
 } // namespace Json
 
-
 #endif // JSON_FORWARDS_H_INCLUDED

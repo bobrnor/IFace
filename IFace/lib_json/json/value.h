@@ -496,7 +496,6 @@ namespace Json {
       CommentInfo *comments_;
    };
 
-
    /** \brief Experimental and untested: represents an element of the "path" to access a node.
     */
    class PathArgument
@@ -563,7 +562,6 @@ namespace Json {
 
       Args args_;
    };
-
 
 
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
@@ -645,7 +643,6 @@ namespace Json {
       ValueInternalLink *previous_;
       ValueInternalLink *next_;
    };
-
 
    /** \brief A linked page based hash-table implementation used internally by Value.
     * \internal ValueInternalMap is a tradional bucket based hash-table, with a linked
@@ -904,7 +901,6 @@ public: // overridden from ValueArrayAllocator
    };
 #endif // #ifdef JSON_VALUE_USE_INTERNAL_MAP
 
-
    /** \brief base class for Value iterators.
     *
     */
@@ -1033,7 +1029,6 @@ public: // overridden from ValueArrayAllocator
       }
    };
 
-
    /** \brief Iterator for object and array value.
     */
    class ValueIterator : public ValueIteratorBase
@@ -1094,8 +1089,6 @@ public: // overridden from ValueArrayAllocator
       }
    };
 
-
 } // namespace Json
-
 
 #endif // CPPTL_JSON_H_INCLUDED

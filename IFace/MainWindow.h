@@ -12,7 +12,6 @@
 
 #include "ProjectManager.h"
 
-
 namespace Ui {
     class MainWindow;
 }

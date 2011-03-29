@@ -29,7 +29,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledSlot(int)));
 
-	blockCountChangedSlot(0);
+	//blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
 }
 
@@ -68,7 +68,7 @@ void CodeEditor::updateRequestSlot(const QRect &rect, int dy) {
 	}
 
 	if (rect.contains(viewport()->rect())) {
-		blockCountChangedSlot(0);
+		//blockCountChangedSlot(0);
 	}
 }
 
@@ -208,4 +208,40 @@ void CodeEditor::focusInEvent(QFocusEvent *e) {
 void CodeEditor::focusOutEvent(QFocusEvent *e) {
 
 	highlightCurrentLineSlot();
+}
+
+QTextBlock CodeEditor::blockWithNumber(int blockNumber) {
+
+	QTextCursor cursor = textCursor();
+
+	int delta = cursor.blockNumber() - blockNumber;
+	if (delta > 0) {
+		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, delta);
+	}
+	else if (delta < 0) {
+		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, -delta);
+	}
+	return cursor.block();
+}
+
+void CodeEditor::applyCommentsSlot() {
+
+	QMap<int, QString> comments = m_projectFile->comments();
+	foreach (int key, comments.keys()) {
+		QString comment = comments.take(key);
+		QTextBlock block = blockWithNumber(key);
+		if (block.isValid()) {
+			CodeLineData *data = static_cast<CodeLineData *>(block.userData());
+			if (data == NULL) {
+				data = new CodeLineData();
+			}
+			data->comment = comment;
+			block.setUserData(data);
+		}
+	}
+}
+
+void CodeEditor::commentsScrolledSlot(int y) {
+
+	verticalScrollBar()->setValue(y);
 }

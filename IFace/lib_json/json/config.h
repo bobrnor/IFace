@@ -55,7 +55,6 @@
 #define JSON_USE_INT64_DOUBLE_CONVERSION 1
 #endif // if defined(_MSC_VER)  &&  _MSC_VER < 1200 // MSVC 6
 
-
 namespace Json {
    typedef int Int;
    typedef unsigned int UInt;
@@ -77,6 +76,5 @@ namespace Json {
 #  define JSON_HAS_INT64
 # endif // if defined(JSON_NO_INT64)
 } // end namespace Json
-
 
 #endif // JSON_CONFIG_H_INCLUDED

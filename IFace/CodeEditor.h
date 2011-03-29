@@ -8,41 +8,45 @@
 #include "ProjectFile.h"
 
 class CodeEditor : public QPlainTextEdit {
-  Q_OBJECT
+	Q_OBJECT
 
-  QWidget *m_leftArea;
-  SProjectFile m_projectFile;
+		QWidget *m_leftArea;
+	SProjectFile m_projectFile;
 
-  bool m_isLastUpdateRequestFromComments;
+	bool m_isLastUpdateRequestFromComments;
 
-  void loadProjectFile();
-  void updateBreakPointAndComments();
+	void loadProjectFile();
+	void updateBreakPointAndComments();
+	QTextBlock blockWithNumber(int blockNumber);
 
 protected:
-  void resizeEvent(QResizeEvent *e);
-  void focusInEvent(QFocusEvent *e);
-  void focusOutEvent(QFocusEvent *e);
+	void resizeEvent(QResizeEvent *e);
+	void focusInEvent(QFocusEvent *e);
+	void focusOutEvent(QFocusEvent *e);
 
 public:
-  explicit CodeEditor(QWidget *parent = 0);
+	explicit CodeEditor(QWidget *parent = 0);
 
-  void leftAreaPaintEvent(QPaintEvent *event);
-  int leftAreaWidth();
+	void leftAreaPaintEvent(QPaintEvent *event);
+	int leftAreaWidth();
 
-  SProjectFile projectFile() const;
-  void setProjectFile(SProjectFile projectFile);
+	SProjectFile projectFile() const;
+	void setProjectFile(SProjectFile projectFile);
 
 signals:
-  void commentsScrollRequestSignal(int y);
-  void commentsUpdateRequestSignal(int blockCount);
+	void commentsScrollRequestSignal(int y);
+	void commentsUpdateRequestSignal(int blockCount);
 
 private slots:
-  void blockCountChangedSlot(int newBlockCount);
-  void highlightCurrentLineSlot();
-  void updateRequestSlot(const QRect &rect, int dy);
-  void scrolledSlot(int y);
+	void blockCountChangedSlot(int newBlockCount);
+	void highlightCurrentLineSlot();
+	void updateRequestSlot(const QRect &rect, int dy);
+	void scrolledSlot(int y);
 
 public slots:
+	void applyCommentsSlot();
+	void commentsScrolledSlot(int y);
+
 
 };
 

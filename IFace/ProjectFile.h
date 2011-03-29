@@ -32,6 +32,9 @@ public:
 	void addOrReplaceComment(int lineNumber, QString comment);
 	void removeCommentIfExists(int lineNumber);
 
+	QSet<int> breakPoints() const { return m_breakPoints; }
+	QMap<int, QString> comments() const { return m_comments; }
+
     bool operator==(const ProjectFile &projectFile) const;
 };
 

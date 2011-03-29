@@ -28,13 +28,11 @@ Features::Features()
 {
 }
 
-
 Features 
 Features::all()
 {
    return Features();
 }
-
 
 Features 
 Features::strictMode()
@@ -48,7 +46,6 @@ Features::strictMode()
 // Implementation of class Reader
 // ////////////////////////////////
 
-
 static inline bool 
 in( Reader::Char c, Reader::Char c1, Reader::Char c2, Reader::Char c3, Reader::Char c4 )
 {
@@ -61,7 +58,6 @@ in( Reader::Char c, Reader::Char c1, Reader::Char c2, Reader::Char c3, Reader::C
    return c == c1  ||  c == c2  ||  c == c3  ||  c == c4  ||  c == c5;
 }
 
-
 static bool 
 containsNewLine( Reader::Location begin, 
                  Reader::Location end )
@@ -72,7 +68,6 @@ containsNewLine( Reader::Location begin,
    return false;
 }
 
-
 // Class Reader
 // //////////////////////////////////////////////////////////////////
 
@@ -81,12 +76,10 @@ Reader::Reader()
 {
 }
 
-
 Reader::Reader( const Features &features )
    : features_( features )
 {
 }
-
 
 bool
 Reader::parse( const std::string &document, 
@@ -98,7 +91,6 @@ Reader::parse( const std::string &document,
    const char *end = begin + document_.length();
    return parse( begin, end, root, collectComments );
 }
-
 
 bool
 Reader::parse( std::istream& sin,
@@ -160,7 +152,6 @@ Reader::parse( const char *beginDoc, const char *endDoc,
    return successful;
 }
 
-
 bool
 Reader::readValue()
 {
@@ -173,7 +164,6 @@ Reader::readValue()
       currentValue().setComment( commentsBefore_, commentBefore );
       commentsBefore_ = "";
    }
-
 
    switch ( token.type_ )
    {
@@ -211,7 +201,6 @@ Reader::readValue()
    return successful;
 }
 
-
 void 
 Reader::skipCommentTokens( Token &token )
 {
@@ -229,7 +218,6 @@ Reader::skipCommentTokens( Token &token )
    }
 }
 
-
 bool 
 Reader::expectToken( TokenType type, Token &token, const char *message )
 {
@@ -238,7 +226,6 @@ Reader::expectToken( TokenType type, Token &token, const char *message )
       return addError( message, token );
    return true;
 }
-
 
 bool 
 Reader::readToken( Token &token )
@@ -314,7 +301,6 @@ Reader::readToken( Token &token )
    return true;
 }
 
-
 void 
 Reader::skipSpaces()
 {
@@ -327,7 +313,6 @@ Reader::skipSpaces()
          break;
    }
 }
-
 
 bool 
 Reader::match( Location pattern, 
@@ -342,7 +327,6 @@ Reader::match( Location pattern,
    current_ += patternLength;
    return true;
 }
-
 
 bool
 Reader::readComment()
@@ -371,7 +355,6 @@ Reader::readComment()
    return true;
 }
 
-
 void 
 Reader::addComment( Location begin, 
                     Location end, 
@@ -391,7 +374,6 @@ Reader::addComment( Location begin,
    }
 }
 
-
 bool 
 Reader::readCStyleComment()
 {
@@ -404,7 +386,6 @@ Reader::readCStyleComment()
    return getNextChar() == '/';
 }
 
-
 bool 
 Reader::readCppStyleComment()
 {
@@ -416,7 +397,6 @@ Reader::readCppStyleComment()
    }
    return true;
 }
-
 
 void 
 Reader::readNumber()
@@ -444,7 +424,6 @@ Reader::readString()
    }
    return c == '"';
 }
-
 
 bool 
 Reader::readObject( Token &tokenStart )
@@ -504,7 +483,6 @@ Reader::readObject( Token &tokenStart )
                               tokenObjectEnd );
 }
 
-
 bool 
 Reader::readArray( Token &tokenStart )
 {
@@ -546,7 +524,6 @@ Reader::readArray( Token &tokenStart )
    }
    return true;
 }
-
 
 bool 
 Reader::decodeNumber( Token &token )
@@ -600,7 +577,6 @@ Reader::decodeNumber( Token &token )
    return true;
 }
 
-
 bool 
 Reader::decodeDouble( Token &token )
 {
@@ -627,7 +603,6 @@ Reader::decodeDouble( Token &token )
    return true;
 }
 
-
 bool 
 Reader::decodeString( Token &token )
 {
@@ -637,7 +612,6 @@ Reader::decodeString( Token &token )
    currentValue() = decoded;
    return true;
 }
-
 
 bool 
 Reader::decodeString( Token &token, std::string &decoded )
@@ -740,7 +714,6 @@ Reader::decodeUnicodeEscapeSequence( Token &token,
    return true;
 }
 
-
 bool 
 Reader::addError( const std::string &message, 
                   Token &token,
@@ -753,7 +726,6 @@ Reader::addError( const std::string &message,
    errors_.push_back( info );
    return false;
 }
-
 
 bool 
 Reader::recoverFromError( TokenType skipUntilToken )
@@ -771,7 +743,6 @@ Reader::recoverFromError( TokenType skipUntilToken )
    return false;
 }
 
-
 bool 
 Reader::addErrorAndRecover( const std::string &message, 
                             Token &token,
@@ -781,13 +752,11 @@ Reader::addErrorAndRecover( const std::string &message,
    return recoverFromError( skipUntilToken );
 }
 
-
 Value &
 Reader::currentValue()
 {
    return *(nodes_.top());
 }
-
 
 Reader::Char 
 Reader::getNextChar()
@@ -796,7 +765,6 @@ Reader::getNextChar()
       return 0;
    return *current_++;
 }
-
 
 void 
 Reader::getLocationLineAndColumn( Location location,
@@ -827,7 +795,6 @@ Reader::getLocationLineAndColumn( Location location,
    ++line;
 }
 
-
 std::string
 Reader::getLocationLineAndColumn( Location location ) const
 {
@@ -837,7 +804,6 @@ Reader::getLocationLineAndColumn( Location location ) const
    sprintf( buffer, "Line %d, Column %d", line, column );
    return buffer;
 }
-
 
 std::string 
 Reader::getFormatedErrorMessages() const
@@ -856,7 +822,6 @@ Reader::getFormatedErrorMessages() const
    return formattedMessage;
 }
 
-
 std::istream& operator>>( std::istream &sin, Value &root )
 {
     Json::Reader reader;
@@ -865,6 +830,5 @@ std::istream& operator>>( std::istream &sin, Value &root )
     if (!ok) throw std::runtime_error(reader.getFormatedErrorMessages());
     return sin;
 }
-
 
 } // namespace Json

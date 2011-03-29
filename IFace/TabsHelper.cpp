@@ -8,7 +8,7 @@
 
 TabsHelper::TabsHelper() {
 
-	qDebug() << __FUNCSIG__;
+	
 	m_tabWidget = NULL;
 }
 
@@ -20,7 +20,7 @@ TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
 void TabsHelper::addTabWithFile(SProjectFile file) {
 
-	qDebug() << __FUNCSIG__;
+	
 	Q_ASSERT(m_tabWidget != NULL);
 
 	if (!isFileAlreadyOpen(file.data())) {
@@ -40,7 +40,7 @@ void TabsHelper::addTabWithFile(SProjectFile file) {
 
 bool TabsHelper::isFileAlreadyOpen(ProjectFile *file) const {
 
-	qDebug() << __FUNCSIG__;
+	
 	bool result = false;
 	foreach (SProjectFile sfile, m_openFiles) {
 		if (sfile->path() == file->path()) {

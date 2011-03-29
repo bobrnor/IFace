@@ -52,14 +52,12 @@ codePointToUTF8(unsigned int cp)
    return result;
 }
 
-
 /// Returns true if ch is a control character (in range [0,32[).
 static inline bool 
 isControlCharacter(char ch)
 {
    return ch > 0 && ch <= 0x1F;
 }
-
 
 enum { 
    /// Constant that specify the size of the buffer that must be passed to uintToString.
@@ -68,7 +66,6 @@ enum {
 
 // Defines a char buffer for use with uintToString().
 typedef char UIntToStringBuffer[uintToStringBufferSize];
-
 
 /** Converts an unsigned integer to string.
  * @param value Unsigned interger to convert to string

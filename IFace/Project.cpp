@@ -8,7 +8,6 @@
 
 #include "lib_json/json/json.h"
 
-
 Project::Project(const QString &path) {
 
 	if (path.length() > 0) {

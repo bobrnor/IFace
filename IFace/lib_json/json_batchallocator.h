@@ -121,7 +121,6 @@ private:
    unsigned int objectsPerPage_;
 };
 
-
 } // namespace Json
 
 # endif // ifndef JSONCPP_DOC_INCLUDE_IMPLEMENTATION

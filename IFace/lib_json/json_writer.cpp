@@ -29,7 +29,6 @@ static bool containsControlCharacter( const char* str )
    return false;
 }
 
-
 std::string valueToString( LargestInt value )
 {
    UIntToStringBuffer buffer;
@@ -43,7 +42,6 @@ std::string valueToString( LargestInt value )
    assert( current >= buffer );
    return current;
 }
-
 
 std::string valueToString( LargestUInt value )
 {
@@ -61,14 +59,12 @@ std::string valueToString( Int value )
    return valueToString( LargestInt(value) );
 }
 
-
 std::string valueToString( UInt value )
 {
    return valueToString( LargestUInt(value) );
 }
 
 #endif // # if defined(JSON_HAS_INT64)
-
 
 std::string valueToString( double value )
 {
@@ -108,7 +104,6 @@ std::string valueToString( double value )
    }
    return buffer;
 }
-
 
 std::string valueToString( bool value )
 {
@@ -184,7 +179,6 @@ Writer::~Writer()
 {
 }
 
-
 // Class FastWriter
 // //////////////////////////////////////////////////////////////////
 
@@ -193,13 +187,11 @@ FastWriter::FastWriter()
 {
 }
 
-
 void 
 FastWriter::enableYAMLCompatibility()
 {
    yamlCompatiblityEnabled_ = true;
 }
-
 
 std::string 
 FastWriter::write( const Value &root )
@@ -209,7 +201,6 @@ FastWriter::write( const Value &root )
    document_ += "\n";
    return document_;
 }
-
 
 void 
 FastWriter::writeValue( const Value &value )
@@ -269,7 +260,6 @@ FastWriter::writeValue( const Value &value )
    }
 }
 
-
 // Class StyledWriter
 // //////////////////////////////////////////////////////////////////
 
@@ -278,7 +268,6 @@ StyledWriter::StyledWriter()
    , indentSize_( 3 )
 {
 }
-
 
 std::string 
 StyledWriter::write( const Value &root )
@@ -292,7 +281,6 @@ StyledWriter::write( const Value &root )
    document_ += "\n";
    return document_;
 }
-
 
 void 
 StyledWriter::writeValue( const Value &value )
@@ -354,7 +342,6 @@ StyledWriter::writeValue( const Value &value )
    }
 }
 
-
 void 
 StyledWriter::writeArrayValue( const Value &value )
 {
@@ -407,7 +394,6 @@ StyledWriter::writeArrayValue( const Value &value )
    }
 }
 
-
 bool 
 StyledWriter::isMultineArray( const Value &value )
 {
@@ -438,7 +424,6 @@ StyledWriter::isMultineArray( const Value &value )
    return isMultiLine;
 }
 
-
 void 
 StyledWriter::pushValue( const std::string &value )
 {
@@ -447,7 +432,6 @@ StyledWriter::pushValue( const std::string &value )
    else
       document_ += value;
 }
-
 
 void 
 StyledWriter::writeIndent()
@@ -463,7 +447,6 @@ StyledWriter::writeIndent()
    document_ += indentString_;
 }
 
-
 void 
 StyledWriter::writeWithIndent( const std::string &value )
 {
@@ -471,13 +454,11 @@ StyledWriter::writeWithIndent( const std::string &value )
    document_ += value;
 }
 
-
 void 
 StyledWriter::indent()
 {
    indentString_ += std::string( indentSize_, ' ' );
 }
-
 
 void 
 StyledWriter::unindent()
@@ -485,7 +466,6 @@ StyledWriter::unindent()
    assert( int(indentString_.size()) >= indentSize_ );
    indentString_.resize( indentString_.size() - indentSize_ );
 }
-
 
 void 
 StyledWriter::writeCommentBeforeValue( const Value &root )
@@ -495,7 +475,6 @@ StyledWriter::writeCommentBeforeValue( const Value &root )
    document_ += normalizeEOL( root.getComment( commentBefore ) );
    document_ += "\n";
 }
-
 
 void 
 StyledWriter::writeCommentAfterValueOnSameLine( const Value &root )
@@ -511,7 +490,6 @@ StyledWriter::writeCommentAfterValueOnSameLine( const Value &root )
    }
 }
 
-
 bool 
 StyledWriter::hasCommentForValue( const Value &value )
 {
@@ -519,7 +497,6 @@ StyledWriter::hasCommentForValue( const Value &value )
           ||  value.hasComment( commentAfterOnSameLine )
           ||  value.hasComment( commentAfter );
 }
-
 
 std::string 
 StyledWriter::normalizeEOL( const std::string &text )
@@ -544,7 +521,6 @@ StyledWriter::normalizeEOL( const std::string &text )
    return normalized;
 }
 
-
 // Class StyledStreamWriter
 // //////////////////////////////////////////////////////////////////
 
@@ -554,7 +530,6 @@ StyledStreamWriter::StyledStreamWriter( std::string indentation )
    , indentation_( indentation )
 {
 }
-
 
 void
 StyledStreamWriter::write( std::ostream &out, const Value &root )
@@ -568,7 +543,6 @@ StyledStreamWriter::write( std::ostream &out, const Value &root )
    *document_ << "\n";
    document_ = NULL; // Forget the stream, for safety.
 }
-
 
 void 
 StyledStreamWriter::writeValue( const Value &value )
@@ -630,7 +604,6 @@ StyledStreamWriter::writeValue( const Value &value )
    }
 }
 
-
 void 
 StyledStreamWriter::writeArrayValue( const Value &value )
 {
@@ -683,7 +656,6 @@ StyledStreamWriter::writeArrayValue( const Value &value )
    }
 }
 
-
 bool 
 StyledStreamWriter::isMultineArray( const Value &value )
 {
@@ -714,7 +686,6 @@ StyledStreamWriter::isMultineArray( const Value &value )
    return isMultiLine;
 }
 
-
 void 
 StyledStreamWriter::pushValue( const std::string &value )
 {
@@ -723,7 +694,6 @@ StyledStreamWriter::pushValue( const std::string &value )
    else
       *document_ << value;
 }
-
 
 void 
 StyledStreamWriter::writeIndent()
@@ -743,7 +713,6 @@ StyledStreamWriter::writeIndent()
    *document_ << '\n' << indentString_;
 }
 
-
 void 
 StyledStreamWriter::writeWithIndent( const std::string &value )
 {
@@ -751,13 +720,11 @@ StyledStreamWriter::writeWithIndent( const std::string &value )
    *document_ << value;
 }
 
-
 void 
 StyledStreamWriter::indent()
 {
    indentString_ += indentation_;
 }
-
 
 void 
 StyledStreamWriter::unindent()
@@ -765,7 +732,6 @@ StyledStreamWriter::unindent()
    assert( indentString_.size() >= indentation_.size() );
    indentString_.resize( indentString_.size() - indentation_.size() );
 }
-
 
 void 
 StyledStreamWriter::writeCommentBeforeValue( const Value &root )
@@ -775,7 +741,6 @@ StyledStreamWriter::writeCommentBeforeValue( const Value &root )
    *document_ << normalizeEOL( root.getComment( commentBefore ) );
    *document_ << "\n";
 }
-
 
 void 
 StyledStreamWriter::writeCommentAfterValueOnSameLine( const Value &root )
@@ -791,7 +756,6 @@ StyledStreamWriter::writeCommentAfterValueOnSameLine( const Value &root )
    }
 }
 
-
 bool 
 StyledStreamWriter::hasCommentForValue( const Value &value )
 {
@@ -799,7 +763,6 @@ StyledStreamWriter::hasCommentForValue( const Value &value )
           ||  value.hasComment( commentAfterOnSameLine )
           ||  value.hasComment( commentAfter );
 }
-
 
 std::string 
 StyledStreamWriter::normalizeEOL( const std::string &text )
@@ -824,13 +787,11 @@ StyledStreamWriter::normalizeEOL( const std::string &text )
    return normalized;
 }
 
-
 std::ostream& operator<<( std::ostream &sout, const Value &root )
 {
    Json::StyledStreamWriter writer;
    writer.write(sout, root);
    return sout;
 }
-
 
 } // namespace Json
