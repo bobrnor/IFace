@@ -43,9 +43,10 @@ public slots:
 	void scrolledSlot(int y);
 	void codeScrolledSlot(int y);
 	void codeBlockCountChangedSlot(int newBlockCount);
+	void codePositionChangedSlot(int yPos);
 
 signals:
 	void applyCommentsSignal();
-	void codeScrollRequestSignal(int y);
-
+	void codeScrollRequestSignal(int y);	
+	void commentsCursorLineChangedSignal(int yPos);
 };

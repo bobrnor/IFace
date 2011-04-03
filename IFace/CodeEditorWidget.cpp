@@ -45,6 +45,10 @@ void CodeEditorWidget::linkCodeWithComments() {
 		m_commentsArea, SLOT(codeBlockCountChangedSlot(int)));
 	connect(m_commentsArea, SIGNAL(applyCommentsSignal()), 
 		m_codeEditor, SLOT(applyCommentsSlot()), Qt::DirectConnection);
+	connect(m_codeEditor, SIGNAL(codeCursorLineChangedSignal(int)), 
+		m_commentsArea, SLOT(codePositionChangedSlot(int)), Qt::DirectConnection);
+	connect(m_commentsArea, SIGNAL(commentsCursorLineChangedSignal(int)), 
+		m_codeEditor, SLOT(commentsPositionChangedSlot(int)), Qt::DirectConnection);
 }
 
 CodeEditor *CodeEditorWidget::codeEditor() const {

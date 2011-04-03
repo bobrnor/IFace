@@ -36,7 +36,6 @@ void CommentsEditor::setProjectFile(SProjectFile projectFile) {
 
 void CommentsEditor::highlightCurrentLineSlot() {
 
-	
 	QList<QTextEdit::ExtraSelection> extraSelections;
 
 	if (!isReadOnly() && hasFocus()) {
@@ -51,6 +50,8 @@ void CommentsEditor::highlightCurrentLineSlot() {
 	}
 
 	setExtraSelections(extraSelections);
+
+	emit commentsCursorLineChangedSignal(textCursor().blockNumber());
 }
 
 void CommentsEditor::focusInEvent(QFocusEvent *e) {
@@ -197,4 +198,19 @@ void CommentsEditor::scrolledSlot(int y) {
 	}
 
 	m_isLastUpdateRequestFromCode = false;
+}
+
+void CommentsEditor::codePositionChangedSlot(int yPos) {
+
+	QTextCursor cursor = textCursor();
+	int delta = cursor.blockNumber() - yPos;
+	if (delta != 0) {
+		if (delta > 0) {
+			cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}
+		else {
+			cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}		
+	}
+	setTextCursor(cursor);
 }

@@ -144,6 +144,8 @@ void CodeEditor::highlightCurrentLineSlot() {
 	}
 
 	setExtraSelections(extraSelections);
+	
+	emit codeCursorLineChangedSignal(textCursor().blockNumber());
 }
 
 void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
@@ -249,16 +251,17 @@ void CodeEditor::moveDownComments(int fromBlockNumber) {
 
 QTextBlock CodeEditor::blockWithNumber(int blockNumber) {
 
-	QTextCursor cursor = textCursor();
-
-	int delta = cursor.blockNumber() - blockNumber;
-	if (delta > 0) {
-		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, delta);
-	}
-	else if (delta < 0) {
-		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, -delta);
-	}
-	return cursor.block();
+// 	QTextCursor cursor = textCursor();
+// 
+// 	int delta = cursor.blockNumber() - blockNumber;
+// 	if (delta > 0) {
+// 		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, delta);
+// 	}
+// 	else if (delta < 0) {
+// 		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, -delta);
+// 	}
+// 	return cursor.block();
+	return this->document()->findBlockByNumber(blockNumber);
 }
 
 void CodeEditor::applyCommentsSlot() {
@@ -281,4 +284,19 @@ void CodeEditor::applyCommentsSlot() {
 void CodeEditor::commentsScrolledSlot(int y) {
 
 	verticalScrollBar()->setValue(y);
+}
+
+void CodeEditor::commentsPositionChangedSlot(int yPos) {
+
+	QTextCursor cursor = textCursor();
+	int delta = cursor.blockNumber() - yPos;
+	if (delta != 0) {
+		if (delta > 0) {
+			cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}
+		else {
+			cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}		
+	}
+	setTextCursor(cursor);
 }

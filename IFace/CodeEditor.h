@@ -39,6 +39,7 @@ public:
 signals:
 	void commentsScrollRequestSignal(int y);
 	void commentsUpdateRequestSignal(int blockCount);
+	void codeCursorLineChangedSignal(int yPos);
 
 private slots:
 	void blockCountChangedSlot(int newBlockCount);
@@ -49,8 +50,7 @@ private slots:
 public slots:
 	void applyCommentsSlot();
 	void commentsScrolledSlot(int y);
-
-
+	void commentsPositionChangedSlot(int yPos);
 };
 
 #endif // CODEEDITOR_H

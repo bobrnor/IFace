@@ -2,8 +2,9 @@ IFace-build-desktop
 IFace/Debug
 IFace/Release
 tests
-ui_*
 *.idb
 *.pdb
 *.ncb
 *.user
+*.suo
+ui_*
