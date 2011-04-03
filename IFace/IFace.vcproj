@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="IFace"
 	ProjectGUID="{059551E8-9A1B-3A34-A589-F2C02CA98703}"
 	Keyword="Qt4VSv1.0"
@@ -211,6 +211,10 @@
 			</File>
 			<File
 				RelativePath=".\CodeEditorWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CodeLineData.cpp"
 				>
 			</File>
 			<File

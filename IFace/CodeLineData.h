@@ -8,4 +8,7 @@ class CodeLineData : public QTextBlockUserData {
 public:
 	bool hasBreakPoint;
 	QString comment;
+
+	CodeLineData();
+	CodeLineData *copy();
 };

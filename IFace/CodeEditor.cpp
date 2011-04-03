@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QScrollBar>
+#include <QInputMethodEvent>
 
 #include "LeftArea.h"
 #include "CodeLineData.h"
@@ -18,6 +19,7 @@
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	m_isLastUpdateRequestFromComments = false;
+	m_lastCommentOffsetLine = -1;
 
 	setWordWrapMode(QTextOption::NoWrap);
 	setLayout(new QVBoxLayout(this));
@@ -29,7 +31,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledSlot(int)));
 
-	//blockCountChangedSlot(0);
+	blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
 }
 
@@ -82,6 +84,11 @@ void CodeEditor::scrolledSlot(int y) {
 }
 
 void CodeEditor::updateBreakPointAndComments() {
+
+	if (m_lastCommentOffsetLine >= 0) {
+		moveDownComments(m_lastCommentOffsetLine);
+		m_lastCommentOffsetLine = -1;
+	}	
 
 	if (m_projectFile != NULL) {
 		QTextBlock block = firstVisibleBlock();
@@ -208,6 +215,36 @@ void CodeEditor::focusInEvent(QFocusEvent *e) {
 void CodeEditor::focusOutEvent(QFocusEvent *e) {
 
 	highlightCurrentLineSlot();
+}
+
+void CodeEditor::keyPressEvent(QKeyEvent *e) {
+
+	QTextCursor cursor = textCursor();
+	int blockNumber = cursor.blockNumber();
+	int positionInBlock = cursor.positionInBlock();
+	int key = e->key();
+
+	if ((key == Qt::Key_Enter || key == Qt::Key_Return) && positionInBlock ==  0) {
+		m_lastCommentOffsetLine = blockNumber;
+	}
+	
+	QPlainTextEdit::keyPressEvent(e);
+}
+
+void CodeEditor::moveDownComments(int fromBlockNumber) {
+
+	QTextBlock block = blockWithNumber(fromBlockNumber);
+	
+	if (block.userData() != NULL) {
+		CodeLineData *nextLineData = static_cast<CodeLineData *>(block.userData())->copy();
+
+		block.setUserData(NULL);
+
+		QTextBlock nextBlock = block.next();
+		if (nextBlock.isValid()) {
+			nextBlock.setUserData(nextLineData);
+		}
+	}
 }
 
 QTextBlock CodeEditor::blockWithNumber(int blockNumber) {

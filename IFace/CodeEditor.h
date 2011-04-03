@@ -14,15 +14,18 @@ class CodeEditor : public QPlainTextEdit {
 	SProjectFile m_projectFile;
 
 	bool m_isLastUpdateRequestFromComments;
+	int m_lastCommentOffsetLine;
 
 	void loadProjectFile();
 	void updateBreakPointAndComments();
 	QTextBlock blockWithNumber(int blockNumber);
+	void moveDownComments(int fromBlockNumber);
 
 protected:
 	void resizeEvent(QResizeEvent *e);
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
+	void keyPressEvent(QKeyEvent *e);
 
 public:
 	explicit CodeEditor(QWidget *parent = 0);
