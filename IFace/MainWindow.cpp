@@ -59,16 +59,7 @@ void MainWindow::initProjectTree() {
 
 }
 
-void MainWindow::initCodeTabs() {
-
-//  ui->codeTabs->widget(0)->setLayout();
-//  ui->codeTabs->widget(0)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(0)));
-//  ui->codeTabs->widget(0)->layout()->setMargin(0);
-
-//  ui->codeTabs->widget(1)->setLayout(new QVBoxLayout(ui->codeTabs->widget(1)));
-//  ui->codeTabs->widget(1)->layout()->addWidget(new CodeEditor(ui->codeTabs->widget(1)));
-//  ui->codeTabs->widget(1)->layout()->setMargin(0);
-}
+void MainWindow::initCodeTabs() {}
 
 void MainWindow::initErrorTable() {}
 
@@ -76,16 +67,19 @@ QMenu *MainWindow::createFileMenu() {
 
   QMenu *menu = new QMenu(tr("&File"), m_menuBar);
 
-  QAction *action = menu->addAction("New project...");
+  QAction *action = menu->addAction("Create project...");
   connect(action, SIGNAL(triggered()), this, SLOT(newProjectSlot()));
 
   action = menu->addAction("Open project...");
   connect(action, SIGNAL(triggered()), this, SLOT(openProjectSlot()));
 
-  action = menu->addAction("New file...");
+  QMenu *addMenu = new QMenu(tr("Add"), menu);
+  menu->addMenu(addMenu);
+
+  action = addMenu->addAction("New file...");
   connect(action, SIGNAL(triggered()), this, SLOT(newProjectFileSlot()));
 
-  action = menu->addAction("Open file...");
+  action = addMenu->addAction("Existing file...");
   connect(action, SIGNAL(triggered()), this, SLOT(openProjectFileSlot()));
 
   return menu;

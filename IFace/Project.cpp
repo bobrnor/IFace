@@ -65,6 +65,20 @@ bool Project::saveProject() {
 		Json::Value projectFileJson;
 		projectFileJson["path"] = Json::Value(file->path().toStdString());
 
+		Json::Value projectFileBreakPointsListJson(Json::arrayValue);
+		foreach (int line, file->breakPoints().values()) {
+			projectFileBreakPointsListJson.append(line);
+		}
+
+		Json::Value projectFileCommentsListJson(Json::arrayValue);
+		QMap<int, QString> comments = file->comments();
+		foreach (int key, comments.keys()) {
+			Json::Value comment;
+			comment["line"] = Json::Value(key);
+			comment["text"] = Json::Value(comments.take(key).toStdString());
+			projectFileCommentsListJson.append(comment);
+		}
+
 		projectFilesListJson.append(projectFileJson);
 	}
 

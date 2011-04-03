@@ -28,8 +28,8 @@ public:
 	void assignTabWidget(QTabWidget *tabWidget);
 	void assignProjectTreeWidget(QTreeWidget *projectTree);
 
-	public slots:
-		void onTreeItemDoubleClickedSlot(QTreeWidgetItem *item);
+public slots:
+	void intemActivatedSlot(QTreeWidgetItem *item);
 };
 
 #endif // PROJECTMANAGER_H

@@ -68,11 +68,11 @@ void ProjectManager::assignProjectTreeWidget(QTreeWidget *projectTree) {
 		m_projectTreeHelper = new ProjectTreeHelper(projectTree);
 		m_projectTreeHelper->setProject(m_project);
 		connect(m_projectTreeHelper->linkedTreeWidget(), SIGNAL(itemActivated(QTreeWidgetItem*, int)), 
-			this, SLOT(onTreeItemDoubleClickedSlot(QTreeWidgetItem*)));
+			this, SLOT(intemActivatedSlot(QTreeWidgetItem*)));
 	}
 }
 
-void ProjectManager::onTreeItemDoubleClickedSlot(QTreeWidgetItem *item) {
+void ProjectManager::intemActivatedSlot(QTreeWidgetItem *item) {
 
 	if (item != NULL) {
 		QVariant data = item->data(0, Qt::UserRole);
