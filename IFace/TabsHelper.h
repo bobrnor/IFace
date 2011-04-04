@@ -23,6 +23,8 @@ public:
 
     QTabWidget *tabWidget() { return m_tabWidget; }
     void setTabWidget(QTabWidget *tabWidget) { m_tabWidget = tabWidget; }
+
+	SProjectFile currentlyOpenProjectFile();
 };
 
 #endif // TABSHELPER_H

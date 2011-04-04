@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QFile>
 
+#include "CodeEditor.h"
+
 ProjectFile::ProjectFile() {}
 
 ProjectFile::ProjectFile(const QString &path) {
@@ -22,6 +24,18 @@ void ProjectFile::setPath(const QString &path) {
 	
 	m_path = path;
 	createIfNotExists();
+}
+
+void ProjectFile::linkCodeEditor(CodeEditor *codeEditor) {
+
+	m_linkedCodeEditor = codeEditor;
+}
+
+void ProjectFile::save() {
+
+	if (m_linkedCodeEditor != NULL) {
+		m_linkedCodeEditor->saveProjectFile();
+	}
 }
 
 bool ProjectFile::createIfNotExists() {
@@ -72,7 +86,7 @@ QString ProjectFile::commentInLine(int lineNumber) {
 
 	
 	if (m_comments.contains(lineNumber)) {
-		return m_comments.take(lineNumber);
+		return m_comments.value(lineNumber);
 	}
 	else {
 		return QString("");

@@ -15,6 +15,7 @@ class CommentsEditor : public QPlainTextEdit {
 	bool m_isCommentsChanged;
 	bool m_changingBlockCount;
 	bool m_isLastUpdateRequestFromCode;
+	bool m_isInit;
 
 	void gotoBegin(QTextCursor &cursor);
 	int gotoEnd(QTextCursor &cursor);

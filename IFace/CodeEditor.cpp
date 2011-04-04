@@ -20,6 +20,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	m_isLastUpdateRequestFromComments = false;
 	m_lastCommentOffsetLine = -1;
+	m_isInit = false;
 
 	setWordWrapMode(QTextOption::NoWrap);
 	setLayout(new QVBoxLayout(this));
@@ -33,6 +34,13 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
+}
+
+CodeEditor::~CodeEditor() {
+
+	if (m_projectFile != NULL) {
+		m_projectFile->linkCodeEditor(NULL);
+	}
 }
 
 int CodeEditor::leftAreaWidth() {
@@ -85,37 +93,39 @@ void CodeEditor::scrolledSlot(int y) {
 
 void CodeEditor::updateBreakPointAndComments() {
 
-	if (m_lastCommentOffsetLine >= 0) {
-		moveDownComments(m_lastCommentOffsetLine);
-		m_lastCommentOffsetLine = -1;
-	}	
+	if (m_isInit) {
+		if (m_lastCommentOffsetLine >= 0) {
+			moveDownComments(m_lastCommentOffsetLine);
+			m_lastCommentOffsetLine = -1;
+		}	
 
-	if (m_projectFile != NULL) {
-		QTextBlock block = firstVisibleBlock();
+		if (m_projectFile != NULL) {
+			QTextBlock block = firstVisibleBlock();
 
-		while (block.isValid() && block.isVisible()) {
-			CodeLineData *data = static_cast<CodeLineData *>(block.userData());
-			if (data == NULL) {
-				m_projectFile->removeBreakPointIfExists(block.blockNumber());
-				m_projectFile->removeCommentIfExists(block.blockNumber());
-			}
-			else {
-				if (data->comment.isEmpty()) {
+			while (block.isValid() && block.isVisible()) {
+				CodeLineData *data = static_cast<CodeLineData *>(block.userData());
+				if (data == NULL) {
+					m_projectFile->removeBreakPointIfExists(block.blockNumber());
 					m_projectFile->removeCommentIfExists(block.blockNumber());
 				}
 				else {
-					m_projectFile->addOrReplaceComment(block.blockNumber(), data->comment);
+					if (data->comment.isEmpty()) {
+						m_projectFile->removeCommentIfExists(block.blockNumber());
+					}
+					else {
+						m_projectFile->addOrReplaceComment(block.blockNumber(), data->comment);
+					}
+
+					if (data->hasBreakPoint) {
+						m_projectFile->addBreakPoint(block.blockNumber());
+					}
+					else {
+						m_projectFile->removeBreakPointIfExists(block.blockNumber());
+					}
 				}
 
-				if (data->hasBreakPoint) {
-					m_projectFile->addBreakPoint(block.blockNumber());
-				}
-				else {
-					m_projectFile->removeBreakPointIfExists(block.blockNumber());
-				}
+				block = block.next();
 			}
-
-			block = block.next();
 		}
 	}
 }
@@ -189,7 +199,11 @@ SProjectFile CodeEditor::projectFile() const {
 
 void CodeEditor::setProjectFile(SProjectFile projectFile) {
 
+	if (m_projectFile != NULL) {
+		m_projectFile->linkCodeEditor(NULL);
+	}
 	m_projectFile = projectFile;
+	m_projectFile->linkCodeEditor(this);
 	loadProjectFile();
 }
 
@@ -202,9 +216,44 @@ void CodeEditor::loadProjectFile() {
 
 			QTextStream stream(&file);
 			while (!stream.atEnd()) {
-				QString codeline = stream.readLine();
+				QString codeline = stream.readLine() + "\n";
 				insertPlainText(codeline);
 			}
+		}
+		initCommentsAndBreakPoints();
+	}
+}
+
+void CodeEditor::initCommentsAndBreakPoints() {
+
+	QTextBlock block = blockWithNumber(0);
+	
+	while (block.isValid()) {
+		CodeLineData *data = new CodeLineData();
+
+		if (m_projectFile->checkLineForBreakPoints(block.blockNumber())) {			
+			data->hasBreakPoint = true;
+		}
+
+		QString comment = m_projectFile->commentInLine(block.blockNumber());
+		if (!comment.isEmpty()) {
+			data->comment = comment;
+		}
+
+		block.setUserData(data);
+		block = block.next();
+	}
+	m_isInit = true;
+}
+
+void CodeEditor::saveProjectFile() {
+
+	if (!m_projectFile.isNull()) {
+		QString path = m_projectFile->path();
+		QFile file(path);
+		if (file.open(QIODevice::WriteOnly)) {
+			QTextStream textStream(&file);
+			textStream << toPlainText();
 		}
 	}
 }

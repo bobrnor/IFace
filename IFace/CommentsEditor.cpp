@@ -5,6 +5,7 @@
 #include <QTextCursor>
 #include <QTextBlock>
 #include <QScrollBar>
+#include <QFile>
 
 CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(parent) {
 
@@ -12,6 +13,7 @@ CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(paren
 	m_codeBlockCount = 0;
 	m_changingBlockCount = false;
 	m_isLastUpdateRequestFromCode = false;
+	m_isInit = false;
 	setWordWrapMode(QTextOption::NoWrap);
 	//setMaximumBlockCount(0);
 
@@ -30,8 +32,19 @@ CommentsEditor::~CommentsEditor() {
 
 void CommentsEditor::setProjectFile(SProjectFile projectFile) {
 
-	
 	m_projectFile = projectFile;
+	if (!m_projectFile.isNull()) {
+		QFile file(m_projectFile->path());
+		if (file.open(QIODevice::ReadOnly)) {
+			QTextStream stream(&file);
+			while (!stream.atEnd()) {
+				stream.readLine();
+				insertPlainText("\n");
+			}
+		}
+	}
+	updateComments();
+	m_isInit = true;
 }
 
 void CommentsEditor::highlightCurrentLineSlot() {
@@ -86,7 +99,7 @@ void CommentsEditor::codeBlockCountChangedSlot(int newBlockCount) {
 void CommentsEditor::blockCountChangedSlot(int newBlockCount) {
 
 	qDebug() << __FUNCSIG__;
-	if (!m_changingBlockCount && newBlockCount != m_codeBlockCount) {
+	if (m_isInit && !m_changingBlockCount && newBlockCount != m_codeBlockCount) {
 		makeProperLineCount(m_codeBlockCount);
 		saveComments();
 	}
@@ -97,26 +110,28 @@ void CommentsEditor::blockCountChangedSlot(int newBlockCount) {
 void CommentsEditor::makeProperLineCount(int lineCount) {
 
 	//setMaximumBlockCount(lineCount);
-	QTextCursor cursor(firstVisibleBlock());
+	if (m_isInit) {
+		QTextCursor cursor(firstVisibleBlock());
 
-	int lastBlockNumber = gotoEnd(cursor);
+		int lastBlockNumber = gotoEnd(cursor);
 
-	if (lastBlockNumber != lineCount - 1) {
-		m_changingBlockCount = true;
-		if (lastBlockNumber > lineCount - 1) {
-			int delta = lastBlockNumber - lineCount + 1;
-			cursor.movePosition(QTextCursor::EndOfBlock);
-			cursor.movePosition(QTextCursor.PreviousBlock, QTextCursor::KeepAnchor, delta);
-			cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-			cursor.removeSelectedText();
+		if (lastBlockNumber != lineCount - 1) {
+			m_changingBlockCount = true;
+			if (lastBlockNumber > lineCount - 1) {
+				int delta = lastBlockNumber - lineCount + 1;
+				cursor.movePosition(QTextCursor::EndOfBlock);
+				cursor.movePosition(QTextCursor.PreviousBlock, QTextCursor::KeepAnchor, delta);
+				cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+				cursor.removeSelectedText();
+			}
+			else {
+				int delta = lineCount - lastBlockNumber - 1;
+				for (int i = 0; i < delta; ++i) {
+					cursor.insertBlock();
+				}			
+			}
+			m_changingBlockCount = false;
 		}
-		else {
-			int delta = lineCount - lastBlockNumber - 1;
-			for (int i = 0; i < delta; ++i) {
-				cursor.insertBlock();
-			}			
-		}
-		m_changingBlockCount = false;
 	}
 }
 
@@ -150,7 +165,8 @@ void CommentsEditor::updateComments() {
 	gotoBegin(cursor);
 
 	do {
-		QString comment = m_projectFile->commentInLine(cursor.blockNumber());
+		int lineNumber = cursor.blockNumber();
+		QString comment = m_projectFile->commentInLine(lineNumber);
 		if (comment.isEmpty()) {
 			replaceCurrentBlockText(cursor, "");
 		}

@@ -10,13 +10,16 @@
 class CodeEditor : public QPlainTextEdit {
 	Q_OBJECT
 
-		QWidget *m_leftArea;
+	QWidget *m_leftArea;
 	SProjectFile m_projectFile;
 
+	bool m_isInit;
 	bool m_isLastUpdateRequestFromComments;
 	int m_lastCommentOffsetLine;
 
 	void loadProjectFile();
+
+	void initCommentsAndBreakPoints();
 	void updateBreakPointAndComments();
 	QTextBlock blockWithNumber(int blockNumber);
 	void moveDownComments(int fromBlockNumber);
@@ -29,6 +32,9 @@ protected:
 
 public:
 	explicit CodeEditor(QWidget *parent = 0);
+	~CodeEditor();
+
+	void saveProjectFile();
 
 	void leftAreaPaintEvent(QPaintEvent *event);
 	int leftAreaWidth();

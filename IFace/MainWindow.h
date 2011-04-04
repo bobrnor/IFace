@@ -44,6 +44,8 @@ private slots:
     void newProjectFileSlot();
     void openProjectSlot();
     void openProjectFileSlot();
+	void saveCurrentFileSlot();
+	void saveAllSlot();
 };
 
 #endif // MAINWINDOW_H

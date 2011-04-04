@@ -27,11 +27,13 @@ void TabsHelper::addTabWithFile(SProjectFile file) {
 		CodeEditorWidget *widget = new CodeEditorWidget(m_tabWidget);
 
 		CodeEditor *codeEditor = new CodeEditor(widget);
-		codeEditor->setProjectFile(file);
-		widget->setCodeEditor(codeEditor);
-		CommentsEditor *commentsArea = new CommentsEditor(widget);
+		codeEditor->setProjectFile(file);		
+
+		CommentsEditor *commentsArea = new CommentsEditor(widget);		
 		commentsArea->setProjectFile(file);
-		widget->setCommentsArea(commentsArea);
+
+		widget->setCodeEditor(codeEditor);
+		widget->setCommentsArea(commentsArea);		
 
 		m_tabWidget->addTab(widget, file->path());
 		m_openFiles.append(file);
@@ -49,4 +51,17 @@ bool TabsHelper::isFileAlreadyOpen(ProjectFile *file) const {
 		}
 	}
 	return result;
+}
+
+SProjectFile TabsHelper::currentlyOpenProjectFile() {
+
+	if (m_tabWidget != NULL) {
+		QWidget *curentWidget = m_tabWidget->currentWidget();
+		if (curentWidget != NULL) {
+			CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(curentWidget);
+			SProjectFile projectFile = codeEditorWidget->codeEditor()->projectFile();
+			return projectFile;
+		}
+	}
+	return SProjectFile(NULL);
 }

@@ -6,8 +6,6 @@
 #include <iostream>
 #include <fstream>
 
-#include "lib_json/json/json.h"
-
 Project::Project(const QString &path) {
 
 	if (path.length() > 0) {
@@ -17,8 +15,7 @@ Project::Project(const QString &path) {
 		}
 		else {
 			initEmptyProject();
-			bool ok = saveProject();
-			Q_ASSERT(ok);
+			saveProject();
 		}
 	}
 	else {
@@ -35,57 +32,27 @@ void Project::initEmptyProject() {
 
 void Project::loadFromFile() {
 
-	Json::Value projectJson;
 	Json::Reader reader;
 	std::ifstream fileStream;
 	fileStream.open(m_projectFilePath.toStdString().c_str());
-	bool ok = reader.parse(fileStream, projectJson);
+	bool ok = reader.parse(fileStream, m_projectJson);
 	Q_ASSERT(ok);
 	if (ok) {
-		m_projectFilePath = QString::fromStdString(projectJson["projectFilePath"].asString());
-		Json::Value files = projectJson["projectFilesList"];
+		m_projectFilePath = QString::fromStdString(m_projectJson["projectFilePath"].asString());
+		Json::Value files = m_projectJson["projectFilesList"];
 		if (files.isArray() && files.size() > 0) {		  
 			for (int i = 0; i < files.size(); ++i) {
-				std::string stdPath = files[i]["path"].asString();
-				QString filePath = QString::fromStdString(stdPath);
-				SProjectFile projectFile(new ProjectFile(filePath));
+				SProjectFile projectFile = makeProjectFile(files[i]);
 				m_projectFiles.append(projectFile);
 			}
 		}
 	}
 }
 
-bool Project::saveProject() {
-
-	Json::Value projectJson;
-	projectJson["projectFilePath"] = Json::Value(m_projectFilePath.toStdString());
-
-	Json::Value projectFilesListJson(Json::arrayValue);
-	foreach (SProjectFile file, m_projectFiles) {
-		Json::Value projectFileJson;
-		projectFileJson["path"] = Json::Value(file->path().toStdString());
-
-		Json::Value projectFileBreakPointsListJson(Json::arrayValue);
-		foreach (int line, file->breakPoints().values()) {
-			projectFileBreakPointsListJson.append(line);
-		}
-
-		Json::Value projectFileCommentsListJson(Json::arrayValue);
-		QMap<int, QString> comments = file->comments();
-		foreach (int key, comments.keys()) {
-			Json::Value comment;
-			comment["line"] = Json::Value(key);
-			comment["text"] = Json::Value(comments.take(key).toStdString());
-			projectFileCommentsListJson.append(comment);
-		}
-
-		projectFilesListJson.append(projectFileJson);
-	}
-
-	projectJson["projectFilesList"] = projectFilesListJson;
+void Project::saveToFile() {
 
 	Json::StyledWriter writer;
-	QString jsonString = QString::fromStdString(writer.write(projectJson));
+	QString jsonString = QString::fromStdString(writer.write(m_projectJson));
 	qDebug() << "Saving project. JSON: " << jsonString;
 
 	QFile file(m_projectFilePath);
@@ -96,7 +63,127 @@ bool Project::saveProject() {
 		stream << jsonString;
 		stream.flush();
 	}
-	return true;
+}
+
+void Project::saveProject() {
+
+	foreach (SProjectFile projectFile, m_projectFiles) {
+		projectFile->save();
+	}
+
+	m_projectJson["projectFilePath"] = Json::Value(m_projectFilePath.toStdString());
+
+	Json::Value projectFilesListJson(Json::arrayValue);
+	foreach (SProjectFile file, m_projectFiles) {
+		Json::Value projectFileJson = makeProjectFileJson(file);
+		projectFilesListJson.append(projectFileJson);
+	}
+
+	m_projectJson["projectFilesList"] = projectFilesListJson;
+
+	saveToFile();
+}
+
+void Project::saveProjectFile(SProjectFile projectFile) {
+
+	projectFile->save();
+
+	Json::Value projectFileJson = makeProjectFileJson(projectFile);
+	Json::Value oldFileListJson = m_projectJson["projectFilesList"];
+	Json::Value newFileListJson;
+	bool changed = false;
+
+	if (oldFileListJson.isArray()) {
+		for (int i = 0; i < oldFileListJson.size(); ++i) {
+			QString path(oldFileListJson[i]["path"].asString().c_str());
+			if (path != projectFile->path()) {
+				newFileListJson.append(oldFileListJson[i]);
+			}
+			else {
+				newFileListJson.append(projectFileJson);
+				changed = true;
+			}
+		}
+		if (!changed) {
+			newFileListJson.append(projectFileJson);
+		}
+	}
+	else {
+		newFileListJson.append(projectFileJson);
+	}
+
+	m_projectJson["projectFilesList"] = newFileListJson;
+
+	saveToFile();
+}
+
+SProjectFile Project::makeProjectFile(Json::Value projectFileJson) {
+
+	std::string stdPath = projectFileJson["path"].asString();
+	QString filePath = QString::fromStdString(stdPath);
+	SProjectFile projectFile(new ProjectFile(filePath));
+
+	Json::Value breakPointsJson = projectFileJson["breakPoints"];
+	if (breakPointsJson.isArray()) {
+		for (int i = 0; i < breakPointsJson.size(); ++i) {
+			int line = breakPointsJson[i].asInt();
+			projectFile->addBreakPoint(line);
+		}
+	}
+
+	Json::Value commentsJson = projectFileJson["comments"];
+	if (commentsJson.isArray()) {
+		for (int i = 0; i < commentsJson.size(); ++i) {
+			Json::Value commentJson = commentsJson[i];
+			int line = commentJson["line"].asInt();
+			QString text(commentJson["text"].asString().c_str());
+			projectFile->addOrReplaceComment(line, text);
+		}
+	}
+
+	return projectFile;
+}
+
+Json::Value Project::makeProjectFileJson(SProjectFile projectFile) {
+
+	Json::Value projectFileJson;
+	projectFileJson["path"] = Json::Value(projectFile->path().toStdString());
+
+	Json::Value projectFileBreakPointsListJson(Json::arrayValue);
+	foreach (int line, projectFile->breakPoints().values()) {
+		Json::Value lineJson(line);
+		projectFileBreakPointsListJson.append(lineJson);
+	}
+
+	projectFileJson["breakPoints"] = projectFileBreakPointsListJson;
+
+	Json::Value projectFileCommentsListJson(Json::arrayValue);
+	QMap<int, QString> comments = projectFile->comments();
+	foreach (int key, comments.keys()) {
+		Json::Value comment;
+		comment["line"] = Json::Value(key);
+		comment["text"] = Json::Value(comments.value(key).toStdString());
+		projectFileCommentsListJson.append(comment);
+	}
+
+	projectFileJson["comments"] = projectFileCommentsListJson;
+
+	return projectFileJson;
+}
+
+void Project::saveUpdatedStructure() {
+
+	Json::Value oldFileListJson = m_projectJson["projectFilesList"];
+	Json::Value newFileListJson;
+	if (oldFileListJson.isArray()) {
+		for (int i = 0; i < oldFileListJson.size(); ++i) {
+			newFileListJson.append(oldFileListJson[i]);
+		}
+	}
+
+	m_projectJson["projectFilesList"] = newFileListJson;
+
+	saveToFile();
 }
 
 void Project::addProjectFile(SProjectFile projectFile) {

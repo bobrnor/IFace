@@ -36,7 +36,7 @@ bool ProjectManager::createProject(const QString &path) {
 void ProjectManager::addProjectFile(SProjectFile projectFile) {
 
   m_project->addProjectFile(projectFile);
-  m_project->saveProject();
+  m_project->saveProjectFile(projectFile);
 
   if (m_tabsHelper != NULL) {
     m_tabsHelper->addTabWithFile(projectFile);
@@ -49,7 +49,7 @@ void ProjectManager::addProjectFile(SProjectFile projectFile) {
 void ProjectManager::removeProjectFile(SProjectFile projectFile) {
 
   m_project->removeProjectFile(projectFile);
-  m_project->saveProject();
+  m_project->saveUpdatedStructure();
   if (m_projectTreeHelper != NULL) {
 	  m_projectTreeHelper->update();
   }
@@ -69,6 +69,33 @@ void ProjectManager::assignProjectTreeWidget(QTreeWidget *projectTree) {
 		m_projectTreeHelper->setProject(m_project);
 		connect(m_projectTreeHelper->linkedTreeWidget(), SIGNAL(itemActivated(QTreeWidgetItem*, int)), 
 			this, SLOT(intemActivatedSlot(QTreeWidgetItem*)));
+	}
+}
+
+SProjectFile ProjectManager::currentlyOpenProjectFile() {
+
+	if (m_tabsHelper != NULL) {
+		return m_tabsHelper->currentlyOpenProjectFile();
+	}
+	else {
+		return SProjectFile(NULL);
+	}	
+}
+
+void ProjectManager::saveAll() {
+
+	if (m_project != NULL) {
+		m_project->saveProject();
+	}
+}
+
+void ProjectManager::saveCurrentlyOpenProjectFile() {
+
+	if (m_project != NULL) {
+		SProjectFile currentFile = currentlyOpenProjectFile();
+		if (currentFile != NULL) {
+			m_project->saveProjectFile(currentFile);
+		}
 	}
 }
 

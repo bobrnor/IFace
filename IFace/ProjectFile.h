@@ -6,6 +6,8 @@
 #include <QString>
 #include <QSharedPointer>
 
+class CodeEditor;
+
 #define SProjectFile QSharedPointer<ProjectFile>
 
 class ProjectFile {
@@ -13,6 +15,8 @@ class ProjectFile {
   QString m_path;
   QSet<int> m_breakPoints;
   QMap<int, QString> m_comments;
+
+  CodeEditor *m_linkedCodeEditor;
 
   bool createIfNotExists();
 
@@ -23,6 +27,9 @@ public:
 
     QString path() const { return m_path; }
     void setPath(const QString &path);
+
+	void linkCodeEditor(CodeEditor *codeEditor);
+	void save();
 
 	bool checkLineForBreakPoints(int lineNumber) const;
 	void addBreakPoint(int lineNumber);

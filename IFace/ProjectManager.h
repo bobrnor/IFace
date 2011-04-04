@@ -15,6 +15,8 @@ class ProjectManager : QObject {
 	TabsHelper *m_tabsHelper;
 	ProjectTreeHelper *m_projectTreeHelper;
 
+	SProjectFile currentlyOpenProjectFile();
+
 public:
 	ProjectManager();
 	ProjectManager(const QString &path);
@@ -27,6 +29,9 @@ public:
 
 	void assignTabWidget(QTabWidget *tabWidget);
 	void assignProjectTreeWidget(QTreeWidget *projectTree);
+
+	void saveAll();
+	void saveCurrentlyOpenProjectFile();
 
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);
