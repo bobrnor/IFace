@@ -155,7 +155,10 @@ void CodeEditor::highlightCurrentLineSlot() {
 
 	setExtraSelections(extraSelections);
 	
-	emit codeCursorLineChangedSignal(textCursor().blockNumber());
+	if (!m_isLastUpdateRequestFromComments) {
+		emit codeCursorLineChangedSignal(textCursor().blockNumber());
+	}
+	m_isLastUpdateRequestFromComments = false;
 }
 
 void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
@@ -347,5 +350,6 @@ void CodeEditor::commentsPositionChangedSlot(int yPos) {
 			cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, qAbs(delta));
 		}		
 	}
+	m_isLastUpdateRequestFromComments = true;
 	setTextCursor(cursor);
 }

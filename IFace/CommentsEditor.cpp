@@ -64,7 +64,10 @@ void CommentsEditor::highlightCurrentLineSlot() {
 
 	setExtraSelections(extraSelections);
 
-	emit commentsCursorLineChangedSignal(textCursor().blockNumber());
+	if (!m_isLastUpdateRequestFromCode) {
+		emit commentsCursorLineChangedSignal(textCursor().blockNumber());
+	}
+	m_isLastUpdateRequestFromCode = false;
 }
 
 void CommentsEditor::focusInEvent(QFocusEvent *e) {
@@ -228,5 +231,6 @@ void CommentsEditor::codePositionChangedSlot(int yPos) {
 			cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, qAbs(delta));
 		}		
 	}
+	m_isLastUpdateRequestFromCode = true;
 	setTextCursor(cursor);
 }
