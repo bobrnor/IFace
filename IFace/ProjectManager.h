@@ -7,6 +7,7 @@
 #include "ProjectFile.h"
 #include "TabsHelper.h"
 #include "ProjectTreeHelper.h"
+#include "CompilerHelper.h"
 
 class ProjectManager : QObject {
 	Q_OBJECT
@@ -32,6 +33,8 @@ public:
 
 	void saveAll();
 	void saveCurrentlyOpenProjectFile();
+
+	void compile();
 
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);

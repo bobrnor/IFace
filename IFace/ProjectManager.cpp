@@ -99,6 +99,19 @@ void ProjectManager::saveCurrentlyOpenProjectFile() {
 	}
 }
 
+void ProjectManager::compile() {
+
+	if (m_project != NULL) {
+		QList<SProjectFile> files = m_project->projectFiles();
+		QStringList *pathList = new QStringList();
+		foreach (SProjectFile file, files) {
+			pathList->append(file->path());
+		}
+		CompilerHelper *compileHelper = new CompilerHelper(pathList);
+		compileHelper->compile();
+	}
+}
+
 void ProjectManager::intemActivatedSlot(QTreeWidgetItem *item) {
 
 	if (item != NULL) {
@@ -106,6 +119,6 @@ void ProjectManager::intemActivatedSlot(QTreeWidgetItem *item) {
 		if (!data.isNull() && data.isValid()) {
 			SProjectFile projectFile = data.value<SProjectFile>();
 			m_tabsHelper->addTabWithFile(projectFile);
-		}		
+		}
 	}
 }

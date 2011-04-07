@@ -81,6 +81,10 @@ QMenu *MainWindow::createFileMenu() {
 	menu->addAction("Save", this, SLOT(saveCurrentFileSlot()));
 	menu->addAction("Save all", this, SLOT(saveAllSlot()));
 
+	menu->addSeparator();
+
+	menu->addAction("Compile", this, SLOT(compile()));
+
 	return menu;
 }
 
@@ -207,5 +211,12 @@ void MainWindow::saveAllSlot() {
 
 	if (m_currentProjectManager != NULL) {
 		m_currentProjectManager->saveAll();
+	}
+}
+
+void MainWindow::compile() {
+
+	if (m_currentProjectManager != NULL) {
+		m_currentProjectManager->compile();
 	}
 }
