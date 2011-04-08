@@ -1,5 +1,7 @@
 #include "ProjectManager.h"
 
+#include <QDebug>
+
 Q_DECLARE_METATYPE(SProjectFile)
 
 ProjectManager::ProjectManager() {
@@ -79,7 +81,7 @@ SProjectFile ProjectManager::currentlyOpenProjectFile() {
 	}
 	else {
 		return SProjectFile(NULL);
-	}	
+	}
 }
 
 void ProjectManager::saveAll() {
@@ -103,12 +105,19 @@ void ProjectManager::compile() {
 
 	if (m_project != NULL) {
 		QList<SProjectFile> files = m_project->projectFiles();
-		QStringList *pathList = new QStringList();
-		foreach (SProjectFile file, files) {
-			pathList->append(file->path());
+		QMap<uint, SProjectFile> filesToCompile = m_tabsHelper->tempPathsForOpenFiles();
+		QList<SProjectFile> projectFileList = m_project->projectFiles();
+
+		foreach (SProjectFile projectFile, projectFileList) {
+			if (!filesToCompile.contains(projectFile->hash())) {
+				filesToCompile[projectFile->hash()] = projectFile;
+			}
 		}
-		CompilerHelper *compileHelper = new CompilerHelper(pathList);
-		compileHelper->compile();
+
+		m_compileHelper = new CompilerHelper(filesToCompile);
+		connect(m_compileHelper, SIGNAL(compileCompleteSignal()), 
+			this, SLOT(compileCompleteSlot()));
+		m_compileHelper->compile();
 	}
 }
 
@@ -121,4 +130,10 @@ void ProjectManager::intemActivatedSlot(QTreeWidgetItem *item) {
 			m_tabsHelper->addTabWithFile(projectFile);
 		}
 	}
+}
+
+void ProjectManager::compileCompleteSlot() {
+
+	qDebug() << "Compile compete!";
+	delete m_compileHelper;
 }

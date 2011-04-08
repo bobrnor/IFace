@@ -15,6 +15,7 @@ class ProjectManager : QObject {
 	Project *m_project;
 	TabsHelper *m_tabsHelper;
 	ProjectTreeHelper *m_projectTreeHelper;
+	CompilerHelper *m_compileHelper;
 
 	SProjectFile currentlyOpenProjectFile();
 
@@ -38,6 +39,7 @@ public:
 
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);
+	void compileCompleteSlot();
 };
 
 #endif // PROJECTMANAGER_H

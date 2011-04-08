@@ -25,6 +25,7 @@ public:
     void setTabWidget(QTabWidget *tabWidget) { m_tabWidget = tabWidget; }
 
 	SProjectFile currentlyOpenProjectFile();
+	QMap<uint, SProjectFile> tempPathsForOpenFiles();
 };
 
 #endif // TABSHELPER_H

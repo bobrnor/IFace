@@ -7,16 +7,15 @@ CompileError ErrorParser::parse(QString string) {
 	static QRegExp rx("^([^\\(\\)]*)\\((\\d+),(\\d+)\\) (.*)$");
 	CompileError error;
 	if (rx.indexIn(string) >= 0) {
-		error.m_isValid = true;
-		QStringList captures = rx.capturedTexts();
-		error.m_fileName = captures.at(1);
-		error.m_xPos = captures.at(2).toInt();
-		error.m_yPos = captures.at(3).toInt();
-		error.m_text = captures.at(4);
+		error.setIsValid(true);
+		QStringList captures = rx.capturedTexts();		
+		error.setXPos(captures.at(2).toInt());
+		error.setYPos(captures.at(3).toInt());
+		error.setText(captures.at(4));
 		return error;
 	}
 	else {
-		error.m_isValid = false;
+		error.setIsValid(false);
 		return error;
 	}
 }

@@ -1,52 +1,43 @@
 #include "CompilerHelper.h"
 
+#include <QDebug>
+
 #include "CompileTask.h"
 #include "CompileTaskFactory.h"
 
-CompilerHelper::CompilerHelper(QStringList *pathList) : 
-	COMPILER_PATH("C:\\FPC\\2.4.2\\bin\\i386-win32\\fpc.exe"), 
-	COMPILER_FLAGS_EN("-Fr\"C:\\FPC\\2.4.2\\msg\\errorrw.msg\""), 
-	COMPILER_FLAGS_RU(""), 
-	COMPILER_PATTERN("%1 %2 \"%3\"") {
+CompilerHelper::CompilerHelper(QMap<uint, SProjectFile> filesToCompile) {
 
-	m_pathList = pathList;
+	m_filesToCompile = filesToCompile;
 }
 
-CompilerHelper::~CompilerHelper() {
-
-	if (m_pathList != NULL) {
-		delete m_pathList;
-	}
-}
+CompilerHelper::~CompilerHelper() {}
 
 void CompilerHelper::compile() {
 
-	if (m_pathList != NULL) {
-		QString command;
-		CompileTask *task = NULL;
+	QString command;
+	QString path;
+	CompileTask *task = NULL;
 
-		foreach (QString path, *m_pathList) {
-			command = QString(COMPILER_PATTERN)
-				.arg(COMPILER_PATH)
-				.arg(COMPILER_FLAGS_EN)
-				.arg(path);
-			task = CompileTaskFactory::makeTask(command, this);
-			QThreadPool::globalInstance()->start(task);
+	m_fileCount = m_filesToCompile.count();
 
-			command = QString(COMPILER_PATTERN)
-				.arg(COMPILER_PATH)
-				.arg(COMPILER_FLAGS_RU)
-				.arg(path);
-			task = CompileTaskFactory::makeTask(command, this);
-			QThreadPool::globalInstance()->start(task);
-		}
+	foreach (uint key, m_filesToCompile.keys()) {
+		
+		SProjectFile file = m_filesToCompile.value(key);
+		task = CompileTaskFactory::makeTask(key, file, this);
+		QThreadPool::globalInstance()->start(task);
 	}
 }
 
-void CompilerHelper::compileErrorSlot(QString command) {
+void CompilerHelper::compileErrorSlot(uint key) {
 
+	qDebug() << "Compile error: " << key;
 }
 
-void CompilerHelper::compileDoneSlot(QString command, CompileResult *result) {
+void CompilerHelper::compileDoneSlot(uint key) {
 
+	qDebug() << "Compiled: " << key;
+	m_fileCount--;
+	if (m_fileCount == 0) {
+		emit compileCompleteSignal();
+	}
 }

@@ -6,6 +6,8 @@
 #include <QString>
 #include <QSharedPointer>
 
+#include "CompileError.h"
+
 class CodeEditor;
 
 #define SProjectFile QSharedPointer<ProjectFile>
@@ -15,6 +17,8 @@ class ProjectFile {
   QString m_path;
   QSet<int> m_breakPoints;
   QMap<int, QString> m_comments;
+  QList<CompileError> m_enErrors;
+  QList<CompileError> m_ruErrors;
 
   CodeEditor *m_linkedCodeEditor;
 
@@ -25,8 +29,14 @@ public:
     ProjectFile(const QString &path);
 	virtual ~ProjectFile();
 
+	uint hash() { return qHash(m_path); }
     QString path() const { return m_path; }
     void setPath(const QString &path);
+
+	QList<CompileError> compileErrorsEn() { return m_enErrors; }
+	void setCompileErrorsEn(QList<CompileError> compileErrors) { m_enErrors = compileErrors; }
+	QList<CompileError> compileErrorsRu() { return m_ruErrors; }
+	void setCompileErrorsRu(QList<CompileError> compileErrors) { m_ruErrors = compileErrors; }
 
 	void linkCodeEditor(CodeEditor *codeEditor);
 	void save();

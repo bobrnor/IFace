@@ -6,26 +6,26 @@
 #include <QThreadPool>
 
 #include "CompileTaskDelegate.h"
+#include "ProjectFile.h"
 
 class CompilerHelper : public CompileTaskDelegate {
 Q_OBJECT
 
-	const QString COMPILER_PATH;	
-	const QString COMPILER_FLAGS_RU;
-	const QString COMPILER_FLAGS_EN;
-	const QString COMPILER_PATTERN;
-
-	QStringList *m_pathList;
+	int m_fileCount;
+	QMap<uint, SProjectFile> m_filesToCompile;
 
 private:
 
 public:
-	CompilerHelper(QStringList *pathList);
+	CompilerHelper(QMap<uint, SProjectFile> filesToCompile);
 	~CompilerHelper();
 
 	void compile();
 
 public slots:
-	void compileErrorSlot(QString command);
-	void compileDoneSlot(QString command, CompileResult *result = NULL);
+	void compileErrorSlot(uint key);
+	void compileDoneSlot(uint key);
+
+signals:
+	void compileCompleteSignal();
 };

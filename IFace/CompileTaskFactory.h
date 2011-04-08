@@ -8,5 +8,5 @@
 class CompileTaskFactory {
 
 public:
-	static CompileTask *makeTask(QString command, CompileTaskDelegate *delegate);
+	static CompileTask *makeTask(uint key, SProjectFile projectFile, CompileTaskDelegate *delegate);
 };

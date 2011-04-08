@@ -65,3 +65,22 @@ SProjectFile TabsHelper::currentlyOpenProjectFile() {
 	}
 	return SProjectFile(NULL);
 }
+
+QMap<uint, SProjectFile> TabsHelper::tempPathsForOpenFiles() {
+
+	QMap<uint, SProjectFile> result;
+
+	if (m_tabWidget != NULL) {
+		int widgetCount = m_tabWidget->count();
+		for (int i = 0; i < widgetCount; ++i) {
+			QWidget *widget = m_tabWidget->widget(i);
+			if (widget != NULL) {
+				CodeEditorWidget codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
+				SProjectFile projectFile = codeEditorWidget.codeEditor()->projectFile();
+				result[projectFile->hash()] = projectFile;
+			}
+		}
+	}
+
+	return result;
+}
