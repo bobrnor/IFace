@@ -43,6 +43,10 @@ CodeEditor::~CodeEditor() {
 	if (m_projectFile != NULL) {
 		m_projectFile->linkCodeEditor(NULL);
 	}
+
+	if (m_tempFile != NULL) {
+		delete m_tempFile;
+	}
 }
 
 int CodeEditor::leftAreaWidth() {
@@ -267,17 +271,18 @@ void CodeEditor::saveProjectFile() {
 void CodeEditor::tempSaveProjectFile() {
 
 	if (!m_projectFile.isNull()) {
-		if (m_tempFile == NULL) {
-			m_tempFile = new QTemporaryFile();
-			QString tmpPath = QDir::tempPath() + m_tempFile->fileName();
-			m_projectFile->setTmpPath(tmpPath);
-		}
-		
-		if(m_tempFile->open()) {
-			QTextStream textStream(m_tempFile);
+		QTemporaryFile tempFile;
+		tempFile.setAutoRemove(false);
+
+		if(tempFile.open()) {
+			QTextStream textStream(&tempFile);
 			textStream << toPlainText();
 		}
-		m_tempFile->close();
+
+		QString tmpPath = tempFile.fileName();
+		m_projectFile->setTmpPath(tmpPath);
+
+		tempFile.close();
 	}
 }
 

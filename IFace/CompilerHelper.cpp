@@ -8,6 +8,7 @@
 CompilerHelper::CompilerHelper(QMap<uint, SProjectFile> filesToCompile) {
 
 	m_filesToCompile = filesToCompile;
+	QThreadPool::globalInstance()->setMaxThreadCount(1);
 }
 
 CompilerHelper::~CompilerHelper() {}

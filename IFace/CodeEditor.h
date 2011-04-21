@@ -18,8 +18,6 @@ class CodeEditor : public QPlainTextEdit {
 	bool m_isLastUpdateRequestFromComments;
 	int m_lastCommentOffsetLine;
 
-	QTemporaryFile *m_tempFile;
-
 	void loadProjectFile();
 
 	void initCommentsAndBreakPoints();

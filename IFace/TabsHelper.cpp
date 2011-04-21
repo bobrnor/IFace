@@ -75,8 +75,8 @@ QMap<uint, SProjectFile> TabsHelper::openFiles() {
 		for (int i = 0; i < widgetCount; ++i) {
 			QWidget *widget = m_tabWidget->widget(i);
 			if (widget != NULL) {
-				CodeEditorWidget codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
-				CodeEditor *codeEditor = codeEditorWidget.codeEditor();
+				CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
+				CodeEditor *codeEditor = codeEditorWidget->codeEditor();
 				codeEditor->tempSaveProjectFile();
 				SProjectFile projectFile = codeEditor->projectFile();
 				result[projectFile->hash()] = projectFile;
