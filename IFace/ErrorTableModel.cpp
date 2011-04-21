@@ -62,7 +62,7 @@ QVariant ErrorTableModel::data(const QModelIndex &index, int role /* = Qt::Displ
 	else if (role == Qt::BackgroundRole) {
 		int row = index.row();
 		if (row == m_lastErrorRow && m_currentErrorRow < 0) {
-			return QBrush(QColor(255, 250, 250, 255));
+			return QBrush(QColor(244, 238, 224, 255));
 		}
 		else if (m_currentCodeLineErrorRows.contains(row)) {
 			return QBrush(QColor(238, 233, 233, 255));

@@ -155,6 +155,10 @@ void CodeEditor::highlightCurrentLineSlot() {
 		selection.cursor = textCursor();
 		selection.cursor.clearSelection();
 		extraSelections.append(selection);
+
+		if (!m_isLastUpdateRequestFromErrorTable) {
+			emit codeCursorChangedSignal(m_projectFile, textCursor().positionInBlock(), textCursor().blockNumber());
+		}
 	}
 
 	updateErrors();
@@ -167,8 +171,6 @@ void CodeEditor::highlightCurrentLineSlot() {
 	if (!m_isLastUpdateRequestFromComments) {
 		emit codeCursorLineChangedSignal(textCursor().blockNumber());
 	}
-	if (!m_isLastUpdateRequestFromErrorTable)
-	emit codeCursorChangedSignal(m_projectFile, textCursor().positionInBlock(), textCursor().blockNumber());
 
 	m_isLastUpdateRequestFromComments = false;
 	m_isLastUpdateRequestFromErrorTable = false;
@@ -414,6 +416,8 @@ void CodeEditor::commentsPositionChangedSlot(int yPos) {
 
 void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
+	m_isLastUpdateRequestFromErrorTable = true;
+
 	QTextCursor cursor = textCursor();
 	int delta = cursor.blockNumber() - yPos + 1;
 	if (delta != 0) {
@@ -440,9 +444,5 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, xPos - 1);
 	}
 
-	m_isLastUpdateRequestFromErrorTable = true;
-
 	setTextCursor(cursor);
-
-	highlightCurrentLineSlot();
 }
