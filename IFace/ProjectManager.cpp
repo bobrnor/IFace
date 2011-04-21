@@ -7,16 +7,18 @@ Q_DECLARE_METATYPE(SProjectFile)
 ProjectManager::ProjectManager() {
 
     m_project = NULL;
+	m_errorModel = new ErrorTableModel();
 }
 
 ProjectManager::ProjectManager(const QString &path) {
 
-    if (path.length() > 0) {
+    if (!path.isEmpty()) {
         m_project = new Project(path);
     }
     else {
         ProjectManager::ProjectManager();
     }
+	m_errorModel = new ErrorTableModel();
 }
 
 ProjectManager::~ProjectManager() {
@@ -105,7 +107,7 @@ void ProjectManager::compile() {
 
 	if (m_project != NULL) {
 		QList<SProjectFile> files = m_project->projectFiles();
-		QMap<uint, SProjectFile> filesToCompile = m_tabsHelper->tempPathsForOpenFiles();
+		QMap<uint, SProjectFile> filesToCompile = m_tabsHelper->openFiles();
 		QList<SProjectFile> projectFileList = m_project->projectFiles();
 
 		foreach (SProjectFile projectFile, projectFileList) {
@@ -118,6 +120,14 @@ void ProjectManager::compile() {
 		connect(m_compileHelper, SIGNAL(compileCompleteSignal()), 
 			this, SLOT(compileCompleteSlot()));
 		m_compileHelper->compile();
+	}
+}
+
+void ProjectManager::setErrorView(QTableView *view) { 
+
+	m_errorTable = view; 
+	if (m_errorTable != NULL) {
+		m_errorTable->setModel(m_errorModel);
 	}
 }
 
@@ -136,4 +146,13 @@ void ProjectManager::compileCompleteSlot() {
 
 	qDebug() << "Compile compete!";
 	delete m_compileHelper;
+
+	if (m_errorModel != NULL && m_errorTable != NULL) {
+		QList<CompileError> errors;
+		foreach (SProjectFile projectFile, m_project->projectFiles()) {
+			errors.append(projectFile->compileErrorsRu());
+		}
+		m_errorModel->setErrorList(errors);
+		//m_errorTable->setModel(m_errorModel);
+	}
 }

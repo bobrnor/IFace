@@ -12,6 +12,7 @@
 #include <QCheckBox>
 #include <QScrollBar>
 #include <QInputMethodEvent>
+#include <QDir>
 
 #include "LeftArea.h"
 #include "CodeLineData.h"
@@ -21,6 +22,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	m_isLastUpdateRequestFromComments = false;
 	m_lastCommentOffsetLine = -1;
 	m_isInit = false;
+	m_tempFile = NULL;
 
 	setWordWrapMode(QTextOption::NoWrap);
 	setLayout(new QVBoxLayout(this));
@@ -252,12 +254,30 @@ void CodeEditor::initCommentsAndBreakPoints() {
 void CodeEditor::saveProjectFile() {
 
 	if (!m_projectFile.isNull()) {
+		m_projectFile->setTmpPath("");
 		QString path = m_projectFile->path();
 		QFile file(path);
 		if (file.open(QIODevice::WriteOnly)) {
 			QTextStream textStream(&file);
 			textStream << toPlainText();
 		}
+	}
+}
+
+void CodeEditor::tempSaveProjectFile() {
+
+	if (!m_projectFile.isNull()) {
+		if (m_tempFile == NULL) {
+			m_tempFile = new QTemporaryFile();
+			QString tmpPath = QDir::tempPath() + m_tempFile->fileName();
+			m_projectFile->setTmpPath(tmpPath);
+		}
+		
+		if(m_tempFile->open()) {
+			QTextStream textStream(m_tempFile);
+			textStream << toPlainText();
+		}
+		m_tempFile->close();
 	}
 }
 
@@ -303,16 +323,6 @@ void CodeEditor::moveDownComments(int fromBlockNumber) {
 
 QTextBlock CodeEditor::blockWithNumber(int blockNumber) {
 
-// 	QTextCursor cursor = textCursor();
-// 
-// 	int delta = cursor.blockNumber() - blockNumber;
-// 	if (delta > 0) {
-// 		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, delta);
-// 	}
-// 	else if (delta < 0) {
-// 		cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, -delta);
-// 	}
-// 	return cursor.block();
 	return this->document()->findBlockByNumber(blockNumber);
 }
 

@@ -4,6 +4,7 @@
 #include <QMap>
 #include <QString>
 #include <QPlainTextEdit>
+#include <QTemporaryFile>
 
 #include "ProjectFile.h"
 
@@ -16,6 +17,8 @@ class CodeEditor : public QPlainTextEdit {
 	bool m_isInit;
 	bool m_isLastUpdateRequestFromComments;
 	int m_lastCommentOffsetLine;
+
+	QTemporaryFile *m_tempFile;
 
 	void loadProjectFile();
 
@@ -35,6 +38,7 @@ public:
 	~CodeEditor();
 
 	void saveProjectFile();
+	void tempSaveProjectFile();
 
 	void leftAreaPaintEvent(QPaintEvent *event);
 	int leftAreaWidth();

@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ErrorTableModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="LeftArea.cpp"
 				>
 			</File>
@@ -473,6 +477,10 @@
 			</File>
 			<File
 				RelativePath=".\ErrorParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorTableModel.h"
 				>
 			</File>
 			<File

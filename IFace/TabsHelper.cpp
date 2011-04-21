@@ -66,7 +66,7 @@ SProjectFile TabsHelper::currentlyOpenProjectFile() {
 	return SProjectFile(NULL);
 }
 
-QMap<uint, SProjectFile> TabsHelper::tempPathsForOpenFiles() {
+QMap<uint, SProjectFile> TabsHelper::openFiles() {
 
 	QMap<uint, SProjectFile> result;
 
@@ -76,7 +76,9 @@ QMap<uint, SProjectFile> TabsHelper::tempPathsForOpenFiles() {
 			QWidget *widget = m_tabWidget->widget(i);
 			if (widget != NULL) {
 				CodeEditorWidget codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
-				SProjectFile projectFile = codeEditorWidget.codeEditor()->projectFile();
+				CodeEditor *codeEditor = codeEditorWidget.codeEditor();
+				codeEditor->tempSaveProjectFile();
+				SProjectFile projectFile = codeEditor->projectFile();
 				result[projectFile->hash()] = projectFile;
 			}
 		}

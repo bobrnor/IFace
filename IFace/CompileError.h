@@ -2,8 +2,12 @@
 
 #include <QString>
 
+//#include "ProjectFile.h"
+class ProjectFile;
+
 class CompileError {
 
+	ProjectFile *m_file;
 	QString m_text;
 	int m_xPos;
 	int m_yPos;
@@ -11,6 +15,8 @@ class CompileError {
 	bool m_isValid;
 
 public:
+	ProjectFile *CompileError::projectFile() { return m_file; }
+	void CompileError::setProjectFile(ProjectFile *file) { m_file = file; }
 	QString text() { return m_text; }
 	void setText(QString value) { m_text = value; }
 	int xPos() { return m_xPos; }

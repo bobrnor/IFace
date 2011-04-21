@@ -32,6 +32,8 @@ class MainWindow : public QWidget {
     void initErrorTable();
     QMenu *createFileMenu();
 
+	void setupProjectEnvironment(ProjectManager *projectManager);
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

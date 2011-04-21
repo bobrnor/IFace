@@ -26,6 +26,11 @@ void ProjectFile::setPath(const QString &path) {
 	createIfNotExists();
 }
 
+void ProjectFile::setTmpPath(const QString &path) {
+
+	m_tmpPath = path;
+}
+
 void ProjectFile::linkCodeEditor(CodeEditor *codeEditor) {
 
 	m_linkedCodeEditor = codeEditor;

@@ -4,6 +4,7 @@
 #include <QSet>
 #include <QMap>
 #include <QString>
+#include <QList>
 #include <QSharedPointer>
 
 #include "CompileError.h"
@@ -15,6 +16,7 @@ class CodeEditor;
 class ProjectFile {
 
   QString m_path;
+  QString m_tmpPath;
   QSet<int> m_breakPoints;
   QMap<int, QString> m_comments;
   QList<CompileError> m_enErrors;
@@ -32,6 +34,8 @@ public:
 	uint hash() { return qHash(m_path); }
     QString path() const { return m_path; }
     void setPath(const QString &path);
+	QString tmpPath() const { return m_tmpPath; }
+	void setTmpPath(const QString &path);
 
 	QList<CompileError> compileErrorsEn() { return m_enErrors; }
 	void setCompileErrorsEn(QList<CompileError> compileErrors) { m_enErrors = compileErrors; }

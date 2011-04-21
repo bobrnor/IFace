@@ -93,6 +93,15 @@ void MainWindow::initStatusBar() {
 	m_statusBar->setSizeGripEnabled(false);
 }
 
+void MainWindow::setupProjectEnvironment(ProjectManager *projectManager) {
+
+	if (projectManager != NULL) {
+		projectManager->assignTabWidget(ui->codeTabs);
+		projectManager->assignProjectTreeWidget(ui->projectTree);
+		projectManager->setErrorView(ui->errorTable);
+	}
+}
+
 //-------------SLOTS------------------
 
 void MainWindow::newProjectSlot() {
@@ -119,8 +128,7 @@ void MainWindow::newProjectSlot() {
 			Q_ASSERT(ok);
 		}
 		m_currentProjectManager = new ProjectManager(fileName);
-		m_currentProjectManager->assignTabWidget(ui->codeTabs);
-		m_currentProjectManager->assignProjectTreeWidget(ui->projectTree);
+		setupProjectEnvironment(m_currentProjectManager);
 		// TODO: update all
 	}
 }
@@ -174,6 +182,7 @@ void MainWindow::openProjectSlot() {
 		m_currentProjectManager = new ProjectManager(fileName);
 		m_currentProjectManager->assignTabWidget(ui->codeTabs);
 		m_currentProjectManager->assignProjectTreeWidget(ui->projectTree);
+		m_currentProjectManager->setErrorView(ui->errorTable);
 		// TODO: update all
 	}
 }
