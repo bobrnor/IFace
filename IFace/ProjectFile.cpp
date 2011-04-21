@@ -6,11 +6,15 @@
 
 #include "CodeEditor.h"
 
-ProjectFile::ProjectFile() {}
+ProjectFile::ProjectFile() {
+
+	m_linkedCodeEditor = NULL;
+}
 
 ProjectFile::ProjectFile(const QString &path) {
 
 	m_path = path;
+	m_linkedCodeEditor = NULL;
 	createIfNotExists();
 }
 

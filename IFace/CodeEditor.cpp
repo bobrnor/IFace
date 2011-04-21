@@ -50,7 +50,7 @@ CodeEditor::~CodeEditor() {
 int CodeEditor::leftAreaWidth() {
 
 	int max = qMax(1, blockCount());
-	int digits = 1 + log10((double) max);
+	int digits = 5 + log10((double) max);
 	qDebug() << "Digit count: " << digits;
 
 	return 25 + fontMetrics().width(QLatin1Char('9')) * digits;
@@ -81,9 +81,9 @@ void CodeEditor::updateRequestSlot(const QRect &rect, int dy) {
 		m_leftArea->update(0, rect.y(), leftAreaWidth(), rect.height());
 	}
 
-	if (rect.contains(viewport()->rect())) {
-		//blockCountChangedSlot(0);
-	}
+// 	if (rect.contains(viewport()->rect())) {
+// 		blockCountChangedSlot(0);
+// 	}
 }
 
 void CodeEditor::scrolledSlot(int y) {
@@ -157,6 +157,11 @@ void CodeEditor::highlightCurrentLineSlot() {
 		extraSelections.append(selection);
 	}
 
+	updateErrors();
+
+	extraSelections.append(m_errorSelections);
+	extraSelections.append(m_errorSymbols);
+
 	setExtraSelections(extraSelections);
 	
 	if (!m_isLastUpdateRequestFromComments) {
@@ -181,7 +186,17 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 
 	while (block.isValid() && top <= event->rect().bottom()) {
 		if (block.isVisible() && bottom >= event->rect().top()) {
-			QString number = QString::number(blockNumber + 1);
+			int count = 0;
+			foreach (CompileError error, m_projectFile->compileErrorsEn()) {
+				if (error.yPos() == blockNumber + 1) {
+					count++;
+				}
+			}
+
+			QString number = QString::number(blockNumber + 1)
+				.append(" (")
+				.append(QString::number(count)).append(")");
+
 			painter.setPen(Qt::black);
 			painter.drawText(0, top, m_leftArea->width(), fontMetrics().height(),
 				Qt::AlignRight, number);
@@ -227,7 +242,7 @@ void CodeEditor::loadProjectFile() {
 
 			QTextStream stream(&file);
 			while (!stream.atEnd()) {
-				QString codeline = stream.readLine() + "\n";
+				QString codeline = stream.readAll();
 				insertPlainText(codeline);
 			}
 		}
@@ -288,8 +303,34 @@ void CodeEditor::tempSaveProjectFile() {
 	}
 }
 
+void CodeEditor::updateErrors() {
+
+	if (m_projectFile != NULL) {
+
+		m_errorSymbols.clear();
+		foreach (CompileError error, m_projectFile->compileErrorsEn()) {
+			int line = error.yPos() - 1;
+			int character = error.xPos() - 1;
+
+			QTextBlock textBlock = this->document()->findBlockByLineNumber(line);
+			QTextCursor cursor(textBlock);
+			
+			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, character);
+			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+
+			QTextEdit::ExtraSelection selection;
+			QColor lineColor = QColor(Qt::red).lighter(140);
+
+			selection.format.setBackground(lineColor);
+			selection.cursor = cursor;
+			m_errorSymbols.append(selection);
+		}
+	}
+}
+
 void CodeEditor::focusInEvent(QFocusEvent *e) {
 
+	//updateErrors();
 	highlightCurrentLineSlot();
 }
 
@@ -384,10 +425,24 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 		}
 	}
 
+	m_errorSelections.clear();
+
+	QTextEdit::ExtraSelection selection;
+	QColor lineColor = QColor(Qt::red).lighter(180);
+
+	selection.format.setBackground(lineColor);
+	selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+	selection.cursor = QTextCursor(cursor);
+	selection.cursor.clearSelection();
+	m_errorSelections.append(selection);
+
 	if (xPos - 1 > 0) {
 		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, xPos - 1);
 	}
 
 	m_isLastUpdateRequestFromErrorTable = true;
+
 	setTextCursor(cursor);
+
+	highlightCurrentLineSlot();
 }

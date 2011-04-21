@@ -14,6 +14,9 @@ class CodeEditor : public QPlainTextEdit {
 	QWidget *m_leftArea;
 	ProjectFile *m_projectFile;
 
+	QList<QTextEdit::ExtraSelection> m_errorSymbols;
+	QList<QTextEdit::ExtraSelection> m_errorSelections;
+
 	bool m_isInit;
 	bool m_isLastUpdateRequestFromComments;
 	bool m_isLastUpdateRequestFromErrorTable;
@@ -25,6 +28,7 @@ class CodeEditor : public QPlainTextEdit {
 	void updateBreakPointAndComments();
 	QTextBlock blockWithNumber(int blockNumber);
 	void moveDownComments(int fromBlockNumber);
+	void updateErrors();
 
 protected:
 	void resizeEvent(QResizeEvent *e);

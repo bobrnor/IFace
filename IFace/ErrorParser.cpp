@@ -9,8 +9,8 @@ CompileError ErrorParser::parse(QString string) {
 	if (rx.indexIn(string) >= 0) {
 		error.setIsValid(true);
 		QStringList captures = rx.capturedTexts();		
-		error.setXPos(captures.at(2).toInt());
-		error.setYPos(captures.at(3).toInt());
+		error.setYPos(captures.at(2).toInt());
+		error.setXPos(captures.at(3).toInt());
 		error.setText(captures.at(4));
 		return error;
 	}

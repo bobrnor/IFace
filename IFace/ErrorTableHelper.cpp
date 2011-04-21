@@ -39,6 +39,31 @@ void ErrorTableHelper::currentTableRowChangedSlot(const QModelIndex &current, co
 	if (!m_isLastUpdateRequestFromCodeEditor && row < m_currentErrorList.count()) {
 		CompileError currentError = m_currentErrorList.at(row);
 		emit errorPositionChangedSignal(currentError.projectFile(), currentError.xPos(), currentError.yPos());
+
+		int currentErrorRow = -1;
+		QList<int> currentCodeLineErrors;
+
+		int i = 0;
+		int line = currentError.yPos() - 1;
+		int character = currentError.xPos() - 1;
+
+		foreach (CompileError error, m_currentErrorList) {
+			if (currentError.projectFile()->path() == error.projectFile()->path()) {
+				if (line == error.yPos() - 1) {
+					if (character == error.xPos() - 1) {
+						currentErrorRow = i;
+					}
+					else {
+						currentCodeLineErrors.append(i);
+					}
+				}
+			}
+			i++;
+		}
+
+		m_errorTableModel->setCurrentErrorRow(currentErrorRow);
+		m_errorTableModel->setCurrentCodeLineErrorRows(currentCodeLineErrors);
+		m_errorTableModel->update();
 	}
 	m_isLastUpdateRequestFromCodeEditor = false;
 }
