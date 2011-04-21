@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 
 #include "CodeEditor.h"
 
@@ -9,7 +10,6 @@ ProjectFile::ProjectFile() {}
 
 ProjectFile::ProjectFile(const QString &path) {
 
-	
 	m_path = path;
 	createIfNotExists();
 }
@@ -21,9 +21,17 @@ ProjectFile::~ProjectFile() {
 
 void ProjectFile::setPath(const QString &path) {
 
-	
 	m_path = path;
 	createIfNotExists();
+}
+
+QString ProjectFile::fileName() const {
+
+	if (!m_path.isEmpty()) {
+		QFileInfo pathInfo(m_path);
+		return pathInfo.fileName();
+	}
+	return "";
 }
 
 void ProjectFile::setTmpPath(const QString &path) {

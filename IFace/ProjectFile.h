@@ -11,7 +11,7 @@
 
 class CodeEditor;
 
-#define SProjectFile QSharedPointer<ProjectFile>
+//#define SProjectFile QSharedPointer<ProjectFile>
 
 class ProjectFile {
 
@@ -32,8 +32,12 @@ public:
 	virtual ~ProjectFile();
 
 	uint hash() { return qHash(m_path); }
+
     QString path() const { return m_path; }
     void setPath(const QString &path);
+
+	QString fileName() const;
+
 	QString tmpPath() const { return m_tmpPath; }
 	void setTmpPath(const QString &path);
 

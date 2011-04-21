@@ -98,7 +98,7 @@ void MainWindow::setupProjectEnvironment(ProjectManager *projectManager) {
 	if (projectManager != NULL) {
 		projectManager->assignTabWidget(ui->codeTabs);
 		projectManager->assignProjectTreeWidget(ui->projectTree);
-		projectManager->setErrorView(ui->errorTable);
+		projectManager->assignErrorWidget(ui->errorTable);
 	}
 }
 
@@ -155,7 +155,7 @@ void MainWindow::newProjectFileSlot() {
 		}
 
 		ProjectFile *projectFile = new ProjectFile(fileName);
-		m_currentProjectManager->addProjectFile(SProjectFile(projectFile));
+		m_currentProjectManager->addProjectFile(projectFile);
 		// TODO: update all
 	}
 }
@@ -180,9 +180,7 @@ void MainWindow::openProjectSlot() {
 		}
 
 		m_currentProjectManager = new ProjectManager(fileName);
-		m_currentProjectManager->assignTabWidget(ui->codeTabs);
-		m_currentProjectManager->assignProjectTreeWidget(ui->projectTree);
-		m_currentProjectManager->setErrorView(ui->errorTable);
+		setupProjectEnvironment(m_currentProjectManager);
 		// TODO: update all
 	}
 }
@@ -204,7 +202,7 @@ void MainWindow::openProjectFileSlot() {
 		fileName = dialog.selectedFiles().at(0);
 
 		ProjectFile *projectFile = new ProjectFile(fileName);
-		m_currentProjectManager->addProjectFile(SProjectFile(projectFile));
+		m_currentProjectManager->addProjectFile(projectFile);
 		// TODO: update all
 	}
 }

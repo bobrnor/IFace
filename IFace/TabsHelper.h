@@ -1,17 +1,17 @@
 #ifndef TABSHELPER_H
 #define TABSHELPER_H
 
+#include <QObject>
 #include <QTabWidget>
 #include <QList>
 
 #include "ProjectFile.h"
 
-class ProjectFile;
-
-class TabsHelper {
+class TabsHelper : public QObject {
+Q_OBJECT
 
   QTabWidget *m_tabWidget;
-  QList<SProjectFile> m_openFiles;
+  QList<ProjectFile *> m_openFiles;
 
   bool isFileAlreadyOpen(ProjectFile *file) const;
 
@@ -19,13 +19,16 @@ public:
     TabsHelper();
     TabsHelper(QTabWidget *tabWidget);
 
-    void addTabWithFile(SProjectFile file);
+    void showTabWithFile(ProjectFile *file);
 
     QTabWidget *tabWidget() { return m_tabWidget; }
     void setTabWidget(QTabWidget *tabWidget) { m_tabWidget = tabWidget; }
 
-	SProjectFile currentlyOpenProjectFile();
-	QMap<uint, SProjectFile> openFiles();
+	ProjectFile *currentlyOpenProjectFile();
+	QMap<uint, ProjectFile *> openFiles();
+
+signals:
+	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);
 };
 
 #endif // TABSHELPER_H

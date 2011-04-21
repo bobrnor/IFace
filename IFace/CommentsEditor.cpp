@@ -17,6 +17,8 @@ CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(paren
 	setWordWrapMode(QTextOption::NoWrap);
 	//setMaximumBlockCount(0);
 
+	m_projectFile = NULL;
+
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 	connect(this, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(blockCountChangedSlot(int)));
@@ -30,10 +32,10 @@ CommentsEditor::~CommentsEditor() {
 	qDebug() << __FUNCSIG__;
 }
 
-void CommentsEditor::setProjectFile(SProjectFile projectFile) {
+void CommentsEditor::setProjectFile(ProjectFile *projectFile) {
 
 	m_projectFile = projectFile;
-	if (!m_projectFile.isNull()) {
+	if (!m_projectFile != NULL) {
 		QFile file(m_projectFile->path());
 		if (file.open(QIODevice::ReadOnly)) {
 			QTextStream stream(&file);

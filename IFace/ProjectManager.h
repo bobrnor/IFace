@@ -9,19 +9,18 @@
 #include "TabsHelper.h"
 #include "ProjectTreeHelper.h"
 #include "CompilerHelper.h"
-#include <ErrorTableModel.h>
+#include "ErrorTableHelper.h"
 
 class ProjectManager : QObject {
 	Q_OBJECT
 
 	Project *m_project;
-	QTableView *m_errorTable;
-	ErrorTableModel *m_errorModel;
+	ErrorTableHelper *m_errorTableHelper;
 	TabsHelper *m_tabsHelper;
 	ProjectTreeHelper *m_projectTreeHelper;
 	CompilerHelper *m_compileHelper;
 
-	SProjectFile currentlyOpenProjectFile();
+	ProjectFile *currentlyOpenProjectFile();
 
 public:
 	ProjectManager();
@@ -30,14 +29,12 @@ public:
 
 	bool createProject(const QString &path);
 
-	QTableView *errorView() { return m_errorTable; }
-	void setErrorView(QTableView *view);
-
-	void addProjectFile(SProjectFile projectFile);
-	void removeProjectFile(SProjectFile projectFile);
+	void addProjectFile(ProjectFile *projectFile);
+	void removeProjectFile(ProjectFile *projectFile);
 
 	void assignTabWidget(QTabWidget *tabWidget);
 	void assignProjectTreeWidget(QTreeWidget *projectTree);
+	void assignErrorWidget(QTableView *errorWidget);
 
 	void saveAll();
 	void saveCurrentlyOpenProjectFile();
@@ -47,6 +44,7 @@ public:
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);
 	void compileCompleteSlot();
+	void errorPositionChangedSlot(ProjectFile *file, int xPos, int yPos);
 };
 
 #endif // PROJECTMANAGER_H

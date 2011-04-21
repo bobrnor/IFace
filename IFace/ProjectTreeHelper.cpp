@@ -3,7 +3,7 @@
 #include "Project.h"
 #include "ProjectFile.h"
 
-Q_DECLARE_METATYPE(SProjectFile)
+Q_DECLARE_METATYPE(ProjectFile *)
 
 ProjectTreeHelper::ProjectTreeHelper(QTreeWidget *projectTree) : m_linkedTreeWidget(projectTree) {
 
@@ -26,7 +26,7 @@ void ProjectTreeHelper::update() {
 		if (m_project != NULL) {
 			QTreeWidgetItem *item = new QTreeWidgetItem();			
 			item->setText(0, m_project->path());
-			foreach (SProjectFile file, m_project->projectFiles()) {
+			foreach (ProjectFile *file, m_project->projectFiles()) {
 				QTreeWidgetItem *child = new QTreeWidgetItem();
 				child->setData(0, Qt::UserRole, qVariantFromValue(file));
 				child->setText(0, file->path());

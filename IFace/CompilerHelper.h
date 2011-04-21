@@ -12,12 +12,12 @@ class CompilerHelper : public CompileTaskDelegate {
 Q_OBJECT
 
 	int m_fileCount;
-	QMap<uint, SProjectFile> m_filesToCompile;
+	QMap<uint, ProjectFile *> m_filesToCompile;
 
 private:
 
 public:
-	CompilerHelper(QMap<uint, SProjectFile> filesToCompile);
+	CompilerHelper(QMap<uint, ProjectFile *> filesToCompile);
 	~CompilerHelper();
 
 	void compile();

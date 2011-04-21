@@ -12,10 +12,11 @@ class CodeEditor : public QPlainTextEdit {
 	Q_OBJECT
 
 	QWidget *m_leftArea;
-	SProjectFile m_projectFile;
+	ProjectFile *m_projectFile;
 
 	bool m_isInit;
 	bool m_isLastUpdateRequestFromComments;
+	bool m_isLastUpdateRequestFromErrorTable;
 	int m_lastCommentOffsetLine;
 
 	void loadProjectFile();
@@ -41,13 +42,14 @@ public:
 	void leftAreaPaintEvent(QPaintEvent *event);
 	int leftAreaWidth();
 
-	SProjectFile projectFile() const;
-	void setProjectFile(SProjectFile projectFile);
+	ProjectFile *projectFile() const;
+	void setProjectFile(ProjectFile *projectFile);
 
 signals:
 	void commentsScrollRequestSignal(int y);
 	void commentsUpdateRequestSignal(int blockCount);
 	void codeCursorLineChangedSignal(int yPos);
+	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);
 
 private slots:
 	void blockCountChangedSlot(int newBlockCount);
@@ -59,6 +61,7 @@ public slots:
 	void applyCommentsSlot();
 	void commentsScrolledSlot(int y);
 	void commentsPositionChangedSlot(int yPos);
+	void errorPositionChangedSlot(int xPos, int yPos);
 };
 
 #endif // CODEEDITOR_H

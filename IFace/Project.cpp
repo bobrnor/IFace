@@ -24,7 +24,13 @@ Project::Project(const QString &path) {
 
 }
 
-Project::~Project() {}
+Project::~Project() {
+
+// 	foreach (ProjectFile *file, m_projectFiles) {		
+// 		m_projectFiles.removeAll(file);
+// 		delete file;
+// 	}
+}
 
 void Project::initEmptyProject() {
 
@@ -42,7 +48,7 @@ void Project::loadFromFile() {
 		Json::Value files = m_projectJson["projectFilesList"];
 		if (files.isArray() && files.size() > 0) {		  
 			for (int i = 0; i < files.size(); ++i) {
-				SProjectFile projectFile = makeProjectFile(files[i]);
+				ProjectFile *projectFile = makeProjectFile(files[i]);
 				m_projectFiles.append(projectFile);
 			}
 		}
@@ -67,14 +73,14 @@ void Project::saveToFile() {
 
 void Project::saveProject() {
 
-	foreach (SProjectFile projectFile, m_projectFiles) {
+	foreach (ProjectFile *projectFile, m_projectFiles) {
 		projectFile->save();
 	}
 
 	m_projectJson["projectFilePath"] = Json::Value(m_projectFilePath.toStdString());
 
 	Json::Value projectFilesListJson(Json::arrayValue);
-	foreach (SProjectFile file, m_projectFiles) {
+	foreach (ProjectFile *file, m_projectFiles) {
 		Json::Value projectFileJson = makeProjectFileJson(file);
 		projectFilesListJson.append(projectFileJson);
 	}
@@ -84,7 +90,7 @@ void Project::saveProject() {
 	saveToFile();
 }
 
-void Project::saveProjectFile(SProjectFile projectFile) {
+void Project::saveProjectFile(ProjectFile *projectFile) {
 
 	projectFile->save();
 
@@ -117,11 +123,11 @@ void Project::saveProjectFile(SProjectFile projectFile) {
 	saveToFile();
 }
 
-SProjectFile Project::makeProjectFile(Json::Value projectFileJson) {
+ProjectFile *Project::makeProjectFile(Json::Value projectFileJson) {
 
 	std::string stdPath = projectFileJson["path"].asString();
 	QString filePath = QString::fromStdString(stdPath);
-	SProjectFile projectFile(new ProjectFile(filePath));
+	ProjectFile *projectFile(new ProjectFile(filePath));
 
 	Json::Value breakPointsJson = projectFileJson["breakPoints"];
 	if (breakPointsJson.isArray()) {
@@ -144,7 +150,7 @@ SProjectFile Project::makeProjectFile(Json::Value projectFileJson) {
 	return projectFile;
 }
 
-Json::Value Project::makeProjectFileJson(SProjectFile projectFile) {
+Json::Value Project::makeProjectFileJson(ProjectFile *projectFile) {
 
 	Json::Value projectFileJson;
 	projectFileJson["path"] = Json::Value(projectFile->path().toStdString());
@@ -186,14 +192,14 @@ void Project::saveUpdatedStructure() {
 	saveToFile();
 }
 
-void Project::addProjectFile(SProjectFile projectFile) {
+void Project::addProjectFile(ProjectFile *projectFile) {
 
-	if (projectFile != NULL && !isFileAlreadyInProject(projectFile.data())) {
+	if (projectFile != NULL && !isFileAlreadyInProject(projectFile)) {
 		m_projectFiles.append(projectFile);
 	}
 }
 
-void Project::removeProjectFile(SProjectFile projectFile) {
+void Project::removeProjectFile(ProjectFile *projectFile) {
 
 	int index = m_projectFiles.indexOf(projectFile);
 	if (index > 0) {
@@ -204,7 +210,7 @@ void Project::removeProjectFile(SProjectFile projectFile) {
 bool Project::isFileAlreadyInProject(ProjectFile *projectFile) {
 
 	bool result = false;
-	foreach (SProjectFile file, m_projectFiles) {
+	foreach (ProjectFile *file, m_projectFiles) {
 		if (file->path() == projectFile->path()) {
 			result = true;
 			break;

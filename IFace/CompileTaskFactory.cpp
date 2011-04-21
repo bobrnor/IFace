@@ -1,6 +1,6 @@
 #include "CompileTaskFactory.h"
 
-CompileTask *CompileTaskFactory::makeTask(uint key, SProjectFile projectFile, CompileTaskDelegate *delegate) {
+CompileTask *CompileTaskFactory::makeTask(uint key, ProjectFile *projectFile, CompileTaskDelegate *delegate) {
 
 	CompileTask *task = new CompileTask();
 	task->setKey(key);

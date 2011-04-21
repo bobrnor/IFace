@@ -9,7 +9,7 @@
 class CommentsEditor : public QPlainTextEdit {
 	Q_OBJECT
 
-	SProjectFile m_projectFile;
+	ProjectFile *m_projectFile;
 
 	int m_codeBlockCount;
 	bool m_isCommentsChanged;
@@ -32,8 +32,8 @@ public:
 	CommentsEditor(QWidget *parent = 0);
 	~CommentsEditor();
 
-	SProjectFile projectFile() const { return m_projectFile; }
-	void setProjectFile(SProjectFile projectFile);
+	ProjectFile *projectFile() const { return m_projectFile; }
+	void setProjectFile(ProjectFile *projectFile);
 
 private slots:
 	void highlightCurrentLineSlot();

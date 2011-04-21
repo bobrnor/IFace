@@ -36,7 +36,6 @@ CodeEditorWidget::~CodeEditorWidget() {
 
 void CodeEditorWidget::linkCodeWithComments() {
 
-	
 	connect(m_codeEditor, SIGNAL(commentsScrollRequestSignal(int)), 
 		m_commentsArea, SLOT(codeScrolledSlot(int)));
 	connect(m_commentsArea, SIGNAL(codeScrollRequestSignal(int)), 
@@ -49,16 +48,16 @@ void CodeEditorWidget::linkCodeWithComments() {
 		m_commentsArea, SLOT(codePositionChangedSlot(int)), Qt::DirectConnection);
 	connect(m_commentsArea, SIGNAL(commentsCursorLineChangedSignal(int)), 
 		m_codeEditor, SLOT(commentsPositionChangedSlot(int)), Qt::DirectConnection);
+
+	m_commentsArea->codeBlockCountChangedSlot(m_codeEditor->blockCount());
 }
 
 CodeEditor *CodeEditorWidget::codeEditor() const {
 
-	
 	return m_codeEditor;
 }
 void CodeEditorWidget::setCodeEditor(CodeEditor *codeEditor) {
 
-	
 	Q_ASSERT(codeEditor);
 	if (m_codeEditor != NULL) {
 		disconnect(m_codeEditor);

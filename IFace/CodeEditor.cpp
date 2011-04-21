@@ -20,9 +20,11 @@
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	m_isLastUpdateRequestFromComments = false;
+	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
 	m_isInit = false;
-	m_tempFile = NULL;
+
+	m_projectFile = NULL;
 
 	setWordWrapMode(QTextOption::NoWrap);
 	setLayout(new QVBoxLayout(this));
@@ -42,10 +44,6 @@ CodeEditor::~CodeEditor() {
 
 	if (m_projectFile != NULL) {
 		m_projectFile->linkCodeEditor(NULL);
-	}
-
-	if (m_tempFile != NULL) {
-		delete m_tempFile;
 	}
 }
 
@@ -164,7 +162,11 @@ void CodeEditor::highlightCurrentLineSlot() {
 	if (!m_isLastUpdateRequestFromComments) {
 		emit codeCursorLineChangedSignal(textCursor().blockNumber());
 	}
+	if (!m_isLastUpdateRequestFromErrorTable)
+	emit codeCursorChangedSignal(m_projectFile, textCursor().positionInBlock(), textCursor().blockNumber());
+
 	m_isLastUpdateRequestFromComments = false;
+	m_isLastUpdateRequestFromErrorTable = false;
 }
 
 void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
@@ -201,12 +203,12 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 	}
 }
 
-SProjectFile CodeEditor::projectFile() const {
+ProjectFile *CodeEditor::projectFile() const {
 
 	return m_projectFile;
 }
 
-void CodeEditor::setProjectFile(SProjectFile projectFile) {
+void CodeEditor::setProjectFile(ProjectFile *projectFile) {
 
 	if (m_projectFile != NULL) {
 		m_projectFile->linkCodeEditor(NULL);
@@ -257,7 +259,7 @@ void CodeEditor::initCommentsAndBreakPoints() {
 
 void CodeEditor::saveProjectFile() {
 
-	if (!m_projectFile.isNull()) {
+	if (m_projectFile != NULL) {
 		m_projectFile->setTmpPath("");
 		QString path = m_projectFile->path();
 		QFile file(path);
@@ -270,7 +272,7 @@ void CodeEditor::saveProjectFile() {
 
 void CodeEditor::tempSaveProjectFile() {
 
-	if (!m_projectFile.isNull()) {
+	if (m_projectFile != NULL) {
 		QTemporaryFile tempFile;
 		tempFile.setAutoRemove(false);
 
@@ -366,5 +368,26 @@ void CodeEditor::commentsPositionChangedSlot(int yPos) {
 		}		
 	}
 	m_isLastUpdateRequestFromComments = true;
+	setTextCursor(cursor);
+}
+
+void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
+
+	QTextCursor cursor = textCursor();
+	int delta = cursor.blockNumber() - yPos + 1;
+	if (delta != 0) {
+		if (delta > 0) {
+			cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}
+		else {
+			cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, qAbs(delta));
+		}
+	}
+
+	if (xPos - 1 > 0) {
+		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, xPos - 1);
+	}
+
+	m_isLastUpdateRequestFromErrorTable = true;
 	setTextCursor(cursor);
 }

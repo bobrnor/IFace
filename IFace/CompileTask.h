@@ -14,7 +14,7 @@ Q_OBJECT
 	QString COMPILER_PATTERN;
 
 	uint m_key;
-	SProjectFile m_projectFile;
+	ProjectFile *m_projectFile;
 	CompileTaskDelegate *m_delegate;
 
 	void runEn();
@@ -27,8 +27,8 @@ public:
 
 	uint key() { return m_key; }
 	void setKey(uint _key) { m_key = _key; }
-	SProjectFile projectFile() { return m_projectFile; }
-	void setProjectFile(SProjectFile _projectFile) { m_projectFile = _projectFile; }
+	ProjectFile *projectFile() { return m_projectFile; }
+	void setProjectFile(ProjectFile *_projectFile) { m_projectFile = _projectFile; }
 	CompileTaskDelegate *delegate() { return m_delegate; }
 	void setDelegate(CompileTaskDelegate *_delegate) { m_delegate = _delegate; }
 

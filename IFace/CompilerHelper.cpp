@@ -5,7 +5,7 @@
 #include "CompileTask.h"
 #include "CompileTaskFactory.h"
 
-CompilerHelper::CompilerHelper(QMap<uint, SProjectFile> filesToCompile) {
+CompilerHelper::CompilerHelper(QMap<uint, ProjectFile *> filesToCompile) {
 
 	m_filesToCompile = filesToCompile;
 	QThreadPool::globalInstance()->setMaxThreadCount(1);
@@ -23,7 +23,7 @@ void CompilerHelper::compile() {
 
 	foreach (uint key, m_filesToCompile.keys()) {
 		
-		SProjectFile file = m_filesToCompile.value(key);
+		ProjectFile *file = m_filesToCompile.value(key);
 		task = CompileTaskFactory::makeTask(key, file, this);
 		QThreadPool::globalInstance()->start(task);
 	}

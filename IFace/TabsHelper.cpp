@@ -18,16 +18,21 @@ TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 	m_tabWidget = tabWidget;
 }
 
-void TabsHelper::addTabWithFile(SProjectFile file) {
+void TabsHelper::showTabWithFile(ProjectFile *file) {
 
 	
 	Q_ASSERT(m_tabWidget != NULL);
 
-	if (!isFileAlreadyOpen(file.data())) {
+	int tabNumber = -1;
+
+	if (!isFileAlreadyOpen(file)) {
 		CodeEditorWidget *widget = new CodeEditorWidget(m_tabWidget);
 
 		CodeEditor *codeEditor = new CodeEditor(widget);
 		codeEditor->setProjectFile(file);		
+
+		connect(codeEditor, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)), 
+			this, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)));
 
 		CommentsEditor *commentsArea = new CommentsEditor(widget);		
 		commentsArea->setProjectFile(file);
@@ -35,16 +40,34 @@ void TabsHelper::addTabWithFile(SProjectFile file) {
 		widget->setCodeEditor(codeEditor);
 		widget->setCommentsArea(commentsArea);		
 
-		m_tabWidget->addTab(widget, file->path());
+		tabNumber = m_tabWidget->addTab(widget, file->path());
 		m_openFiles.append(file);
+	}
+	else {
+		if (m_tabWidget != NULL) {
+			int widgetCount = m_tabWidget->count();
+			for (int i = 0; i < widgetCount; ++i) {
+				QWidget *widget = m_tabWidget->widget(i);
+				if (widget != NULL) {
+					CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
+					CodeEditor *codeEditor = codeEditorWidget->codeEditor();
+					if (codeEditor->projectFile()->path() == file->path()) {
+						tabNumber = i;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (tabNumber >= 0) {
+		m_tabWidget->setCurrentIndex(tabNumber);
 	}
 }
 
 bool TabsHelper::isFileAlreadyOpen(ProjectFile *file) const {
 
-	
 	bool result = false;
-	foreach (SProjectFile sfile, m_openFiles) {
+	foreach (ProjectFile *sfile, m_openFiles) {
 		if (sfile->path() == file->path()) {
 			result = true;
 			break;
@@ -53,22 +76,22 @@ bool TabsHelper::isFileAlreadyOpen(ProjectFile *file) const {
 	return result;
 }
 
-SProjectFile TabsHelper::currentlyOpenProjectFile() {
+ProjectFile *TabsHelper::currentlyOpenProjectFile() {
 
 	if (m_tabWidget != NULL) {
 		QWidget *curentWidget = m_tabWidget->currentWidget();
 		if (curentWidget != NULL) {
 			CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(curentWidget);
-			SProjectFile projectFile = codeEditorWidget->codeEditor()->projectFile();
+			ProjectFile *projectFile = codeEditorWidget->codeEditor()->projectFile();
 			return projectFile;
 		}
 	}
-	return SProjectFile(NULL);
+	return NULL;
 }
 
-QMap<uint, SProjectFile> TabsHelper::openFiles() {
+QMap<uint, ProjectFile *> TabsHelper::openFiles() {
 
-	QMap<uint, SProjectFile> result;
+	QMap<uint, ProjectFile *> result;
 
 	if (m_tabWidget != NULL) {
 		int widgetCount = m_tabWidget->count();
@@ -78,7 +101,7 @@ QMap<uint, SProjectFile> TabsHelper::openFiles() {
 				CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(widget);
 				CodeEditor *codeEditor = codeEditorWidget->codeEditor();
 				codeEditor->tempSaveProjectFile();
-				SProjectFile projectFile = codeEditor->projectFile();
+				ProjectFile *projectFile = codeEditor->projectFile();
 				result[projectFile->hash()] = projectFile;
 			}
 		}
