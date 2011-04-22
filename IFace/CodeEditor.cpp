@@ -61,7 +61,6 @@ int CodeEditor::leftAreaWidth() {
 
 	int max = qMax(1, blockCount());
 	int digits = 5 + log10((double) max);
-	qDebug() << "Digit count: " << digits;
 
 	return 25 + fontMetrics().width(QLatin1Char('9')) * digits;
 }
@@ -372,6 +371,18 @@ void CodeEditor::keyPressEvent(QKeyEvent *e) {
 	}
 
 	QPlainTextEdit::keyPressEvent(e);
+}
+
+void CodeEditor::inputMethodEvent(QInputMethodEvent *event) {
+
+	foreach (QInputMethodEvent::Attribute attr, event->attributes()) {
+		if (attr.type == QInputMethodEvent::Cursor) {
+			QTextCursor cursor(textCursor());
+			cursor.setPosition(attr.start);
+			qDebug() << "Changed from " << cursor.blockNumber() << ", " << cursor.positionInBlock();
+			emit codeChangedSignal(m_projectFile, cursor.positionInBlock(), cursor.blockNumber());
+		}
+	}
 }
 
 void CodeEditor::moveDownComments(int fromBlockNumber) {

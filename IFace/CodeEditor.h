@@ -40,6 +40,7 @@ protected:
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
 	void keyPressEvent(QKeyEvent *e);
+	void inputMethodEvent(QInputMethodEvent *event);
 
 public:
 	explicit CodeEditor(QWidget *parent = 0);
@@ -62,6 +63,7 @@ signals:
 	void commentsUpdateRequestSignal(int blockCount);
 	void codeCursorLineChangedSignal(int yPos);
 	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);
+	void codeChangedSignal(ProjectFile *file, int xPos, int yPos);
 
 private slots:
 	void blockCountChangedSlot(int newBlockCount);

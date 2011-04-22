@@ -32,7 +32,6 @@ CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(paren
 
 CommentsEditor::~CommentsEditor() {
 
-	qDebug() << __FUNCSIG__;
 }
 
 void CommentsEditor::setProjectFile(ProjectFile *projectFile) {
@@ -95,8 +94,6 @@ void CommentsEditor::codeScrolledSlot(int y) {
 
 void CommentsEditor::codeBlockCountChangedSlot(int newBlockCount) {
 
-	qDebug() << __FUNCSIG__;
-
 	if (newBlockCount > 0) {
 		m_codeBlockCount = newBlockCount;
 		makeProperLineCount(newBlockCount);
@@ -106,7 +103,6 @@ void CommentsEditor::codeBlockCountChangedSlot(int newBlockCount) {
 
 void CommentsEditor::blockCountChangedSlot(int newBlockCount) {
 
-	qDebug() << __FUNCSIG__;
 	if (m_isInit && !m_changingBlockCount && newBlockCount != m_codeBlockCount) {
 		makeProperLineCount(m_codeBlockCount);
 		saveComments();
@@ -145,13 +141,11 @@ void CommentsEditor::makeProperLineCount(int lineCount) {
 
 void CommentsEditor::gotoBegin(QTextCursor &cursor) {
 
-	qDebug() << __FUNCSIG__;
 	while (cursor.movePosition(QTextCursor::PreviousBlock)) {}
 }
 
 int CommentsEditor::gotoEnd(QTextCursor &cursor) {
 
-	qDebug() << __FUNCSIG__;
 	int lastBlockNumber = cursor.blockNumber();
 	while (cursor.movePosition(QTextCursor::NextBlock)) {
 		lastBlockNumber = cursor.blockNumber();			
@@ -161,14 +155,12 @@ int CommentsEditor::gotoEnd(QTextCursor &cursor) {
 
 void CommentsEditor::replaceCurrentBlockText(QTextCursor &cursor, const QString &text) {
 
-	qDebug() << __FUNCSIG__;
 	cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
 	cursor.insertText(text);
 }
 
 void CommentsEditor::updateComments() {
 
-	qDebug() << __FUNCSIG__;
 	QTextCursor cursor(firstVisibleBlock());
 	gotoBegin(cursor);
 
@@ -186,7 +178,6 @@ void CommentsEditor::updateComments() {
 
 void CommentsEditor::saveComments() {
 
-	qDebug() << __FUNCSIG__;
 	if (m_isCommentsChanged) {
 		QTextCursor cursor = textCursor();
 		gotoBegin(cursor);
@@ -211,7 +202,6 @@ void CommentsEditor::saveComments() {
 
 void CommentsEditor::commentsChanged() {
 
-	qDebug() << __FUNCSIG__;
 	m_isCommentsChanged = true;
 }
 
