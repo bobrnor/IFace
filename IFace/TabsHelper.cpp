@@ -1,6 +1,7 @@
 #include "TabsHelper.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 #include "CodeEditor.h"
 #include "CommentsEditor.h"
@@ -15,14 +16,10 @@ TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
 	qDebug() << __FUNCSIG__;
 	m_tabWidget = tabWidget;
-	for (int i = m_tabWidget->count() - 1; i >= 0; --i) {
-		m_tabWidget->removeTab(i);
-	}
 }
 
 void TabsHelper::showTabWithFile(ProjectFile *file) {
 
-	
 	Q_ASSERT(m_tabWidget != NULL);
 
 	int tabNumber = -1;
@@ -110,4 +107,44 @@ QMap<uint, ProjectFile *> TabsHelper::openFiles() {
 	}
 
 	return result;
+}
+
+bool TabsHelper::tryCloseAll() {
+
+	bool result = true;
+	for (int i = m_tabWidget->count() - 1; i >= 0 && result; --i) {
+		result = tryCloseTab(i);
+	}
+	return result;
+}
+
+bool TabsHelper::tryCloseTab(int index) {
+
+	CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(m_tabWidget->widget(index));
+	CodeEditor *codeEditor = codeEditorWidget->codeEditor();
+
+	// if changed...
+
+	m_tabWidget->setCurrentIndex(index);
+	QMessageBox saveRequestBox;
+	saveRequestBox.setWindowTitle(codeEditor->projectFile()->fileName());
+	saveRequestBox.setText("File has been modified.");
+	saveRequestBox.setInformativeText("Do you want to save your changes?");
+	saveRequestBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+	saveRequestBox.setDefaultButton(QMessageBox::Save);
+	int result = saveRequestBox.exec();
+
+	switch (result) {
+		case QMessageBox::Save:			
+			codeEditor->saveProjectFile();
+			m_tabWidget->removeTab(index);
+			return true;
+
+		case QMessageBox::Discard:
+			m_tabWidget->removeTab(index);
+			return true;
+
+		case QMessageBox::Cancel:
+			return false;
+	}
 }

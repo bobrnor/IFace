@@ -41,6 +41,9 @@ public:
 
 	void compile();
 
+	bool beginCloseProject();
+	void endCloseProject();
+
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);
 	void compileCompleteSlot();

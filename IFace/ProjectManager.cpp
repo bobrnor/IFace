@@ -179,3 +179,13 @@ void ProjectManager::errorPositionChangedSlot(ProjectFile *file, int xPos, int y
 		codeEditor->errorPositionChangedSlot(xPos, yPos);
 	}
 }
+
+bool ProjectManager::beginCloseProject() {
+
+	return m_tabsHelper->tryCloseAll();
+}
+
+void ProjectManager::endCloseProject() {
+
+	saveAll();
+}

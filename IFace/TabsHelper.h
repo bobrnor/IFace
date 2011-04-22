@@ -27,6 +27,9 @@ public:
 	ProjectFile *currentlyOpenProjectFile();
 	QMap<uint, ProjectFile *> openFiles();
 
+	bool tryCloseAll();
+	bool tryCloseTab(int index);
+
 signals:
 	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);
 };

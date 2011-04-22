@@ -137,8 +137,14 @@ void MainWindow::newProjectSlot() {
 		fileName = dialog.selectedFiles().at(0);
 
 		if (m_currentProjectManager != NULL) {
-			// TODO: ask about saving old proj
-			delete m_currentProjectManager;
+			bool tryCloseResult = m_currentProjectManager->beginCloseProject();
+			if (tryCloseResult) {
+				m_currentProjectManager->endCloseProject();
+				delete m_currentProjectManager;
+			}
+			else {
+				return;
+			}
 		}
 
 		if (QFile::exists(fileName)) {
@@ -194,8 +200,14 @@ void MainWindow::openProjectSlot() {
 		fileName = dialog.selectedFiles().at(0);
 
 		if (m_currentProjectManager != NULL) {
-			// TODO: ask about saving old proj
-			delete m_currentProjectManager;
+			bool tryCloseResult = m_currentProjectManager->beginCloseProject();
+			if (tryCloseResult) {
+				m_currentProjectManager->endCloseProject();
+				delete m_currentProjectManager;
+			}
+			else {
+				return;
+			}
 		}
 
 		m_currentProjectManager = new ProjectManager(fileName);
@@ -212,8 +224,14 @@ void MainWindow::openProjectFromLastSlot() {
 		QString path = action->toolTip();
 		if (!path.isEmpty()) {
 			if (m_currentProjectManager != NULL) {
-				// TODO: ask about saving old proj
-				delete m_currentProjectManager;
+				bool tryCloseResult = m_currentProjectManager->beginCloseProject();
+				if (tryCloseResult) {
+					m_currentProjectManager->endCloseProject();
+					delete m_currentProjectManager;
+				}
+				else {
+					return;
+				}
 			}
 
 			m_currentProjectManager = new ProjectManager(path);
