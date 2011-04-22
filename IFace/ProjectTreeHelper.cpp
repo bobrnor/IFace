@@ -24,12 +24,14 @@ void ProjectTreeHelper::update() {
 		m_linkedTreeWidget->clear();
 
 		if (m_project != NULL) {
-			QTreeWidgetItem *item = new QTreeWidgetItem();			
-			item->setText(0, m_project->path());
+			QTreeWidgetItem *item = new QTreeWidgetItem();		
+			item->setText(0, m_project->projectName());
+			item->setToolTip(0, m_project->path());
 			foreach (ProjectFile *file, m_project->projectFiles()) {
 				QTreeWidgetItem *child = new QTreeWidgetItem();
 				child->setData(0, Qt::UserRole, qVariantFromValue(file));
-				child->setText(0, file->path());
+				child->setText(0, file->fileName());
+				child->setToolTip(0, file->path());
 				item->addChild(child);
 			}
 

@@ -1,10 +1,14 @@
 #include "Project.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 #include <QDebug>
+
 #include <iostream>
 #include <fstream>
+
+#include "GlobalState.h"
 
 Project::Project(const QString &path) {
 
@@ -21,7 +25,7 @@ Project::Project(const QString &path) {
 	else {
 		Q_ASSERT(false);
 	}
-
+	GlobalState::instance()->projectOpened(this);
 }
 
 Project::~Project() {
@@ -53,6 +57,15 @@ void Project::loadFromFile() {
 			}
 		}
 	}
+}
+
+QString Project::projectName() {
+
+	if (!m_projectFilePath.isEmpty()) {
+		QFileInfo pathInfo(m_projectFilePath);
+		return pathInfo.fileName();
+	}
+	return "";
 }
 
 void Project::saveToFile() {

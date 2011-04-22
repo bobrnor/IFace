@@ -8,7 +8,6 @@
 
 TabsHelper::TabsHelper() {
 
-	
 	m_tabWidget = NULL;
 }
 
@@ -16,6 +15,9 @@ TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
 	qDebug() << __FUNCSIG__;
 	m_tabWidget = tabWidget;
+	for (int i = m_tabWidget->count() - 1; i >= 0; --i) {
+		m_tabWidget->removeTab(i);
+	}
 }
 
 void TabsHelper::showTabWithFile(ProjectFile *file) {
@@ -40,7 +42,7 @@ void TabsHelper::showTabWithFile(ProjectFile *file) {
 		widget->setCodeEditor(codeEditor);
 		widget->setCommentsArea(commentsArea);		
 
-		tabNumber = m_tabWidget->addTab(widget, file->path());
+		tabNumber = m_tabWidget->addTab(widget, file->fileName());
 		m_openFiles.append(file);
 	}
 	else {

@@ -26,6 +26,8 @@ public:
     Project(const QString &path);
     ~Project();
 
+	QString projectName();
+
     void saveProject();
 	void saveProjectFile(ProjectFile *projectFile);
 	void saveUpdatedStructure();

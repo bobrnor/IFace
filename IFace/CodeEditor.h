@@ -14,6 +14,9 @@ class CodeEditor : public QPlainTextEdit {
 	QWidget *m_leftArea;
 	ProjectFile *m_projectFile;
 
+	int m_currentXErrorPosition;
+	int m_currentYErrorPosition;
+
 	QList<QTextEdit::ExtraSelection> m_errorSymbols;
 	QList<QTextEdit::ExtraSelection> m_errorSelections;
 

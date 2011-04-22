@@ -167,7 +167,7 @@
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>101</number>
+           <number>100</number>
           </attribute>
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>

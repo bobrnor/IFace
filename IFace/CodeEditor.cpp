@@ -13,16 +13,24 @@
 #include <QScrollBar>
 #include <QInputMethodEvent>
 #include <QDir>
+#include <QFont>
 
 #include "LeftArea.h"
 #include "CodeLineData.h"
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
+	QFont font("Monospace");
+	font.setStyleHint(QFont::TypeWriter);
+	setFont(font);
+
 	m_isLastUpdateRequestFromComments = false;
 	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
 	m_isInit = false;
+
+	int m_currentXErrorPosition = -1;
+	int m_currentYErrorPosition = -1;
 
 	m_projectFile = NULL;
 
@@ -321,7 +329,13 @@ void CodeEditor::updateErrors() {
 			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
 
 			QTextEdit::ExtraSelection selection;
-			QColor lineColor = QColor(Qt::red).lighter(140);
+			QColor lineColor;
+			if (line == m_currentYErrorPosition && character == m_currentXErrorPosition) {
+				lineColor = QColor(Qt::red).lighter(80);
+			}
+			else {
+				lineColor = QColor(Qt::red).lighter(140);
+			}
 
 			selection.format.setBackground(lineColor);
 			selection.cursor = cursor;
@@ -417,6 +431,8 @@ void CodeEditor::commentsPositionChangedSlot(int yPos) {
 void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
 	m_isLastUpdateRequestFromErrorTable = true;
+	m_currentXErrorPosition = xPos - 1;
+	m_currentYErrorPosition = yPos - 1;
 
 	QTextCursor cursor = textCursor();
 	int delta = cursor.blockNumber() - yPos + 1;
@@ -431,6 +447,7 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
 	m_errorSelections.clear();
 
+	// highlight for line
 	QTextEdit::ExtraSelection selection;
 	QColor lineColor = QColor(Qt::red).lighter(180);
 
@@ -440,8 +457,14 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 	selection.cursor.clearSelection();
 	m_errorSelections.append(selection);
 
-	if (xPos - 1 > 0) {
-		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, xPos - 1);
+	delta = cursor.positionInBlock() - xPos + 1;
+	if (delta != 0) {
+		if (delta > 0) {
+			cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::MoveAnchor, qAbs(delta));
+		}
+		else {
+			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, qAbs(delta));
+		}
 	}
 
 	setTextCursor(cursor);

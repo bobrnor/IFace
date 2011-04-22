@@ -254,6 +254,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GlobalState.cpp"
+				>
+			</File>
+			<File
 				RelativePath="LeftArea.cpp"
 				>
 			</File>
@@ -533,6 +537,10 @@
 			</File>
 			<File
 				RelativePath=".\ErrorTableModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GlobalState.h"
 				>
 			</File>
 			<File

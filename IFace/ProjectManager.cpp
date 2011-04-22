@@ -1,9 +1,11 @@
 #include "ProjectManager.h"
 
 #include <QDebug>
+#include <QAction>
 
 #include "CodeEditorWidget.h"
 #include "CodeEditor.h"
+#include "GlobalState.h"
 
 Q_DECLARE_METATYPE(ProjectFile *)
 

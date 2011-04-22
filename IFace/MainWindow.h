@@ -21,6 +21,7 @@ class MainWindow : public QWidget {
 
     QStatusBar *m_statusBar;
     QMenuBar *m_menuBar;
+	QMenu *m_lastProjectsMenu;
 
     ProjectManager *m_currentProjectManager;
 
@@ -33,6 +34,8 @@ class MainWindow : public QWidget {
     QMenu *createFileMenu();
 
 	void setupProjectEnvironment(ProjectManager *projectManager);
+
+	void updateLastProjectsMenu();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

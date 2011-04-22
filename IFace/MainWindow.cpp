@@ -7,6 +7,8 @@
 #include <QAction>
 #include <QFile>
 
+#include "GlobalState.h"
+
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
 	ui->setupUi(this);
@@ -85,7 +87,23 @@ QMenu *MainWindow::createFileMenu() {
 
 	menu->addAction("Compile", this, SLOT(compile()));
 
+	menu->addSeparator();
+
+	m_lastProjectsMenu = menu->addMenu("Last Projects");
+	updateLastProjectsMenu();
+
 	return menu;
+}
+
+void MainWindow::updateLastProjectsMenu() {
+
+	m_lastProjectsMenu->clear();
+
+	foreach (QString path, GlobalState::instance()->lastProjects()) {
+		QString elidedString = fontMetrics().elidedText(path, Qt::ElideMiddle, 200);
+		QAction *action = m_lastProjectsMenu->addAction(elidedString);
+		action->setToolTip(path);
+	}
 }
 
 void MainWindow::initStatusBar() {
@@ -130,6 +148,7 @@ void MainWindow::newProjectSlot() {
 		m_currentProjectManager = new ProjectManager(fileName);
 		setupProjectEnvironment(m_currentProjectManager);
 		// TODO: update all
+		updateLastProjectsMenu();
 	}
 }
 
@@ -182,6 +201,7 @@ void MainWindow::openProjectSlot() {
 		m_currentProjectManager = new ProjectManager(fileName);
 		setupProjectEnvironment(m_currentProjectManager);
 		// TODO: update all
+		updateLastProjectsMenu();
 	}
 }
 
