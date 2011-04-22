@@ -28,6 +28,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
 	m_isInit = false;
+	m_isChanged = false;
 
 	int m_currentXErrorPosition = -1;
 	int m_currentYErrorPosition = -1;
@@ -43,6 +44,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateRequestSlot(QRect,int)));
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledSlot(int)));
+	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
 
 	blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
@@ -246,7 +248,7 @@ void CodeEditor::setProjectFile(ProjectFile *projectFile) {
 void CodeEditor::loadProjectFile() {
 
 	if (m_projectFile != NULL) {
-
+		m_isChanged = true;
 		QFile file(m_projectFile->path());
 		if (file.open(QIODevice::ReadOnly)) {
 
@@ -257,6 +259,7 @@ void CodeEditor::loadProjectFile() {
 			}
 		}
 		initCommentsAndBreakPoints();
+		m_isChanged = false;
 	}
 }
 
@@ -292,6 +295,8 @@ void CodeEditor::saveProjectFile() {
 			QTextStream textStream(&file);
 			textStream << toPlainText();
 		}
+		m_isChanged = false;
+		emit modificationChanged(false);
 	}
 }
 
@@ -365,7 +370,7 @@ void CodeEditor::keyPressEvent(QKeyEvent *e) {
 	if ((key == Qt::Key_Enter || key == Qt::Key_Return) && positionInBlock ==  0) {
 		m_lastCommentOffsetLine = blockNumber;
 	}
-	
+
 	QPlainTextEdit::keyPressEvent(e);
 }
 
@@ -468,4 +473,10 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 	}
 
 	setTextCursor(cursor);
+}
+
+void CodeEditor::textChangedSlot() {
+
+	m_isChanged = true;
+	emit modificationChanged(true);
 }

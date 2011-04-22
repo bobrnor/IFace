@@ -32,6 +32,7 @@ public:
 
 public slots:
 	void tabCloseRequestSlot(int index);
+	void modificationChangedSlot(bool changed);
 
 signals:
 	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);

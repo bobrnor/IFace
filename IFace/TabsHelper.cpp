@@ -39,6 +39,7 @@ void TabsHelper::showTabWithFile(ProjectFile *file) {
 
 		connect(codeEditor, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)), 
 			this, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)));
+		connect(codeEditor, SIGNAL(modificationChanged(bool)), this, SLOT(modificationChangedSlot(bool)));
 
 		CommentsEditor *commentsArea = new CommentsEditor(widget);		
 		commentsArea->setProjectFile(file);
@@ -130,18 +131,17 @@ bool TabsHelper::tryCloseTab(int index) {
 	CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(m_tabWidget->widget(index));
 	CodeEditor *codeEditor = codeEditorWidget->codeEditor();
 
-	// if changed...
+	if (codeEditor->isChanged()) {
+		m_tabWidget->setCurrentIndex(index);
+		QMessageBox saveRequestBox;
+		saveRequestBox.setWindowTitle(codeEditor->projectFile()->fileName());
+		saveRequestBox.setText("File has been modified.");
+		saveRequestBox.setInformativeText("Do you want to save your changes?");
+		saveRequestBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+		saveRequestBox.setDefaultButton(QMessageBox::Save);
+		int result = saveRequestBox.exec();
 
-	m_tabWidget->setCurrentIndex(index);
-	QMessageBox saveRequestBox;
-	saveRequestBox.setWindowTitle(codeEditor->projectFile()->fileName());
-	saveRequestBox.setText("File has been modified.");
-	saveRequestBox.setInformativeText("Do you want to save your changes?");
-	saveRequestBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-	saveRequestBox.setDefaultButton(QMessageBox::Save);
-	int result = saveRequestBox.exec();
-
-	switch (result) {
+		switch (result) {
 		case QMessageBox::Save:			
 			codeEditor->saveProjectFile();
 			m_openFiles.removeAll(codeEditor->projectFile());
@@ -155,10 +155,44 @@ bool TabsHelper::tryCloseTab(int index) {
 
 		case QMessageBox::Cancel:
 			return false;
+
+		default:
+			Q_ASSERT(false);
+			return false;
+		}
+	}
+	else {
+		m_openFiles.removeAll(codeEditor->projectFile());
+		m_tabWidget->removeTab(index);
+		return true;
 	}
 }
 
 void TabsHelper::tabCloseRequestSlot(int index) {
 
-	tryCloseTab(index);
+	QWidget *widget = m_tabWidget->widget(index);
+	int tryCloseResult = tryCloseTab(index);
+	if (tryCloseResult) {
+		delete widget;
+	}
+}
+
+void TabsHelper::modificationChangedSlot(bool changed) {
+
+	if (sender() != NULL) {
+		CodeEditor *codeEditor = static_cast<CodeEditor *>(sender());
+		QString senderPath = codeEditor->projectFile()->path();
+
+		for (int i = 0; m_tabWidget->count(); ++i) {
+			CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(m_tabWidget->widget(i));
+			CodeEditor *codeEditor = codeEditorWidget->codeEditor();
+			QString path = codeEditor->projectFile()->path();
+			if (senderPath == path) {
+				QString name = codeEditor->projectFile()->fileName();
+				QString tabText = name + ((changed) ? "*" : "");
+				m_tabWidget->setTabText(i, tabText);
+				break;
+			}
+		}
+	}
 }

@@ -25,6 +25,8 @@ class CodeEditor : public QPlainTextEdit {
 	bool m_isLastUpdateRequestFromErrorTable;
 	int m_lastCommentOffsetLine;
 
+	bool m_isChanged;
+
 	void loadProjectFile();
 
 	void initCommentsAndBreakPoints();
@@ -52,6 +54,9 @@ public:
 	ProjectFile *projectFile() const;
 	void setProjectFile(ProjectFile *projectFile);
 
+	void setIsChanged(bool changed) { m_isChanged = changed; }
+	bool isChanged() { return m_isChanged; }
+
 signals:
 	void commentsScrollRequestSignal(int y);
 	void commentsUpdateRequestSignal(int blockCount);
@@ -69,6 +74,7 @@ public slots:
 	void commentsScrolledSlot(int y);
 	void commentsPositionChangedSlot(int yPos);
 	void errorPositionChangedSlot(int xPos, int yPos);
+	void textChangedSlot();
 };
 
 #endif // CODEEDITOR_H
