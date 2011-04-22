@@ -2,10 +2,12 @@
 
 #include <QDebug>
 #include <QAction>
+#include <QWidget>
 
 #include "CodeEditorWidget.h"
 #include "CodeEditor.h"
 #include "GlobalState.h"
+#include "CommentsEditor.h"
 
 Q_DECLARE_METATYPE(ProjectFile *)
 
@@ -188,4 +190,36 @@ bool ProjectManager::beginCloseProject() {
 void ProjectManager::endCloseProject() {
 
 	saveAll();
+}
+
+void ProjectManager::setFocusToCode() {
+
+	QWidget *currentWidget = m_tabsHelper->tabWidget()->currentWidget();
+	if (currentWidget != NULL) {
+		CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(currentWidget);
+		codeEditorWidget->codeEditor()->setFocus(Qt::ShortcutFocusReason);
+	}
+}
+
+void ProjectManager::setFocusToComments() {
+
+	QWidget *currentWidget = m_tabsHelper->tabWidget()->currentWidget();
+	if (currentWidget != NULL) {
+		CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(currentWidget);
+		codeEditorWidget->commentsArea()->setFocus(Qt::ShortcutFocusReason);
+	}
+}
+
+void ProjectManager::setFocusToErros() {
+
+	if (m_errorTableHelper != NULL && m_errorTableHelper->errorTable() != NULL) {
+		m_errorTableHelper->errorTable()->setFocus(Qt::ShortcutFocusReason);
+	}
+}
+
+void ProjectManager::setFocusToProjectTree() {
+
+	if (m_projectTreeHelper != NULL && m_projectTreeHelper->linkedTreeWidget() != NULL) {
+		m_projectTreeHelper->linkedTreeWidget()->setFocus(Qt::ShortcutFocusReason);
+	}
 }

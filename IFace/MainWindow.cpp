@@ -7,6 +7,10 @@
 #include <QAction>
 #include <QFile>
 #include <QCloseEvent>
+#include <QShortcut>
+#include <QWidget>
+#include <QColor>
+#include <QVBoxLayout>
 
 #include "GlobalState.h"
 
@@ -22,14 +26,20 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	m_menuBar = new QMenuBar(this);  
 	ui->topLayout->addWidget(m_menuBar);
 
+// 	m_menuBarWrapper = new QWidget(this);
+// 	ui->topLayout->addWidget(m_menuBarWrapper);
+
 	ui->topLayout->addSpacing(0);
 
 	initStatusBar();
+
 	initMenu();
 	initSplitters();
 	initProjectTree();
 	initCodeTabs();
 	initErrorTable();
+	initShortcuts();
+	initEventFilters();
 }
 
 MainWindow::~MainWindow() {
@@ -43,6 +53,12 @@ MainWindow::~MainWindow() {
 	}
 	if (m_statusBar != NULL) {
 		delete m_statusBar;
+	}
+
+	for (int i = m_shortcutList.count() - 1; i >= 0; --i) {
+		QShortcut *shortcut = m_shortcutList.at(i);
+		m_shortcutList.removeAt(i);
+		delete shortcut;
 	}
 }
 
@@ -127,6 +143,39 @@ void MainWindow::updateLastProjectsMenu() {
 void MainWindow::initStatusBar() {
 
 	m_statusBar->setSizeGripEnabled(false);
+}
+
+void MainWindow::initShortcuts() {
+
+	QShortcut *shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Ctrl+1"));
+	shortcut->setEnabled(true);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutActivated()));
+	m_shortcutList.append(shortcut);
+
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Ctrl+2"));
+	shortcut->setEnabled(true);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutActivated()));
+	m_shortcutList.append(shortcut);
+
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Ctrl+3"));
+	shortcut->setEnabled(true);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutActivated()));
+	m_shortcutList.append(shortcut);
+
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Ctrl+4"));
+	shortcut->setEnabled(true);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutActivated()));
+	m_shortcutList.append(shortcut);
+
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Ctrl+5"));
+	shortcut->setEnabled(true);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutActivated()));
+	m_shortcutList.append(shortcut);
 }
 
 void MainWindow::setupProjectEnvironment(ProjectManager *projectManager) {
@@ -301,4 +350,89 @@ void MainWindow::compile() {
 	if (m_currentProjectManager != NULL) {
 		m_currentProjectManager->compile();
 	}
+}
+
+void MainWindow::setFocusToMenu() {
+
+	if (m_menuBar != NULL) {
+		m_menuBar->setFocus(Qt::ShortcutFocusReason);
+	}	
+}
+
+void MainWindow::shortcutActivated() {
+
+	if (sender() != NULL) {
+		QShortcut *shortcut = static_cast<QShortcut *>(sender());
+		QString key = shortcut->key();
+		if (key == "Ctrl+1") {
+			//setFocusToMenu();
+		}
+		else if (key == "Ctrl+2") {
+			if (m_currentProjectManager != NULL) {
+				m_currentProjectManager->setFocusToProjectTree();
+			}
+		}
+		else if (key == "Ctrl+3") {
+			if (m_currentProjectManager != NULL) {
+				m_currentProjectManager->setFocusToCode();
+			}
+		}
+		else if (key == "Ctrl+4") {
+			if (m_currentProjectManager != NULL) {
+				m_currentProjectManager->setFocusToComments();
+			}
+		}
+		else if (key == "Ctrl+5") {
+			if (m_currentProjectManager != NULL) {
+				m_currentProjectManager->setFocusToErros();
+			}
+		}
+	}
+}
+
+void MainWindow::initEventFilters() {
+
+	m_menuBar->installEventFilter(this);
+	ui->errorTable->installEventFilter(this);
+	ui->codeAndErrorsWidget->installEventFilter(this);
+	ui->projectTree->installEventFilter(this);
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event) {
+
+	if (event->type() == QEvent::FocusIn) {
+		if (object->isWidgetType()) {
+			QPalette p(palette());
+
+			qDebug() << object->metaObject()->className();
+
+			QWidget *widget = NULL;
+			if (object->inherits("QMenuBar") || object->inherits("QMenu") || object->inherits("QAction")) {
+				widget = ui->line;
+				p.setColor(QPalette::Dark, Qt::red);
+				p.setColor(QPalette::Light, Qt::red);
+				p.setColor(QPalette::Mid, Qt::red);
+			}
+			else {
+				widget = static_cast<QWidget *>(object);
+				p.setColor(QPalette::Window, Qt::red);
+			}
+			widget->setPalette(p);
+		}
+	}
+	else if (event->type() == QEvent::FocusOut) {
+		if (object->isWidgetType()) {
+			QPalette p(palette());
+
+			QWidget *widget = NULL;
+			if (object->inherits("QMenuBar") || object->inherits("QMenu") || object->inherits("QAction")) {
+				widget = ui->line;
+			}
+			else {
+				widget = static_cast<QWidget *>(object);
+			}
+			widget->setPalette(p);
+		}
+	}
+	return QWidget::eventFilter(object, event);
 }

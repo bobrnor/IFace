@@ -248,7 +248,6 @@ void CodeEditor::setProjectFile(ProjectFile *projectFile) {
 void CodeEditor::loadProjectFile() {
 
 	if (m_projectFile != NULL) {
-		m_isChanged = true;
 		QFile file(m_projectFile->path());
 		if (file.open(QIODevice::ReadOnly)) {
 
@@ -260,6 +259,7 @@ void CodeEditor::loadProjectFile() {
 		}
 		initCommentsAndBreakPoints();
 		m_isChanged = false;
+		emit modificationChanged(false);
 	}
 }
 

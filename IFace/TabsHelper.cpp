@@ -183,7 +183,7 @@ void TabsHelper::modificationChangedSlot(bool changed) {
 		CodeEditor *codeEditor = static_cast<CodeEditor *>(sender());
 		QString senderPath = codeEditor->projectFile()->path();
 
-		for (int i = 0; m_tabWidget->count(); ++i) {
+		for (int i = 0; i < m_tabWidget->count(); ++i) {
 			CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(m_tabWidget->widget(i));
 			CodeEditor *codeEditor = codeEditorWidget->codeEditor();
 			QString path = codeEditor->projectFile()->path();

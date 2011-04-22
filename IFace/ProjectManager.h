@@ -44,6 +44,11 @@ public:
 	bool beginCloseProject();
 	void endCloseProject();
 
+	void setFocusToCode();
+	void setFocusToComments();
+	void setFocusToErros();
+	void setFocusToProjectTree();
+
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);
 	void compileCompleteSlot();

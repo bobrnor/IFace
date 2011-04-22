@@ -9,7 +9,10 @@
 
 CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(parent) {
 
-	
+	QFont font("Monospace");
+	font.setStyleHint(QFont::TypeWriter);
+	setFont(font);
+
 	m_codeBlockCount = 0;
 	m_changingBlockCount = false;
 	m_isLastUpdateRequestFromCode = false;

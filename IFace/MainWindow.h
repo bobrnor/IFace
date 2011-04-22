@@ -20,8 +20,10 @@ class MainWindow : public QWidget {
     Q_OBJECT
 
     QStatusBar *m_statusBar;
+	QWidget *m_menuBarWrapper;
     QMenuBar *m_menuBar;
 	QMenu *m_lastProjectsMenu;
+	QList<QShortcut*> m_shortcutList;
 
     ProjectManager *m_currentProjectManager;
 
@@ -31,6 +33,9 @@ class MainWindow : public QWidget {
     void initProjectTree();
     void initCodeTabs();
     void initErrorTable();
+	void initShortcuts();
+	void initEventFilters();
+
     QMenu *createFileMenu();
 
 	void setupProjectEnvironment(ProjectManager *projectManager);
@@ -40,6 +45,9 @@ class MainWindow : public QWidget {
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+	void setFocusToMenu();
+	bool eventFilter(QObject *object, QEvent *event);
 
 protected:
 	void closeEvent(QCloseEvent *event);
@@ -56,6 +64,7 @@ private slots:
 	void saveCurrentFileSlot();
 	void saveAllSlot();
 	void compile();
+	void shortcutActivated();
 };
 
 #endif // MAINWINDOW_H

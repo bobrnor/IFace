@@ -10,7 +10,6 @@
 
 CodeEditorWidget::CodeEditorWidget(QWidget *parent) : QWidget(parent), ui(new Ui::CodeEditorWidget) {
 
-	
 	ui->setupUi(this);
 
 	m_codeEditor = NULL;
