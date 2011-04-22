@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QAction>
 #include <QFile>
+#include <QCloseEvent>
 
 #include "GlobalState.h"
 
@@ -42,6 +43,23 @@ MainWindow::~MainWindow() {
 	}
 	if (m_statusBar != NULL) {
 		delete m_statusBar;
+	}
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+
+	if (m_currentProjectManager != NULL) {
+		bool tryCloseResult = m_currentProjectManager->beginCloseProject();
+		if (tryCloseResult) {
+			m_currentProjectManager->endCloseProject();
+			event->accept();
+		}
+		else {
+			event->ignore();
+		}
+	}
+	else {
+		event->accept();
 	}
 }
 

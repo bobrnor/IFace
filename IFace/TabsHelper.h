@@ -22,13 +22,16 @@ public:
     void showTabWithFile(ProjectFile *file);
 
     QTabWidget *tabWidget() { return m_tabWidget; }
-    void setTabWidget(QTabWidget *tabWidget) { m_tabWidget = tabWidget; }
+    void setTabWidget(QTabWidget *tabWidget);
 
 	ProjectFile *currentlyOpenProjectFile();
 	QMap<uint, ProjectFile *> openFiles();
 
 	bool tryCloseAll();
 	bool tryCloseTab(int index);
+
+public slots:
+	void tabCloseRequestSlot(int index);
 
 signals:
 	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);

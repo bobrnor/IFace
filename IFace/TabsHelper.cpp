@@ -15,7 +15,14 @@ TabsHelper::TabsHelper() {
 TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
 	qDebug() << __FUNCSIG__;
-	m_tabWidget = tabWidget;
+	setTabWidget(tabWidget);	
+}
+
+void TabsHelper::setTabWidget(QTabWidget *tabWidget) { 
+
+	m_tabWidget = tabWidget; 
+	connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), 
+		this, SLOT(tabCloseRequestSlot(int)));
 }
 
 void TabsHelper::showTabWithFile(ProjectFile *file) {
@@ -137,14 +144,21 @@ bool TabsHelper::tryCloseTab(int index) {
 	switch (result) {
 		case QMessageBox::Save:			
 			codeEditor->saveProjectFile();
+			m_openFiles.removeAll(codeEditor->projectFile());
 			m_tabWidget->removeTab(index);
 			return true;
 
 		case QMessageBox::Discard:
+			m_openFiles.removeAll(codeEditor->projectFile());
 			m_tabWidget->removeTab(index);
 			return true;
 
 		case QMessageBox::Cancel:
 			return false;
 	}
+}
+
+void TabsHelper::tabCloseRequestSlot(int index) {
+
+	tryCloseTab(index);
 }
