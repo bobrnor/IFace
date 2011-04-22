@@ -101,7 +101,7 @@ void MainWindow::updateLastProjectsMenu() {
 
 	foreach (QString path, GlobalState::instance()->lastProjects()) {
 		QString elidedString = fontMetrics().elidedText(path, Qt::ElideMiddle, 200);
-		QAction *action = m_lastProjectsMenu->addAction(elidedString);
+		QAction *action = m_lastProjectsMenu->addAction(elidedString, this, SLOT(openProjectFromLastSlot()));
 		action->setToolTip(path);
 	}
 }
@@ -202,6 +202,25 @@ void MainWindow::openProjectSlot() {
 		setupProjectEnvironment(m_currentProjectManager);
 		// TODO: update all
 		updateLastProjectsMenu();
+	}
+}
+
+void MainWindow::openProjectFromLastSlot() {
+
+	if (sender() != NULL) {
+		QAction *action = static_cast<QAction *>(sender());
+		QString path = action->toolTip();
+		if (!path.isEmpty()) {
+			if (m_currentProjectManager != NULL) {
+				// TODO: ask about saving old proj
+				delete m_currentProjectManager;
+			}
+
+			m_currentProjectManager = new ProjectManager(path);
+			setupProjectEnvironment(m_currentProjectManager);
+			// TODO: update all
+			updateLastProjectsMenu();
+		}
 	}
 }
 

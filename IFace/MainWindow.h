@@ -48,6 +48,7 @@ private slots:
     void newProjectSlot();
     void newProjectFileSlot();
     void openProjectSlot();
+	void openProjectFromLastSlot();
     void openProjectFileSlot();
 	void saveCurrentFileSlot();
 	void saveAllSlot();
