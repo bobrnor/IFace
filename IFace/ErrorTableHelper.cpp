@@ -1,5 +1,7 @@
 #include "ErrorTableHelper.h"
 
+#include <QSet>
+
 ErrorTableHelper::ErrorTableHelper() {
 
 	m_errorTableModel = new ErrorTableModel();
@@ -24,11 +26,33 @@ void ErrorTableHelper::setErrorTable(QTableView *tableView) {
 	}
 }
 
+void ErrorTableHelper::processErrorList() {
+
+	QRegExp rx("\"(.*)\"");
+
+	QSet<uint> errorEntries;
+	for (int i = 0; i < m_currentErrorList.count(); ++i) {
+		CompileError error = m_currentErrorList.at(i);
+		QString commonErrorText = error.text().replace(rx, "");
+
+		uint hash = qHash(commonErrorText);
+		if (!errorEntries.contains(hash)) {
+			errorEntries.insert(hash);
+
+			QString longText = error.text();
+			longText += ". [Extended error message]";
+			error.setText(longText);
+			m_currentErrorList.replace(i, error);
+		}
+	}
+}
+
 void ErrorTableHelper::setErrorLists(QList<CompileError> ruErrorList, QList<CompileError> enErrorList) {
 
 	m_ruErrorList = ruErrorList;
 	m_enErrorList = enErrorList;
 	m_currentErrorList = m_ruErrorList;
+	processErrorList();
 	m_lastErrorRow = -1;
 	m_errorTableModel->setErrorList(m_currentErrorList);
 }

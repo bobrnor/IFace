@@ -20,6 +20,8 @@ class ErrorTableHelper : public QObject {
 
 	bool m_isLastUpdateRequestFromCodeEditor;
 
+	void processErrorList();
+
 public:
 	ErrorTableHelper();
 	~ErrorTableHelper();
