@@ -36,6 +36,7 @@ private slots:
 
 public slots:
 	void codeCursorChangedSlot(ProjectFile *file, int xPos, int yPos);
+	void codeChangedSlot(ProjectFile *file, int xPos, int yPos);
 
 signals:
 	void errorPositionChangedSignal(ProjectFile *file, int xPos, int yPos);

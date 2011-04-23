@@ -36,6 +36,7 @@ public slots:
 
 signals:
 	void codeCursorChangedSignal(ProjectFile *file, int xPos, int yPos);
+	void codeChangedSignal(ProjectFile *file, int xPos, int yPos);
 };
 
 #endif // TABSHELPER_H

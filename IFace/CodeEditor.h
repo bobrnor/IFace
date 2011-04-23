@@ -40,7 +40,6 @@ protected:
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
 	void keyPressEvent(QKeyEvent *e);
-	void inputMethodEvent(QInputMethodEvent *event);
 
 public:
 	explicit CodeEditor(QWidget *parent = 0);
@@ -58,6 +57,8 @@ public:
 	void setIsChanged(bool changed) { m_isChanged = changed; }
 	bool isChanged() { return m_isChanged; }
 
+	void update();
+
 signals:
 	void commentsScrollRequestSignal(int y);
 	void commentsUpdateRequestSignal(int blockCount);
@@ -70,6 +71,7 @@ private slots:
 	void highlightCurrentLineSlot();
 	void updateRequestSlot(const QRect &rect, int dy);
 	void scrolledSlot(int y);
+	void contentsChangedSlot(int position, int charsRemoved, int charsAdded);
 
 public slots:
 	void applyCommentsSlot();

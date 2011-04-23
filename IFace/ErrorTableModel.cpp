@@ -38,10 +38,20 @@ QVariant ErrorTableModel::data(const QModelIndex &index, int role /* = Qt::Displ
 				return error.projectFile()->fileName();
 
 			case 3:
-				return error.yPos();
+				if (error.isValid()) {
+					return error.yPos();
+				}
+				else {
+					return "???";
+				}				
 
 			case 4:
-				return error.xPos();
+				if (error.isValid()) {
+					return error.xPos();
+				}
+				else {
+					return "???";
+				}
 
 			case 5:
 				return error.text();
@@ -61,13 +71,13 @@ QVariant ErrorTableModel::data(const QModelIndex &index, int role /* = Qt::Displ
 	}
 	else if (role == Qt::BackgroundRole) {
 		int row = index.row();
-		if (row == m_lastErrorRow && m_currentErrorRow < 0) {
+		if (m_lastErrorRows.contains(row) && m_currentErrorRows.count() == 0 && m_currentCodeLineErrorRows.count() == 0) {
 			return QBrush(QColor(244, 238, 224, 255));
 		}
 		else if (m_currentCodeLineErrorRows.contains(row)) {
 			return QBrush(QColor(238, 233, 233, 255));
 		}
-		else if (m_currentErrorRow == row) {
+		else if (m_currentErrorRows.contains(row)) {
 			return QBrush(QColor(205, 201, 201, 255));
 		}
 		else {
@@ -118,20 +128,26 @@ QVariant ErrorTableModel::headerData(int section, Qt::Orientation orientation, i
 void ErrorTableModel::setErrorList(QList<CompileError> errorList) {
 
 	qDebug() << __FUNCSIG__;
-	beginResetModel();
-	m_lastErrorRow = -1;
-	m_currentErrorRow = -1;
+	m_lastErrorRows.clear();
+	m_currentErrorRows.clear();
 	m_currentCodeLineErrorRows.clear();
 	m_errorList = errorList;
-	endResetModel();
+	reset();
 }
 
-void ErrorTableModel::setCurrentErrorRow(int row) {
+void ErrorTableModel::updateErrorList(QList<CompileError> errorList) {
 
-	if (m_currentErrorRow >= 0) {
-		m_lastErrorRow = m_currentErrorRow;
+	qDebug() << __FUNCSIG__;	
+	m_errorList = errorList;
+	update();
+}
+
+void ErrorTableModel::setCurrentErrorRows(QList<int> rows) {
+
+	if (m_currentErrorRows.count() > 0) {
+		m_lastErrorRows = m_currentErrorRows;
 	}
-	m_currentErrorRow = row;
+	m_currentErrorRows = rows;
 }
 
 void ErrorTableModel::setCurrentCodeLineErrorRows(QList<int> errorRows) {
@@ -141,6 +157,5 @@ void ErrorTableModel::setCurrentCodeLineErrorRows(QList<int> errorRows) {
 
 void ErrorTableModel::update() {
 
-	beginResetModel();
-	endResetModel();
+	emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
 }

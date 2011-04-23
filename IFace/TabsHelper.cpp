@@ -39,6 +39,8 @@ void TabsHelper::showTabWithFile(ProjectFile *file) {
 
 		connect(codeEditor, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)), 
 			this, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)));
+		connect(codeEditor, SIGNAL(codeChangedSignal(ProjectFile*, int, int)), 
+			this, SIGNAL(codeChangedSignal(ProjectFile*, int, int)));
 		connect(codeEditor, SIGNAL(modificationChanged(bool)), this, SLOT(modificationChangedSlot(bool)));
 
 		CommentsEditor *commentsArea = new CommentsEditor(widget);		

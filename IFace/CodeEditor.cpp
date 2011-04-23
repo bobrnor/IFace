@@ -24,6 +24,8 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	font.setStyleHint(QFont::TypeWriter);
 	setFont(font);
 
+	setAttribute(Qt::WA_InputMethodEnabled, true);
+
 	m_isLastUpdateRequestFromComments = false;
 	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
@@ -48,6 +50,9 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
+
+	connect(this->document(), SIGNAL(contentsChange(int, int, int)), 
+		this, SLOT(contentsChangedSlot(int, int, int)));
 }
 
 CodeEditor::~CodeEditor() {
@@ -323,6 +328,10 @@ void CodeEditor::updateErrors() {
 
 		m_errorSymbols.clear();
 		foreach (CompileError error, m_projectFile->compileErrorsEn()) {
+			if (!error.isValid()) {
+				continue;
+			}
+
 			int line = error.yPos() - 1;
 			int character = error.xPos() - 1;
 
@@ -348,9 +357,16 @@ void CodeEditor::updateErrors() {
 	}
 }
 
+void CodeEditor::update() {
+
+	highlightCurrentLineSlot();
+}
+
 void CodeEditor::focusInEvent(QFocusEvent *e) {
 
 	//updateErrors();
+	m_currentXErrorPosition = -1;
+	m_currentYErrorPosition = -1;
 	highlightCurrentLineSlot();
 }
 
@@ -373,16 +389,12 @@ void CodeEditor::keyPressEvent(QKeyEvent *e) {
 	QPlainTextEdit::keyPressEvent(e);
 }
 
-void CodeEditor::inputMethodEvent(QInputMethodEvent *event) {
+void CodeEditor::contentsChangedSlot(int position, int charsRemoved, int charsAdded) {
 
-	foreach (QInputMethodEvent::Attribute attr, event->attributes()) {
-		if (attr.type == QInputMethodEvent::Cursor) {
-			QTextCursor cursor(textCursor());
-			cursor.setPosition(attr.start);
-			qDebug() << "Changed from " << cursor.blockNumber() << ", " << cursor.positionInBlock();
-			emit codeChangedSignal(m_projectFile, cursor.positionInBlock(), cursor.blockNumber());
-		}
-	}
+	QTextCursor cursor(textCursor());
+	cursor.setPosition(position);
+	qDebug() << "Changed from " << cursor.blockNumber() << ", " << cursor.positionInBlock();
+	emit codeChangedSignal(m_projectFile, cursor.positionInBlock(), cursor.blockNumber());
 }
 
 void CodeEditor::moveDownComments(int fromBlockNumber) {

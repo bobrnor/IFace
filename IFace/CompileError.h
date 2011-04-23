@@ -16,10 +16,13 @@ class CompileError {
 public:
 	ProjectFile *projectFile() { return m_file; }
 	void setProjectFile(ProjectFile *file) { m_file = file; }
+
 	QString text() { return m_text; }
 	void setText(QString value) { m_text = value; }
+
 	int xPos() { return m_xPos; }
 	void setXPos(int value) { m_xPos = value; }
+
 	int yPos() { return m_yPos; }
 	void setYPos(int value) { m_yPos = value; }
 

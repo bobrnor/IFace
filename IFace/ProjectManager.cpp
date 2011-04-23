@@ -82,6 +82,9 @@ void ProjectManager::assignTabWidget(QTabWidget *tabWidget) {
 		m_tabsHelper = new TabsHelper(tabWidget);
 		connect(m_tabsHelper, SIGNAL(codeCursorChangedSignal(ProjectFile*, int, int)), 
 			m_errorTableHelper, SLOT(codeCursorChangedSlot(ProjectFile*, int, int)));
+
+		connect(m_tabsHelper, SIGNAL(codeChangedSignal(ProjectFile*, int, int)), 
+			m_errorTableHelper, SLOT(codeChangedSlot(ProjectFile*, int, int)));
 	}
 }
 
@@ -170,6 +173,9 @@ void ProjectManager::compileCompleteSlot() {
 		enErrors.append(projectFile->compileErrorsEn());
 	}
 	m_errorTableHelper->setErrorLists(ruErrors, enErrors);
+	if (m_tabsHelper->tabWidget()->currentWidget() != NULL) {
+		((CodeEditorWidget *) m_tabsHelper->tabWidget()->currentWidget())->codeEditor()->update();
+	}
 }
 
 void ProjectManager::errorPositionChangedSlot(ProjectFile *file, int xPos, int yPos) {
@@ -189,7 +195,7 @@ bool ProjectManager::beginCloseProject() {
 
 void ProjectManager::endCloseProject() {
 
-	saveAll();
+	//saveAll();
 }
 
 void ProjectManager::setFocusToCode() {

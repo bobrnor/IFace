@@ -8,8 +8,8 @@
 class ErrorTableModel : public QAbstractTableModel {
 
 	QList<CompileError> m_errorList;
-	int m_lastErrorRow;
-	int m_currentErrorRow;
+	QList<int> m_lastErrorRows;
+	QList<int> m_currentErrorRows;
 	QList<int> m_currentCodeLineErrorRows;
 
 private:
@@ -20,11 +20,12 @@ public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+	void updateErrorList(QList<CompileError> errorList);
 	void setErrorList(QList<CompileError> errorList);
 	QList<CompileError> errorList() { return m_errorList; }
 
-	void setCurrentErrorRow(int row);
-	int currentErrorRow() { return m_currentErrorRow; }
+	void setCurrentErrorRows(QList<int> rows);
+	QList<int> currentErrorRows() { return m_currentErrorRows; }
 
 	void setCurrentCodeLineErrorRows(QList<int> errorRows);
 	QList<int> currentCodeLineErrorRows() { return m_currentCodeLineErrorRows; }
