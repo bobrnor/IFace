@@ -246,7 +246,7 @@ void MainWindow::newProjectFileSlot() {
 			Q_ASSERT(ok);
 		}
 
-		ProjectFile *projectFile = new ProjectFile(fileName);
+		ProjectFile *projectFile = new ProjectFile(m_currentProjectManager->project(), fileName);
 		m_currentProjectManager->addProjectFile(projectFile);
 		// TODO: update all
 	}
@@ -325,7 +325,7 @@ void MainWindow::openProjectFileSlot() {
 		qDebug() << dialog.selectedFiles();
 		fileName = dialog.selectedFiles().at(0);
 
-		ProjectFile *projectFile = new ProjectFile(fileName);
+		ProjectFile *projectFile = new ProjectFile(m_currentProjectManager->project(), fileName);
 		m_currentProjectManager->addProjectFile(projectFile);
 		// TODO: update all
 	}

@@ -5,29 +5,30 @@
 #include <QFileInfo>
 
 #include "CodeEditor.h"
+#include "Project.h"
 
-ProjectFile::ProjectFile() {
+// ProjectFile::ProjectFile() {
+// 
+// 	m_linkedCodeEditor = NULL;
+// }
 
-	m_linkedCodeEditor = NULL;
-}
-
-ProjectFile::ProjectFile(const QString &path) {
+ProjectFile::ProjectFile(Project *project, const QString &path) {
 
 	m_path = path;
+	m_project = project;
 	m_linkedCodeEditor = NULL;
 	createIfNotExists();
 }
 
 ProjectFile::~ProjectFile() {
 
-	qDebug() << __FUNCSIG__;
 }
 
-void ProjectFile::setPath(const QString &path) {
-
-	m_path = path;
-	createIfNotExists();
-}
+// void ProjectFile::setPath(const QString &path) {
+// 
+// 	m_path = path;
+// 	createIfNotExists();
+// }
 
 QString ProjectFile::fileName() const {
 

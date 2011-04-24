@@ -28,6 +28,7 @@ public:
 	~ProjectManager();
 
 	bool createProject(const QString &path);
+	Project *project() { return m_project; }
 
 	void addProjectFile(ProjectFile *projectFile);
 	void removeProjectFile(ProjectFile *projectFile);

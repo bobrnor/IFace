@@ -16,6 +16,7 @@ class CommentsEditor : public QPlainTextEdit {
 	bool m_changingBlockCount;
 	bool m_isLastUpdateRequestFromCode;
 	bool m_isInit;
+	bool m_skipModifications;
 
 	void gotoBegin(QTextCursor &cursor);
 	int gotoEnd(QTextCursor &cursor);
@@ -38,7 +39,7 @@ public:
 private slots:
 	void highlightCurrentLineSlot();
 	void blockCountChangedSlot(int newBlockCount);
-	void commentsChanged();
+	void commentsChangedSlot();
 
 public slots:
 	void scrolledSlot(int y);
@@ -50,4 +51,5 @@ signals:
 	void applyCommentsSignal();
 	void codeScrollRequestSignal(int y);	
 	void commentsCursorLineChangedSignal(int yPos);
+	void commentsChangedSignal();
 };

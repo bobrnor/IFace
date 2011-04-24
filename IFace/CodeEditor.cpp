@@ -24,13 +24,18 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	font.setStyleHint(QFont::TypeWriter);
 	setFont(font);
 
-	setAttribute(Qt::WA_InputMethodEnabled, true);
+	QShortcut *shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("F8"));
+	shortcut->setEnabled(false);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(changeBreakPointSlot()));
+	m_shortcutList.append(shortcut);
 
 	m_isLastUpdateRequestFromComments = false;
 	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
 	m_isInit = false;
 	m_isChanged = false;
+	m_isLoaded = false;
 
 	int m_currentXErrorPosition = -1;
 	int m_currentYErrorPosition = -1;
@@ -262,8 +267,7 @@ void CodeEditor::loadProjectFile() {
 			}
 		}
 		initCommentsAndBreakPoints();
-		m_isChanged = false;
-		emit modificationChanged(false);
+		m_isLoaded = true;
 	}
 }
 
@@ -364,6 +368,9 @@ void CodeEditor::update() {
 
 void CodeEditor::focusInEvent(QFocusEvent *e) {
 
+	foreach (QShortcut *shortcut, m_shortcutList) {
+		shortcut->setEnabled(true);
+	}
 	//updateErrors();
 	m_currentXErrorPosition = -1;
 	m_currentYErrorPosition = -1;
@@ -372,6 +379,9 @@ void CodeEditor::focusInEvent(QFocusEvent *e) {
 
 void CodeEditor::focusOutEvent(QFocusEvent *e) {
 
+	foreach (QShortcut *shortcut, m_shortcutList) {
+		shortcut->setEnabled(false);
+	}
 	highlightCurrentLineSlot();
 }
 
@@ -500,6 +510,28 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
 void CodeEditor::textChangedSlot() {
 
+	if (m_isLoaded) {
+		m_isChanged = true;
+		emit modificationChanged(true);
+	}
+}
+
+void CodeEditor::changeBreakPointSlot() {
+
+	qDebug() << "Shortcut test";
+	QTextBlock block = textCursor().block();
+	CodeLineData *data = NULL;
+	if (block.userData() != NULL) {
+		data = static_cast<CodeLineData *>(block.userData());
+	}
+	else {
+		data = new CodeLineData();
+	}
+	data->hasBreakPoint = !data->hasBreakPoint;
+	block.setUserData(data);
+	updateBreakPointAndComments();
+
 	m_isChanged = true;
-	emit modificationChanged(true);
+
+	m_leftArea->updateGeometry();
 }

@@ -10,31 +10,34 @@
 #include "CompileError.h"
 
 class CodeEditor;
+class Project;
 
 //#define SProjectFile QSharedPointer<ProjectFile>
 
 class ProjectFile {
 
-  QString m_path;
-  QString m_tmpPath;
-  QSet<int> m_breakPoints;
-  QMap<int, QString> m_comments;
-  QList<CompileError> m_enErrors;
-  QList<CompileError> m_ruErrors;
+	Project *m_project;
+	QString m_path;
+	QString m_tmpPath;
+	QSet<int> m_breakPoints;
+	QMap<int, QString> m_comments;
+	QList<CompileError> m_enErrors;
+	QList<CompileError> m_ruErrors;
 
-  CodeEditor *m_linkedCodeEditor;
+	CodeEditor *m_linkedCodeEditor;
 
-  bool createIfNotExists();
+	bool createIfNotExists();
 
 public:
-	ProjectFile();
-    ProjectFile(const QString &path);
+	ProjectFile(Project *project, const QString &path);
 	virtual ~ProjectFile();
+
+	Project *project() { return m_project; }
 
 	uint hash() { return qHash(m_path); }
 
-    QString path() const { return m_path; }
-    void setPath(const QString &path);
+ 	QString path() const { return m_path; }
+// 	void setPath(const QString &path);
 
 	QString fileName() const;
 
@@ -60,7 +63,7 @@ public:
 	QSet<int> breakPoints() const { return m_breakPoints; }
 	QMap<int, QString> comments() const { return m_comments; }
 
-    bool operator==(const ProjectFile &projectFile) const;
+	bool operator==(const ProjectFile &projectFile) const;
 };
 
 #endif // PROJECTFILE_H

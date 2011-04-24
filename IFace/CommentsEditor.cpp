@@ -17,13 +17,14 @@ CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(paren
 	m_changingBlockCount = false;
 	m_isLastUpdateRequestFromCode = false;
 	m_isInit = false;
+	m_skipModifications = false;
 	setWordWrapMode(QTextOption::NoWrap);
 	//setMaximumBlockCount(0);
 
 	m_projectFile = NULL;
 
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
-	connect(this, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+	connect(this, SIGNAL(textChanged()), this, SLOT(commentsChangedSlot()), Qt::DirectConnection);
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(blockCountChangedSlot(int)));
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledSlot(int)));
 
@@ -53,6 +54,7 @@ void CommentsEditor::setProjectFile(ProjectFile *projectFile) {
 
 void CommentsEditor::highlightCurrentLineSlot() {
 
+	m_skipModifications = true;
 	QList<QTextEdit::ExtraSelection> extraSelections;
 
 	if (!isReadOnly() && hasFocus()) {
@@ -72,11 +74,11 @@ void CommentsEditor::highlightCurrentLineSlot() {
 		emit commentsCursorLineChangedSignal(textCursor().blockNumber());
 	}
 	m_isLastUpdateRequestFromCode = false;
+	m_skipModifications = false;
 }
 
 void CommentsEditor::focusInEvent(QFocusEvent *e) {
 
-	
 	highlightCurrentLineSlot();
 }
 
@@ -114,6 +116,8 @@ void CommentsEditor::blockCountChangedSlot(int newBlockCount) {
 void CommentsEditor::makeProperLineCount(int lineCount) {
 
 	//setMaximumBlockCount(lineCount);
+	m_skipModifications = true;
+
 	if (m_isInit) {
 		QTextCursor cursor(firstVisibleBlock());
 
@@ -137,26 +141,33 @@ void CommentsEditor::makeProperLineCount(int lineCount) {
 			m_changingBlockCount = false;
 		}
 	}
+	m_skipModifications = false;
 }
 
 void CommentsEditor::gotoBegin(QTextCursor &cursor) {
 
+	m_skipModifications = true;
 	while (cursor.movePosition(QTextCursor::PreviousBlock)) {}
+	m_skipModifications = false;
 }
 
 int CommentsEditor::gotoEnd(QTextCursor &cursor) {
 
+	m_skipModifications = true;
 	int lastBlockNumber = cursor.blockNumber();
 	while (cursor.movePosition(QTextCursor::NextBlock)) {
 		lastBlockNumber = cursor.blockNumber();			
 	}
+	m_skipModifications = false;
 	return lastBlockNumber;
 }
 
 void CommentsEditor::replaceCurrentBlockText(QTextCursor &cursor, const QString &text) {
 
+	m_skipModifications = true;
 	cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
 	cursor.insertText(text);
+	m_skipModifications = false;
 }
 
 void CommentsEditor::updateComments() {
@@ -200,9 +211,13 @@ void CommentsEditor::saveComments() {
 	}
 }
 
-void CommentsEditor::commentsChanged() {
+void CommentsEditor::commentsChangedSlot() {
 
-	m_isCommentsChanged = true;
+	if (!m_skipModifications && m_isInit) {
+		qDebug() << sender()->metaObject()->className();
+		m_isCommentsChanged = true;
+		emit commentsChangedSignal();
+	}
 }
 
 void CommentsEditor::scrolledSlot(int y) {

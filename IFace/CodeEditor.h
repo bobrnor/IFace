@@ -5,6 +5,7 @@
 #include <QString>
 #include <QPlainTextEdit>
 #include <QTemporaryFile>
+#include <QShortcut>
 
 #include "ProjectFile.h"
 
@@ -13,6 +14,8 @@ class CodeEditor : public QPlainTextEdit {
 
 	QWidget *m_leftArea;
 	ProjectFile *m_projectFile;
+
+	QList<QShortcut*> m_shortcutList;
 
 	int m_currentXErrorPosition;
 	int m_currentYErrorPosition;
@@ -25,6 +28,7 @@ class CodeEditor : public QPlainTextEdit {
 	bool m_isLastUpdateRequestFromErrorTable;
 	int m_lastCommentOffsetLine;
 
+	bool m_isLoaded;
 	bool m_isChanged;
 
 	void loadProjectFile();
@@ -79,6 +83,7 @@ public slots:
 	void commentsPositionChangedSlot(int yPos);
 	void errorPositionChangedSlot(int xPos, int yPos);
 	void textChangedSlot();
+	void changeBreakPointSlot();
 };
 
 #endif // CODEEDITOR_H

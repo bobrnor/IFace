@@ -6,6 +6,7 @@
 #include "CodeEditor.h"
 #include "CommentsEditor.h"
 #include "CodeEditorWidget.h"
+#include "Project.h"
 
 TabsHelper::TabsHelper() {
 
@@ -145,10 +146,7 @@ bool TabsHelper::tryCloseTab(int index) {
 
 		switch (result) {
 		case QMessageBox::Save:			
-			codeEditor->saveProjectFile();
-			m_openFiles.removeAll(codeEditor->projectFile());
-			m_tabWidget->removeTab(index);
-			return true;
+			codeEditor->projectFile()->project()->saveProjectFile(codeEditor->projectFile());
 
 		case QMessageBox::Discard:
 			m_openFiles.removeAll(codeEditor->projectFile());

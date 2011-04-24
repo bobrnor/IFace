@@ -140,7 +140,7 @@ ProjectFile *Project::makeProjectFile(Json::Value projectFileJson) {
 
 	std::string stdPath = projectFileJson["path"].asString();
 	QString filePath = QString::fromStdString(stdPath);
-	ProjectFile *projectFile(new ProjectFile(filePath));
+	ProjectFile *projectFile = new ProjectFile(this, filePath);
 
 	Json::Value breakPointsJson = projectFileJson["breakPoints"];
 	if (breakPointsJson.isArray()) {
