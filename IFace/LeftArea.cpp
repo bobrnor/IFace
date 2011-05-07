@@ -19,3 +19,8 @@ void LeftArea::paintEvent(QPaintEvent *event) {
 
   m_codeEditor->leftAreaPaintEvent(event);
 }
+
+void LeftArea::mouseDoubleClickEvent(QMouseEvent *event) {
+
+	emit doubleClickSignal(event->x(), event->y());
+}

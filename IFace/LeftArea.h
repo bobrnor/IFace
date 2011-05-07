@@ -12,6 +12,7 @@ class LeftArea : public QWidget {
 
 protected:
   void paintEvent(QPaintEvent *event);
+  void LeftArea::mouseDoubleClickEvent(QMouseEvent *event);
 
 public:
   explicit LeftArea(CodeEditor *codeEditor);
@@ -19,6 +20,7 @@ public:
   QSize sizeHint() const;
 
 signals:
+  void doubleClickSignal(int x, int y);
 
 public slots:
 

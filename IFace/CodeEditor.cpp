@@ -58,6 +58,8 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	connect(this->document(), SIGNAL(contentsChange(int, int, int)), 
 		this, SLOT(contentsChangedSlot(int, int, int)));
+	connect(m_leftArea, SIGNAL(doubleClickSignal(int, int)), 
+		this, SLOT(leftAreaDoubleClickSlot(int, int)));
 }
 
 CodeEditor::~CodeEditor() {
@@ -535,4 +537,39 @@ void CodeEditor::changeBreakPointSlot() {
 	emit modificationChanged(true);
 
 	m_leftArea->updateGeometry();
+}
+
+void CodeEditor::leftAreaDoubleClickSlot(int x, int y) {
+
+	qDebug() << "Click y: " << y;
+
+	QTextBlock block = firstVisibleBlock();
+	int blockNumber = block.blockNumber();
+	int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+	int bottom = top + (int) blockBoundingRect(block).height();
+
+	while (block.isValid() && block.isVisible()) {
+		qDebug() << top << " <= " << y << " < " << bottom;
+		if (y >= top && y < bottom) {
+			CodeLineData *data = NULL;
+			if (block.userData() != NULL) {
+				data = static_cast<CodeLineData *>(block.userData());
+			}
+			else {
+				data = new CodeLineData();
+			}
+			data->hasBreakPoint = !data->hasBreakPoint;
+			block.setUserData(data);
+			updateBreakPointAndComments();
+
+			emit modificationChanged(true);
+
+			m_leftArea->updateGeometry();
+			break;
+		}
+
+		block = block.next();
+		top = bottom;
+		bottom = top + (int) blockBoundingRect(block).height();
+	}
 }

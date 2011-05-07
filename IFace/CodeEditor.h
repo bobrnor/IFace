@@ -76,6 +76,7 @@ private slots:
 	void updateRequestSlot(const QRect &rect, int dy);
 	void scrolledSlot(int y);
 	void contentsChangedSlot(int position, int charsRemoved, int charsAdded);
+	void leftAreaDoubleClickSlot(int x, int y);
 
 public slots:
 	void applyCommentsSlot();
