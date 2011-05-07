@@ -7,6 +7,7 @@
 
 class ErrorTableModel : public QAbstractTableModel {
 
+	QList<bool> m_checks;
 	QList<CompileError> m_errorList;
 	QList<int> m_lastErrorRows;
 	QList<int> m_currentErrorRows;
@@ -19,6 +20,9 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+	Qt::ItemFlags flags(const QModelIndex &index) const;
 
 	void updateErrorList(QList<CompileError> errorList);
 	void setErrorList(QList<CompileError> errorList);

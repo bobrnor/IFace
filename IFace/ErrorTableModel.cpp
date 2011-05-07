@@ -63,7 +63,7 @@ QVariant ErrorTableModel::data(const QModelIndex &index, int role /* = Qt::Displ
 	else if (role == Qt::CheckStateRole) {
 		int column = index.column();
 		if (column == 0) {
-			return Qt::Unchecked;
+			return m_checks.at(index.row()) ? Qt::Checked : Qt::Unchecked;
 		}
 		else {
 			return QVariant();
@@ -125,19 +125,39 @@ QVariant ErrorTableModel::headerData(int section, Qt::Orientation orientation, i
 	return QVariant();
 }
 
+bool ErrorTableModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */) {
+
+	if (role == Qt::CheckStateRole) {
+		m_checks.replace(index.row(), value.toBool());
+		return true;
+	}
+	return false;
+}
+
+Qt::ItemFlags ErrorTableModel::flags(const QModelIndex &index) const {
+
+	return (index.column() == 0) 
+		? Qt::ItemIsUserCheckable |Qt::ItemIsEnabled | Qt::ItemIsSelectable 
+		: Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
 void ErrorTableModel::setErrorList(QList<CompileError> errorList) {
 
-	qDebug() << __FUNCSIG__;
 	m_lastErrorRows.clear();
 	m_currentErrorRows.clear();
 	m_currentCodeLineErrorRows.clear();
 	m_errorList = errorList;
+
+	m_checks.clear();
+	for (int i = 0; i < m_errorList.count(); ++i) {
+		m_checks.append(false);
+	}
+
 	reset();
 }
 
 void ErrorTableModel::updateErrorList(QList<CompileError> errorList) {
-
-	qDebug() << __FUNCSIG__;	
+	
 	m_errorList = errorList;
 	update();
 }
