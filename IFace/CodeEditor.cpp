@@ -303,7 +303,7 @@ void CodeEditor::saveProjectFile() {
 			QTextStream textStream(&file);
 			textStream << toPlainText();
 		}
-		m_isChanged = false;
+		//m_isChanged = false;
 		emit modificationChanged(false);
 	}
 }
@@ -511,7 +511,7 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 void CodeEditor::textChangedSlot() {
 
 	if (m_isLoaded) {
-		m_isChanged = true;
+		//m_isChanged = true;
 		emit modificationChanged(true);
 	}
 }
@@ -531,7 +531,8 @@ void CodeEditor::changeBreakPointSlot() {
 	block.setUserData(data);
 	updateBreakPointAndComments();
 
-	m_isChanged = true;
+	//m_isChanged = true;
+	emit modificationChanged(true);
 
 	m_leftArea->updateGeometry();
 }

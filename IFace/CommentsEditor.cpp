@@ -115,7 +115,6 @@ void CommentsEditor::blockCountChangedSlot(int newBlockCount) {
 
 void CommentsEditor::makeProperLineCount(int lineCount) {
 
-	//setMaximumBlockCount(lineCount);
 	m_skipModifications = true;
 
 	if (m_isInit) {

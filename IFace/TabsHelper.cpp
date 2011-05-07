@@ -189,6 +189,7 @@ void TabsHelper::modificationChangedSlot(bool changed) {
 			QString path = codeEditor->projectFile()->path();
 			if (senderPath == path) {
 				QString name = codeEditor->projectFile()->fileName();
+				codeEditor->setIsChanged(changed);
 				QString tabText = name + ((changed) ? "*" : "");
 				m_tabWidget->setTabText(i, tabText);
 				break;
