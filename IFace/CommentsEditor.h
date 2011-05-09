@@ -28,6 +28,7 @@ class CommentsEditor : public QPlainTextEdit {
 protected:
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
+	void contextMenuEvent(QContextMenuEvent *event);
 
 public:
 	CommentsEditor(QWidget *parent = 0);

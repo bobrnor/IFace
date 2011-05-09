@@ -34,5 +34,7 @@ public:
 	void setCurrentCodeLineErrorRows(QList<int> errorRows);
 	QList<int> currentCodeLineErrorRows() { return m_currentCodeLineErrorRows; }
 
+	void setCheckStatusForAll(bool checked);
+
 	void update();
 };

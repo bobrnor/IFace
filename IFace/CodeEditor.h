@@ -44,6 +44,7 @@ protected:
 	void focusInEvent(QFocusEvent *e);
 	void focusOutEvent(QFocusEvent *e);
 	void keyPressEvent(QKeyEvent *e);
+	void contextMenuEvent(QContextMenuEvent *event);
 
 public:
 	explicit CodeEditor(QWidget *parent = 0);
@@ -60,6 +61,8 @@ public:
 
 	void setIsChanged(bool changed) { m_isChanged = changed; }
 	bool isChanged() { return m_isChanged; }
+
+	void setCheckStatusForAll(bool checked);
 
 	void update();
 

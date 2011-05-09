@@ -179,3 +179,10 @@ void ErrorTableModel::update() {
 
 	emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
 }
+
+void ErrorTableModel::setCheckStatusForAll(bool checked) {
+
+	for (int i = 0; i < m_checks.count(); ++i) {
+		m_checks[i] = checked;
+	}
+}

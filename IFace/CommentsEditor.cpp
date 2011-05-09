@@ -6,12 +6,15 @@
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QFile>
+#include <QMenu>
 
 CommentsEditor::CommentsEditor(QWidget *parent /* = 0 */) : QPlainTextEdit(parent) {
 
 	QFont font("Monospace");
 	font.setStyleHint(QFont::TypeWriter);
 	setFont(font);
+
+	setUndoRedoEnabled(false);
 
 	m_codeBlockCount = 0;
 	m_changingBlockCount = false;
@@ -242,4 +245,10 @@ void CommentsEditor::codePositionChangedSlot(int yPos) {
 	}
 	m_isLastUpdateRequestFromCode = true;
 	setTextCursor(cursor);
+}
+
+void CommentsEditor::contextMenuEvent(QContextMenuEvent *event) {
+
+	QMenu *menu = createStandardContextMenu();
+	menu->exec(event->globalPos());
 }
