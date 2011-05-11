@@ -34,6 +34,18 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	connect(shortcut, SIGNAL(activated()), this, SLOT(changeBreakPointSlot()));
 	m_shortcutList.append(shortcut);
 
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Shift+F8"));
+	shortcut->setEnabled(false);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(checkAllSlot()));
+	m_shortcutList.append(shortcut);
+
+	shortcut = new QShortcut(this);
+	shortcut->setKey(QKeySequence("Alt+F8"));
+	shortcut->setEnabled(false);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(uncheckAllSlot()));
+	m_shortcutList.append(shortcut);
+
 	m_isLastUpdateRequestFromComments = false;
 	m_isLastUpdateRequestFromErrorTable = false;
 	m_lastCommentOffsetLine = -1;
@@ -50,12 +62,15 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	setLayout(new QVBoxLayout(this));
 
 	m_leftArea = new LeftArea(this);
+	m_leftArea->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(blockCountChangedSlot(int)));
 	connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateRequestSlot(QRect,int)));
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLineSlot()));
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledSlot(int)));
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedSlot()));
+	connect(m_leftArea, SIGNAL(customContextMenuRequested(const QPoint &)), 
+		this, SLOT(leftAreaContextMenuRequestSlot(const QPoint &)));
 
 	blockCountChangedSlot(0);
 	highlightCurrentLineSlot();
@@ -619,6 +634,12 @@ void CodeEditor::setCheckStatusForAll(bool checked) {
 			data = new CodeLineData();
 		}
 		data->hasBreakPoint = checked;
+		if (checked) {
+			m_projectFile->addBreakPoint(block.blockNumber());
+		}
+		else {
+			m_projectFile->removeBreakPointIfExists(block.blockNumber());
+		}
 		block.setUserData(data);
 
 		block = block.next();
@@ -633,4 +654,23 @@ void CodeEditor::contextMenuEvent(QContextMenuEvent *event) {
 
 	QMenu *menu = createStandardContextMenu();
 	menu->exec(event->globalPos());
+}
+
+void CodeEditor::checkAllSlot() {
+
+	setCheckStatusForAll(true);
+}
+
+void CodeEditor::uncheckAllSlot() {
+
+	setCheckStatusForAll(false);
+}
+
+void CodeEditor::leftAreaContextMenuRequestSlot(const QPoint &pos) {
+
+	QMenu *menu = new QMenu(m_leftArea);
+	menu->addAction("Check All", this, SLOT(checkAllSlot()));
+	menu->addAction("Uncheck All", this, SLOT(uncheckAllSlot()));
+
+	menu->exec(m_leftArea->mapToGlobal(pos));
 }

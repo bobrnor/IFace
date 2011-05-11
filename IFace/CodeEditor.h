@@ -88,6 +88,9 @@ public slots:
 	void errorPositionChangedSlot(int xPos, int yPos);
 	void textChangedSlot();
 	void changeBreakPointSlot();
+	void checkAllSlot();
+	void uncheckAllSlot();
+	void leftAreaContextMenuRequestSlot(const QPoint &pos);
 };
 
 #endif // CODEEDITOR_H
