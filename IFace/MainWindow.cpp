@@ -184,6 +184,14 @@ void MainWindow::setupProjectEnvironment(ProjectManager *projectManager) {
 		projectManager->assignTabWidget(ui->codeTabs);
 		projectManager->assignProjectTreeWidget(ui->projectTree);
 		projectManager->assignErrorWidget(ui->errorTable);
+
+		ProjectTreeHelper *treeHelper = projectManager->projectTreeHelper();
+		connect(treeHelper, SIGNAL(addNewFileToProjectSignal()), 
+			this, SLOT(newProjectFileSlot()));
+		connect(treeHelper, SIGNAL(addExistingFileToProjectSignal()), 
+			this, SLOT(openProjectFileSlot()));
+		connect(treeHelper, SIGNAL(removeFileFromProjectSignal(ProjectFile *)), 
+			this, SLOT(removeProjectFileSlot(ProjectFile *)));
 	}
 }
 
@@ -328,6 +336,13 @@ void MainWindow::openProjectFileSlot() {
 		ProjectFile *projectFile = new ProjectFile(m_currentProjectManager->project(), fileName);
 		m_currentProjectManager->addProjectFile(projectFile);
 		// TODO: update all
+	}
+}
+
+void MainWindow::removeProjectFileSlot(ProjectFile *file) {
+
+	if (m_currentProjectManager != NULL && file != NULL) {
+		m_currentProjectManager->removeProjectFile(file);
 	}
 }
 

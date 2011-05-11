@@ -3,7 +3,8 @@
 #include <QTreeWidget>
 #include "Project.h"
 
-class ProjectTreeHelper {
+class ProjectTreeHelper : public QObject {
+Q_OBJECT
 
 	QTreeWidget *m_linkedTreeWidget;
 	Project *m_project;
@@ -20,4 +21,14 @@ public:
 	QTreeWidget *linkedTreeWidget() const { return m_linkedTreeWidget; }
 
 	void update();
+
+signals:
+	void addNewFileToProjectSignal();
+	void addExistingFileToProjectSignal();
+	void removeFileFromProjectSignal(ProjectFile *file);
+
+private slots:
+	void contextMenuRequestSlot(const QPoint &pos);
+	void contextMenuRemoveFileSlot();
+
 };

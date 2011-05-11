@@ -196,7 +196,12 @@ void Project::saveUpdatedStructure() {
 	Json::Value newFileListJson;
 	if (oldFileListJson.isArray()) {
 		for (int i = 0; i < oldFileListJson.size(); ++i) {
-			newFileListJson.append(oldFileListJson[i]);
+			QString path(oldFileListJson[i]["path"].asString().c_str());
+			foreach (ProjectFile *file, m_projectFiles) {
+				if (file->path() == path) {
+					newFileListJson.append(oldFileListJson[i]);
+				}
+			}
 		}
 	}
 

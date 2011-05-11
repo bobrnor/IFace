@@ -55,12 +55,15 @@ protected:
 private:
     Ui::MainWindow *ui;
 
+public slots:
+	void newProjectFileSlot();
+	void openProjectFileSlot();
+	void removeProjectFileSlot(ProjectFile *file);
+
 private slots:
     void newProjectSlot();
-    void newProjectFileSlot();
     void openProjectSlot();
 	void openProjectFromLastSlot();
-    void openProjectFileSlot();
 	void saveCurrentFileSlot();
 	void saveAllSlot();
 	void compile();

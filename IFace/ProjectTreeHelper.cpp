@@ -1,5 +1,7 @@
 #include "ProjectTreeHelper.h"
 
+#include <QMenu>
+
 #include "Project.h"
 #include "ProjectFile.h"
 
@@ -8,6 +10,10 @@ Q_DECLARE_METATYPE(ProjectFile *)
 ProjectTreeHelper::ProjectTreeHelper(QTreeWidget *projectTree) : m_linkedTreeWidget(projectTree) {
 
 	m_project = NULL;
+	m_linkedTreeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	connect(m_linkedTreeWidget, SIGNAL(customContextMenuRequested(const QPoint &)), 
+		this, SLOT(contextMenuRequestSlot(const QPoint &)));
 }
 
 ProjectTreeHelper::~ProjectTreeHelper() {}
@@ -37,5 +43,32 @@ void ProjectTreeHelper::update() {
 
 			m_linkedTreeWidget->addTopLevelItem(item);
 		}
+	}
+}
+
+void ProjectTreeHelper::contextMenuRequestSlot(const QPoint &pos) {
+
+	QMenu *menu = new QMenu(m_linkedTreeWidget);
+	menu->addAction("Add New File...", this, SIGNAL(addNewFileToProjectSignal()));
+	menu->addAction("Add Existing File...", this, SIGNAL(addExistingFileToProjectSignal()));
+	QAction *removeAction = menu->addAction("Remove File", this, SLOT(contextMenuRemoveFileSlot()));
+
+	QTreeWidgetItem *currentItem = m_linkedTreeWidget->currentItem();
+	if (currentItem != NULL && currentItem->data(0, Qt::UserRole).value<ProjectFile *>() != NULL) {
+		removeAction->setEnabled(true);
+	}
+	else {
+		removeAction->setEnabled(false);
+	}
+
+	menu->exec(m_linkedTreeWidget->mapToGlobal(pos));
+}
+
+void ProjectTreeHelper::contextMenuRemoveFileSlot() {
+
+	QTreeWidgetItem *currentItem = m_linkedTreeWidget->currentItem();
+	if (currentItem != NULL && currentItem->data(0, Qt::UserRole).value<ProjectFile *>() != NULL) {
+		ProjectFile *file = currentItem->data(0, Qt::UserRole).value<ProjectFile *>();
+		emit removeFileFromProjectSignal(file);
 	}
 }

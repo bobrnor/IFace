@@ -37,6 +37,10 @@ public:
 	void assignProjectTreeWidget(QTreeWidget *projectTree);
 	void assignErrorWidget(QTableView *errorWidget);
 
+	ErrorTableHelper *errorTableHelper() { return m_errorTableHelper; }
+	TabsHelper *tabsHelper() { return m_tabsHelper; }
+	ProjectTreeHelper *projectTreeHelper() { return m_projectTreeHelper; }
+
 	void saveAll();
 	void saveCurrentlyOpenProjectFile();
 
