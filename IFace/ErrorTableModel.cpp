@@ -97,10 +97,6 @@ QVariant ErrorTableModel::headerData(int section, Qt::Orientation orientation, i
 
 	if (role == Qt::DisplayRole) {
 		switch (section) {
-			case 0:
-				return QVariant();
-				break;
-
 			case 1:
 				return "Error No";
 				break;
@@ -185,4 +181,5 @@ void ErrorTableModel::setCheckStatusForAll(bool checked) {
 	for (int i = 0; i < m_checks.count(); ++i) {
 		m_checks[i] = checked;
 	}
+	update();
 }

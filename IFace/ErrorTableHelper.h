@@ -18,6 +18,8 @@ class ErrorTableHelper : public QObject {
 	QList<CompileError> m_enErrorList;
 	int m_lastErrorRow;
 
+	QList<QShortcut*> m_shortcutList;
+
 	bool m_isLastUpdateRequestFromCodeEditor;
 
 	void processErrorList();
@@ -39,6 +41,9 @@ private slots:
 public slots:
 	void codeCursorChangedSlot(ProjectFile *file, int xPos, int yPos);
 	void codeChangedSlot(ProjectFile *file, int xPos, int yPos);
+	void checkAllSlot();
+	void uncheckAllSlot();
+	void tableContextMenuRequestSlot(const QPoint &pos);
 
 signals:
 	void errorPositionChangedSignal(ProjectFile *file, int xPos, int yPos);

@@ -1,6 +1,8 @@
 #include "ErrorTableHelper.h"
 
 #include <QSet>
+#include <QMenu>
+#include <QShortcut>
 
 ErrorTableHelper::ErrorTableHelper() {
 
@@ -16,13 +18,30 @@ ErrorTableHelper::~ErrorTableHelper() {
 void ErrorTableHelper::setErrorTable(QTableView *tableView) {
 
 	m_linkedTable = tableView;
+	m_linkedTable->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_lastErrorRow = -1;
 	if (m_linkedTable != NULL) {
 		m_linkedTable->setModel(m_errorTableModel);
 		if (m_linkedTable->selectionModel() != NULL) {
 			connect(m_linkedTable->selectionModel(), SIGNAL(currentRowChanged (const QModelIndex&, const QModelIndex&)), 
 				this, SLOT(currentTableRowChangedSlot(const QModelIndex&, const QModelIndex&)));
+			connect(m_linkedTable, SIGNAL(customContextMenuRequested(const QPoint &)), 
+				this, SLOT(tableContextMenuRequestSlot(const QPoint &)));
 		}
+
+		m_shortcutList.clear();
+
+		QShortcut *shortcut = new QShortcut(m_linkedTable);
+		shortcut->setKey(QKeySequence("Shift+F9"));
+		//shortcut->setEnabled(false);
+		connect(shortcut, SIGNAL(activated()), this, SLOT(checkAllSlot()));
+		m_shortcutList.append(shortcut);
+
+		shortcut = new QShortcut(m_linkedTable);
+		shortcut->setKey(QKeySequence("Alt+F9"));
+		//shortcut->setEnabled(false);
+		connect(shortcut, SIGNAL(activated()), this, SLOT(uncheckAllSlot()));
+		m_shortcutList.append(shortcut);
 	}
 }
 
@@ -143,18 +162,6 @@ void ErrorTableHelper::codeChangedSlot(ProjectFile *file, int xPos, int yPos) {
 			int line = error.yPos() - 1;
 			int character = error.xPos() - 1;
 			if ((line == yPos && character >= xPos) || (line > yPos)) {
-// 				QList<CompileError> errors = file->compileErrorsRu();
-// 				CompileError e = errors.at(i);
-// 				e.setIsValid(false);
-// 				errors.replace(i, e);
-// 				file->setCompileErrorsRu(errors);
-// 
-// 				errors = file->compileErrorsEn();
-// 				e = errors.at(i);
-// 				e.setIsValid(false);
-// 				errors.replace(i, e);
-// 				file->setCompileErrorsEn(errors);
-
 				error.setIsValid(false);
 				m_currentErrorList.replace(i, error);
 			}
@@ -162,4 +169,27 @@ void ErrorTableHelper::codeChangedSlot(ProjectFile *file, int xPos, int yPos) {
 	}
 
 	m_errorTableModel->updateErrorList(m_currentErrorList);
+}
+
+void ErrorTableHelper::checkAllSlot() {
+
+	if (m_linkedTable->hasFocus()) {
+		m_errorTableModel->setCheckStatusForAll(true);
+	}
+}
+
+void ErrorTableHelper::uncheckAllSlot() {
+
+	if (m_linkedTable->hasFocus()) {
+		m_errorTableModel->setCheckStatusForAll(false);
+	}	
+}
+
+void ErrorTableHelper::tableContextMenuRequestSlot(const QPoint &pos) {
+
+	QMenu *menu = new QMenu(m_linkedTable);
+	menu->addAction("Check All", this, SLOT(checkAllSlot()));
+	menu->addAction("Uncheck All", this, SLOT(uncheckAllSlot()));
+
+	menu->exec(m_linkedTable->mapToGlobal(pos));
 }
