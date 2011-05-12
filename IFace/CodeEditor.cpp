@@ -192,8 +192,6 @@ void CodeEditor::resizeEvent(QResizeEvent *e) {
 void CodeEditor::highlightCurrentLineSlot() {
 
 	qDebug() << __FUNCSIG__;
-	QList<QTextEdit::ExtraSelection> extraSelections;
-
 	if (!isReadOnly() && hasFocus()) {
 		QTextEdit::ExtraSelection selection;
 		QColor lineColor = QColor(Qt::yellow).lighter(160);
@@ -202,7 +200,7 @@ void CodeEditor::highlightCurrentLineSlot() {
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 		selection.cursor = textCursor();
 		selection.cursor.clearSelection();
-		extraSelections.append(selection);
+		m_currentLineHighlght = selection;
 
 		if (!m_isLastUpdateRequestFromErrorTable) {
 			emit codeCursorChangedSignal(m_projectFile, textCursor().positionInBlock(), textCursor().blockNumber());
@@ -210,11 +208,7 @@ void CodeEditor::highlightCurrentLineSlot() {
 	}
 
 	updateErrors();
-
-	extraSelections.append(m_errorSelections);
-	extraSelections.append(m_errorSymbols);
-
-	setExtraSelections(extraSelections);
+	updateHighlights();
 	
 	if (!m_isLastUpdateRequestFromComments) {
 		emit codeCursorLineChangedSignal(textCursor().blockNumber());
@@ -673,4 +667,25 @@ void CodeEditor::leftAreaContextMenuRequestSlot(const QPoint &pos) {
 	menu->addAction("Uncheck All", this, SLOT(uncheckAllSlot()));
 
 	menu->exec(m_leftArea->mapToGlobal(pos));
+}
+
+void CodeEditor::highlightCurrentSelection(QColor &color) {
+
+	QTextCharFormat format;
+	format.setBackground(QBrush(color));
+
+	QTextCursor cursor = textCursor();
+	cursor.mergeCharFormat(format);
+
+	emit modificationChanged(false);
+}
+
+void CodeEditor::updateHighlights() {
+
+	QList<QTextEdit::ExtraSelection> extraSelections;
+	extraSelections.append(m_currentLineHighlght);
+	extraSelections.append(m_errorSelections);
+	extraSelections.append(m_errorSymbols);
+
+	setExtraSelections(extraSelections);
 }

@@ -9,6 +9,7 @@
 #include <QSplitter>
 #include <QTreeView>
 #include <QTableView>
+#include <QToolBar>
 
 #include "ProjectManager.h"
 
@@ -20,6 +21,7 @@ class MainWindow : public QWidget {
     Q_OBJECT
 
     QStatusBar *m_statusBar;
+	QToolBar *m_toolBar;
 	QWidget *m_menuBarWrapper;
     QMenuBar *m_menuBar;
 	QMenu *m_lastProjectsMenu;
@@ -68,6 +70,8 @@ private slots:
 	void saveAllSlot();
 	void compile();
 	void shortcutActivated();
+	void changeTextHighlightColor();
+	void highlightSelectedTextSlot();
 };
 
 #endif // MAINWINDOW_H

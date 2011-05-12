@@ -20,6 +20,7 @@ class CodeEditor : public QPlainTextEdit {
 	int m_currentXErrorPosition;
 	int m_currentYErrorPosition;
 
+	QTextEdit::ExtraSelection m_currentLineHighlght;
 	QList<QTextEdit::ExtraSelection> m_errorSymbols;
 	QList<QTextEdit::ExtraSelection> m_errorSelections;
 
@@ -38,6 +39,8 @@ class CodeEditor : public QPlainTextEdit {
 	QTextBlock blockWithNumber(int blockNumber);
 	void moveDownComments(int fromBlockNumber);
 	void updateErrors();
+
+	void updateHighlights();
 
 protected:
 	void resizeEvent(QResizeEvent *e);
@@ -65,6 +68,8 @@ public:
 	void setCheckStatusForAll(bool checked);
 
 	void update();
+
+	void highlightCurrentSelection(QColor &color);
 
 signals:
 	void commentsScrollRequestSignal(int y);

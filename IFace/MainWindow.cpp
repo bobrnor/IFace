@@ -11,8 +11,11 @@
 #include <QWidget>
 #include <QColor>
 #include <QVBoxLayout>
+#include <QColorDialog>
 
 #include "GlobalState.h"
+#include "CodeEditorWidget.h"
+#include "CodeEditor.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
@@ -25,11 +28,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
 	m_menuBar = new QMenuBar(this);  
 	ui->topLayout->addWidget(m_menuBar);
-
-// 	m_menuBarWrapper = new QWidget(this);
-// 	ui->topLayout->addWidget(m_menuBarWrapper);
-
 	ui->topLayout->addSpacing(0);
+
+	m_toolBar = new QToolBar(this);
+	ui->topLayout->addWidget(m_toolBar);
+
+	m_toolBar->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
+	m_toolBar->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 
 	initStatusBar();
 
@@ -120,6 +125,11 @@ QMenu *MainWindow::createFileMenu() {
 	menu->addSeparator();
 
 	menu->addAction("Compile", this, SLOT(compile()));
+
+	menu->addSeparator();
+
+	menu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
+	menu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 
 	menu->addSeparator();
 
@@ -450,4 +460,24 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 		}
 	}
 	return QWidget::eventFilter(object, event);
+}
+
+void MainWindow::changeTextHighlightColor() {
+
+	QColor color = QColorDialog::getColor(GlobalState::instance()->textHighlightColor(), this);
+	GlobalState::instance()->setTextHighlightColor(color);
+	
+	// set up color actions
+}
+
+void MainWindow::highlightSelectedTextSlot() {
+
+	if (m_currentProjectManager != NULL && m_currentProjectManager->tabsHelper() != NULL) {
+		TabsHelper *tabsHelper = m_currentProjectManager->tabsHelper();
+		if (tabsHelper->tabWidget() != NULL && tabsHelper->tabWidget()->currentWidget() != NULL) {
+			CodeEditorWidget *widget = static_cast<CodeEditorWidget *>(tabsHelper->tabWidget()->currentWidget());
+			CodeEditor *editor = widget->codeEditor();
+			editor->highlightCurrentSelection(GlobalState::instance()->textHighlightColor());
+		}
+	}
 }

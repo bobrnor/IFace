@@ -17,6 +17,8 @@ GlobalState *GlobalState::instance() {
 GlobalState::GlobalState() {
 
 	LAST_PROJECTS_KEY = "last_projects";
+	m_textHighlightColor = Qt::green;
+
 	loadSettings();
 }
 
