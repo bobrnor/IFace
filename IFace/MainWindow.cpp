@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	ui->setupUi(this);
 
 	m_currentProjectManager = NULL;
+	m_highlightToolBarAction = NULL;
+	m_highlightMenuAction = NULL;
 
 	m_statusBar = new QStatusBar(this);
 	ui->topLayout->addWidget(m_statusBar);
@@ -33,13 +35,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	ui->topLayout->addWidget(m_menuBar);
 	ui->topLayout->addSpacing(0);
 
-	m_toolBar = new QToolBar(this);
-	ui->topLayout->addWidget(m_toolBar);
+// 	m_toolBar = new QToolBar(this);
+// 	ui->topLayout->addWidget(m_toolBar);
 
 	initStatusBar();
 
 	initMenu();
-	initToolBar();
+	//initToolBar();
 	initSplitters();
 	initProjectTree();
 	initCodeTabs();
@@ -88,8 +90,16 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::initMenu() {
 
 	QMenu *fileMenu = createFileMenu();
+	QMenu *editMenu = createEditMenu();
+	QMenu *buildMenu = createBuildMenu();
+	QMenu *languageMenu = createLanguageMenu();
+	QMenu *helpMenu = createHelpMenu();
 
 	m_menuBar->addMenu(fileMenu);
+	m_menuBar->addMenu(editMenu);
+	m_menuBar->addMenu(buildMenu);
+	m_menuBar->addMenu(languageMenu);
+	m_menuBar->addMenu(helpMenu);
 	m_menuBar->setMaximumHeight(100);
 }
 
@@ -106,10 +116,6 @@ void MainWindow::initToolBar() {
 	m_toolBar->setIconSize(QSize(16, 16));
 
 	m_highlightToolBarAction = m_toolBar->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
-	QIcon icon = makeIconForColor(GlobalState::instance()->textHighlightColor());
-	m_highlightToolBarAction->setIcon(icon);
-	m_highlightMenuAction->setIcon(icon);
-
 	m_toolBar->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 }
 
@@ -120,7 +126,6 @@ void MainWindow::initErrorTable() {}
 QMenu *MainWindow::createFileMenu() {
 
 	QMenu *menu = new QMenu(tr("&File"), m_menuBar);
-
 	menu->addAction("Create project...", this, SLOT(newProjectSlot()));
 	menu->addAction("Open project...", this, SLOT(openProjectSlot()));
 	menu->addSeparator();
@@ -128,28 +133,52 @@ QMenu *MainWindow::createFileMenu() {
 	QMenu *addMenu = new QMenu(tr("Add"), menu);
 	menu->addMenu(addMenu);
 
-	addMenu->addAction("New file...", this, SLOT(newProjectFileSlot()));
+	addMenu->addAction("&New file...", this, SLOT(newProjectFileSlot()))->setShortcut(QKeySequence("Ctrl+N"));
 	addMenu->addAction("Existing file...", this, SLOT(openProjectFileSlot()));
 	menu->addSeparator();
 
-	menu->addAction("Save", this, SLOT(saveCurrentFileSlot()));
-	menu->addAction("Save all", this, SLOT(saveAllSlot()));
-
-	menu->addSeparator();
-
-	menu->addAction("Compile", this, SLOT(compile()));
-
-	menu->addSeparator();
-
-	m_highlightMenuAction = menu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
-	menu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
+	menu->addAction("&Save", this, SLOT(saveCurrentFileSlot()))->setShortcut(QKeySequence("Ctrl+S"));
+	menu->addAction("Save all", this, SLOT(saveAllSlot()))->setShortcut(QKeySequence("Ctrl+Shift+S"));
 
 	menu->addSeparator();
 
 	m_lastProjectsMenu = menu->addMenu("Last Projects");
 	updateLastProjectsMenu();
 
+	menu->addSeparator();
+
+	menu->addAction("Exit", this, SLOT(close()));
+
 	return menu;
+}
+
+QMenu *MainWindow::createEditMenu() {
+
+	QMenu *editMenu = new QMenu("&Edit", m_menuBar);
+	m_highlightMenuAction = editMenu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
+	m_highlightMenuAction->setShortcut(QKeySequence("Ctrl+H"));
+	editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
+
+	return editMenu;
+}
+
+QMenu *MainWindow::createBuildMenu() {
+
+	QMenu *buildMenu = new QMenu("&Build", m_menuBar);
+	buildMenu->addAction("Compile", this, SLOT(compile()))->setShortcut(QKeySequence("F5"));
+	return buildMenu;
+}
+
+QMenu *MainWindow::createLanguageMenu() {
+
+	QMenu *langMenu = new QMenu("&Language", m_menuBar);
+	return langMenu;
+}
+
+QMenu *MainWindow::createHelpMenu() {
+
+	QMenu *helpMenu = new QMenu("&Help", m_menuBar);
+	return helpMenu;
 }
 
 void MainWindow::updateLastProjectsMenu() {
@@ -480,9 +509,7 @@ void MainWindow::changeTextHighlightColor() {
 	QColor color = QColorDialog::getColor(GlobalState::instance()->textHighlightColor(), this);
 	GlobalState::instance()->setTextHighlightColor(color);
 	
-	QIcon icon = makeIconForColor(GlobalState::instance()->textHighlightColor());
-	m_highlightToolBarAction->setIcon(icon);
-	m_highlightMenuAction->setIcon(icon);
+	updateColorIcons();
 }
 
 void MainWindow::highlightSelectedTextSlot() {
@@ -508,4 +535,15 @@ QIcon MainWindow::makeIconForColor(const QColor &color) {
 
 	QIcon icon(pixmap);
 	return icon;
+}
+
+void MainWindow::updateColorIcons() {
+
+	QIcon icon = makeIconForColor(GlobalState::instance()->textHighlightColor());
+	if (m_highlightToolBarAction != NULL) {
+		m_highlightToolBarAction->setIcon(icon);
+	}
+	if (m_highlightMenuAction != NULL) {
+		m_highlightMenuAction->setIcon(icon);
+	}
 }

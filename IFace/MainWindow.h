@@ -43,8 +43,13 @@ class MainWindow : public QWidget {
 	void initToolBar();
 
 	QIcon makeIconForColor(const QColor &color);
+	void updateColorIcons();
 
     QMenu *createFileMenu();
+	QMenu *createEditMenu();
+	QMenu *createBuildMenu();
+	QMenu *createLanguageMenu();
+	QMenu *createHelpMenu();
 
 	void setupProjectEnvironment(ProjectManager *projectManager);
 
