@@ -27,6 +27,9 @@ class MainWindow : public QWidget {
 	QMenu *m_lastProjectsMenu;
 	QList<QShortcut*> m_shortcutList;
 
+	QAction *m_highlightToolBarAction;
+	QAction *m_highlightMenuAction;
+
     ProjectManager *m_currentProjectManager;
 
     void initStatusBar();
@@ -37,6 +40,9 @@ class MainWindow : public QWidget {
     void initErrorTable();
 	void initShortcuts();
 	void initEventFilters();
+	void initToolBar();
+
+	QIcon makeIconForColor(const QColor &color);
 
     QMenu *createFileMenu();
 

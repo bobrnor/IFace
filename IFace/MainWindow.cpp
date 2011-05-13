@@ -12,6 +12,9 @@
 #include <QColor>
 #include <QVBoxLayout>
 #include <QColorDialog>
+#include <QPainter>
+#include <QPixmap>
+#include <QIcon>
 
 #include "GlobalState.h"
 #include "CodeEditorWidget.h"
@@ -33,12 +36,10 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	m_toolBar = new QToolBar(this);
 	ui->topLayout->addWidget(m_toolBar);
 
-	m_toolBar->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
-	m_toolBar->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
-
 	initStatusBar();
 
 	initMenu();
+	initToolBar();
 	initSplitters();
 	initProjectTree();
 	initCodeTabs();
@@ -100,6 +101,18 @@ void MainWindow::initProjectTree() {
 
 }
 
+void MainWindow::initToolBar() {
+
+	m_toolBar->setIconSize(QSize(16, 16));
+
+	m_highlightToolBarAction = m_toolBar->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
+	QIcon icon = makeIconForColor(GlobalState::instance()->textHighlightColor());
+	m_highlightToolBarAction->setIcon(icon);
+	m_highlightMenuAction->setIcon(icon);
+
+	m_toolBar->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
+}
+
 void MainWindow::initCodeTabs() {}
 
 void MainWindow::initErrorTable() {}
@@ -128,7 +141,7 @@ QMenu *MainWindow::createFileMenu() {
 
 	menu->addSeparator();
 
-	menu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
+	m_highlightMenuAction = menu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
 	menu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 
 	menu->addSeparator();
@@ -467,7 +480,9 @@ void MainWindow::changeTextHighlightColor() {
 	QColor color = QColorDialog::getColor(GlobalState::instance()->textHighlightColor(), this);
 	GlobalState::instance()->setTextHighlightColor(color);
 	
-	// set up color actions
+	QIcon icon = makeIconForColor(GlobalState::instance()->textHighlightColor());
+	m_highlightToolBarAction->setIcon(icon);
+	m_highlightMenuAction->setIcon(icon);
 }
 
 void MainWindow::highlightSelectedTextSlot() {
@@ -480,4 +495,17 @@ void MainWindow::highlightSelectedTextSlot() {
 			editor->highlightCurrentSelection(GlobalState::instance()->textHighlightColor());
 		}
 	}
+}
+
+QIcon MainWindow::makeIconForColor(const QColor &color) {
+
+	QPixmap pixmap(32, 32);
+	QPainter painter(&pixmap);
+	painter.setPen(color);
+	painter.drawRect(2, 2, 28, 28);
+	painter.fillRect(2, 2, 28, 28, color);
+	painter.end();
+
+	QIcon icon(pixmap);
+	return icon;
 }
