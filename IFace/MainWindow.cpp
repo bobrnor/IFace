@@ -32,9 +32,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	m_statusBar = new QStatusBar(this);
 	ui->topLayout->addWidget(m_statusBar);
 
-	m_menuBar = new QMenuBar(this);  
+	m_menuBar = new MenuBar(this);  
 	ui->topLayout->addWidget(m_menuBar);
 	ui->topLayout->addSpacing(0);
+
+	connect(m_menuBar, SIGNAL(hovered(QAction*)), this, SLOT(showStatusBarInfo(QAction*)));
+	connect(m_menuBar, SIGNAL(triggered(QAction*)), this, SLOT(hideStatusBarInfo()));
+	connect(m_menuBar, SIGNAL(leaveSignal()), this, SLOT(hideStatusBarInfo()));
 
 // 	m_toolBar = new QToolBar(this);
 // 	ui->topLayout->addWidget(m_toolBar);
@@ -151,12 +155,13 @@ QMenu *MainWindow::createFileMenu() {
 	menu->addMenu(addMenu);
 
 	addMenu->addAction("&New file...", this, SLOT(newProjectFileSlot()))->setShortcut(QKeySequence("Ctrl+N"));
+
 	addMenu->addAction("Existing file...", this, SLOT(openProjectFileSlot()));
 	menu->addSeparator();
 
 	menu->addAction("&Save", this, SLOT(saveCurrentFileSlot()))->setShortcut(QKeySequence("Ctrl+S"));
 	menu->addAction("Save all", this, SLOT(saveAllSlot()))->setShortcut(QKeySequence("Ctrl+Shift+S"));
-
+	
 	menu->addSeparator();
 
 	m_lastProjectsMenu = menu->addMenu("Last Projects");
@@ -174,6 +179,7 @@ QMenu *MainWindow::createEditMenu() {
 	QMenu *editMenu = new QMenu("&Edit", m_menuBar);
 	m_highlightMenuAction = editMenu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
 	m_highlightMenuAction->setShortcut(QKeySequence("Ctrl+H"));
+
 	editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 
 	return editMenu;
@@ -206,6 +212,8 @@ void MainWindow::updateLastProjectsMenu() {
 		QString elidedString = fontMetrics().elidedText(path, Qt::ElideMiddle, 200);
 		QAction *action = m_lastProjectsMenu->addAction(elidedString, this, SLOT(openProjectFromLastSlot()));
 		action->setToolTip(path);
+		action->setStatusTip(path);
+		connect(action, SIGNAL(hovered()), this, SLOT(showStatusBarInfo()));
 	}
 }
 
@@ -563,4 +571,18 @@ void MainWindow::updateColorIcons() {
 	if (m_highlightMenuAction != NULL) {
 		m_highlightMenuAction->setIcon(icon);
 	}
+}
+
+void MainWindow::showStatusBarInfo(QAction *action) {
+
+	QString statusTipText = action->statusTip();
+	if (statusTipText.isEmpty()) {
+		statusTipText = action->text();
+	}
+	m_statusBar->showMessage(statusTipText.replace("&", ""));
+}
+
+void MainWindow::hideStatusBarInfo() {
+
+	m_statusBar->showMessage("");
 }

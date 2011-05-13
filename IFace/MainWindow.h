@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QStatusBar>
-#include <QMenuBar>
+#include "MenuBar.h"
 #include <QTabBar>
 #include <QMenu>
 #include <QSplitter>
@@ -23,7 +23,7 @@ class MainWindow : public QWidget {
     QStatusBar *m_statusBar;
 	QToolBar *m_toolBar;
 	QWidget *m_menuBarWrapper;
-    QMenuBar *m_menuBar;
+    MenuBar *m_menuBar;
 	QMenu *m_lastProjectsMenu;
 	QList<QShortcut*> m_shortcutList;
 
@@ -85,6 +85,8 @@ private slots:
 	void shortcutActivated();
 	void changeTextHighlightColor();
 	void highlightSelectedTextSlot();
+	void showStatusBarInfo(QAction *action);
+	void hideStatusBarInfo();
 };
 
 #endif // MAINWINDOW_H
