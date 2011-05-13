@@ -11,7 +11,7 @@
 #include "CompilerHelper.h"
 #include "ErrorTableHelper.h"
 
-class ProjectManager : QObject {
+class ProjectManager : public QObject {
 	Q_OBJECT
 
 	Project *m_project;
@@ -53,6 +53,9 @@ public:
 	void setFocusToComments();
 	void setFocusToErros();
 	void setFocusToProjectTree();
+
+signals:
+	void compileEndSignal();
 
 public slots:
 	void intemActivatedSlot(QTreeWidgetItem *item);

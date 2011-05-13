@@ -30,6 +30,12 @@ class MainWindow : public QWidget {
 	QAction *m_highlightToolBarAction;
 	QAction *m_highlightMenuAction;
 
+	QList<QAction *> m_projectRelatedActions;
+	QList<QAction *> m_editorRelatedActions;
+	QList<QAction *> m_compiletRelatedActions;
+
+	bool m_isInCompile;
+
     ProjectManager *m_currentProjectManager;
 
     void initStatusBar();
@@ -46,6 +52,8 @@ class MainWindow : public QWidget {
 
 	QIcon makeIconForColor(const QColor &color);
 	void updateColorIcons();
+
+	void updateEnability();
 
     QMenu *createFileMenu();
 	QMenu *createEditMenu();
@@ -82,6 +90,7 @@ private slots:
 	void saveCurrentFileSlot();
 	void saveAllSlot();
 	void compile();
+	void compileEnd();
 	void shortcutActivated();
 	void changeTextHighlightColor();
 	void highlightSelectedTextSlot();

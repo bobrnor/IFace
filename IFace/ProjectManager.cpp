@@ -177,6 +177,7 @@ void ProjectManager::compileCompleteSlot() {
 	if (m_tabsHelper->tabWidget()->currentWidget() != NULL) {
 		((CodeEditorWidget *) m_tabsHelper->tabWidget()->currentWidget())->codeEditor()->update();
 	}
+	emit compileEndSignal();
 }
 
 void ProjectManager::errorPositionChangedSlot(ProjectFile *file, int xPos, int yPos) {

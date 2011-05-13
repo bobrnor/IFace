@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	m_highlightToolBarAction = NULL;
 	m_highlightMenuAction = NULL;
 
+	m_isInCompile = false;
+
 	m_statusBar = new QStatusBar(this);
 	ui->topLayout->addWidget(m_statusBar);
 
@@ -55,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	initEventFilters();
 
 	showStartUpHelp();
+	updateEnability();
 }
 
 MainWindow::~MainWindow() {
@@ -147,20 +150,33 @@ void MainWindow::initErrorTable() {}
 QMenu *MainWindow::createFileMenu() {
 
 	QMenu *menu = new QMenu(tr("&File"), m_menuBar);
-	menu->addAction("Create project...", this, SLOT(newProjectSlot()));
-	menu->addAction("Open project...", this, SLOT(openProjectSlot()));
+	QAction *action = menu->addAction("Create project...", this, SLOT(newProjectSlot()));
+	m_compiletRelatedActions.append(action);
+	action = menu->addAction("Open project...", this, SLOT(openProjectSlot()));
+	m_compiletRelatedActions.append(action);
 	menu->addSeparator();
 
 	QMenu *addMenu = new QMenu(tr("Add"), menu);
 	menu->addMenu(addMenu);
 
-	addMenu->addAction("&New file...", this, SLOT(newProjectFileSlot()))->setShortcut(QKeySequence("Ctrl+N"));
+	action = addMenu->addAction("&New file...", this, SLOT(newProjectFileSlot()));
+	action->setShortcut(QKeySequence("Ctrl+N"));
+	m_compiletRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
 
-	addMenu->addAction("Existing file...", this, SLOT(openProjectFileSlot()));
+	action = addMenu->addAction("Existing file...", this, SLOT(openProjectFileSlot()));
+	m_compiletRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
 	menu->addSeparator();
 
-	menu->addAction("&Save", this, SLOT(saveCurrentFileSlot()))->setShortcut(QKeySequence("Ctrl+S"));
-	menu->addAction("Save all", this, SLOT(saveAllSlot()))->setShortcut(QKeySequence("Ctrl+Shift+S"));
+	action = menu->addAction("&Save", this, SLOT(saveCurrentFileSlot()));
+	action->setShortcut(QKeySequence("Ctrl+S"));
+	m_compiletRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
+	action = menu->addAction("Save all", this, SLOT(saveAllSlot()));
+	action->setShortcut(QKeySequence("Ctrl+Shift+S"));
+	m_compiletRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
 	
 	menu->addSeparator();
 
@@ -179,8 +195,12 @@ QMenu *MainWindow::createEditMenu() {
 	QMenu *editMenu = new QMenu("&Edit", m_menuBar);
 	m_highlightMenuAction = editMenu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
 	m_highlightMenuAction->setShortcut(QKeySequence("Ctrl+H"));
+	m_editorRelatedActions.append(m_highlightMenuAction);
+	m_projectRelatedActions.append(m_highlightMenuAction);
 
-	editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
+	QAction *action = editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
+	m_editorRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
 
 	return editMenu;
 }
@@ -188,7 +208,10 @@ QMenu *MainWindow::createEditMenu() {
 QMenu *MainWindow::createBuildMenu() {
 
 	QMenu *buildMenu = new QMenu("&Build", m_menuBar);
-	buildMenu->addAction("Compile", this, SLOT(compile()))->setShortcut(QKeySequence("F5"));
+	QAction *action = buildMenu->addAction("Compile", this, SLOT(compile()));
+	action->setShortcut(QKeySequence("F5"));
+	m_projectRelatedActions.append(action);
+	m_compiletRelatedActions.append(action);
 	return buildMenu;
 }
 
@@ -269,7 +292,9 @@ void MainWindow::setupProjectEnvironment(ProjectManager *projectManager) {
 			this, SLOT(openProjectFileSlot()));
 		connect(treeHelper, SIGNAL(removeFileFromProjectSignal(ProjectFile *)), 
 			this, SLOT(removeProjectFileSlot(ProjectFile *)));
+		connect(projectManager, SIGNAL(compileEndSignal()), this, SLOT(compileEnd()));
 	}
+	updateEnability();
 }
 
 //-------------SLOTS------------------
@@ -441,7 +466,26 @@ void MainWindow::compile() {
 
 	if (m_currentProjectManager != NULL) {
 		m_currentProjectManager->compile();
+		m_isInCompile = true;
+		m_statusBar->showMessage("Compilig...");
+		updateEnability();
 	}
+}
+
+void MainWindow::compileEnd() {
+
+	QMessageBox *messageBox = new QMessageBox("Compiling",
+		"Compiling is done.", 
+		QMessageBox::Information, 
+		QMessageBox::Ok,
+		QMessageBox::NoButton, 
+		QMessageBox::NoButton);
+	messageBox->exec();
+	delete messageBox;
+
+	m_isInCompile = false;
+	m_statusBar->showMessage("");
+	updateEnability();
 }
 
 void MainWindow::setFocusToMenu() {
@@ -585,4 +629,19 @@ void MainWindow::showStatusBarInfo(QAction *action) {
 void MainWindow::hideStatusBarInfo() {
 
 	m_statusBar->showMessage("");
+}
+
+void MainWindow::updateEnability() {
+
+	bool projectOpen = m_currentProjectManager != NULL;
+
+	foreach (QAction *action, m_projectRelatedActions) {
+		action->setEnabled(projectOpen);
+	}
+
+	if (projectOpen) {
+		foreach (QAction *action, m_compiletRelatedActions) {
+			action->setEnabled(!m_isInCompile);
+		}
+	}
 }
