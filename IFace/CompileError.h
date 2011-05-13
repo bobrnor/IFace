@@ -28,4 +28,6 @@ public:
 
 	bool isValid() { return m_isValid; }
 	void setIsValid(bool value) { m_isValid = value; }
+
+	QString errorPattern();
 };

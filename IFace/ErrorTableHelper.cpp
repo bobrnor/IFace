@@ -47,12 +47,10 @@ void ErrorTableHelper::setErrorTable(QTableView *tableView) {
 
 void ErrorTableHelper::processErrorList() {
 
-	QRegExp rx("\"(.*)\"");
-
 	QSet<uint> errorEntries;
 	for (int i = 0; i < m_currentErrorList.count(); ++i) {
 		CompileError error = m_currentErrorList.at(i);
-		QString commonErrorText = error.text().replace(rx, "");
+		QString commonErrorText = error.errorPattern();
 
 		uint hash = qHash(commonErrorText);
 		if (!errorEntries.contains(hash)) {

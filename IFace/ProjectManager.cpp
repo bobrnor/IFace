@@ -173,6 +173,7 @@ void ProjectManager::compileCompleteSlot() {
 		enErrors.append(projectFile->compileErrorsEn());
 	}
 	m_errorTableHelper->setErrorLists(ruErrors, enErrors);
+	GlobalState::instance()->addErrors(enErrors, ruErrors);
 	if (m_tabsHelper->tabWidget()->currentWidget() != NULL) {
 		((CodeEditorWidget *) m_tabsHelper->tabWidget()->currentWidget())->codeEditor()->update();
 	}

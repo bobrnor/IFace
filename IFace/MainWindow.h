@@ -42,6 +42,8 @@ class MainWindow : public QWidget {
 	void initEventFilters();
 	void initToolBar();
 
+	void showStartUpHelp();
+
 	QIcon makeIconForColor(const QColor &color);
 	void updateColorIcons();
 

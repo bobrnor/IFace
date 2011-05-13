@@ -15,6 +15,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QIcon>
+#include <QMessageBox>
 
 #include "GlobalState.h"
 #include "CodeEditorWidget.h"
@@ -48,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	initErrorTable();
 	initShortcuts();
 	initEventFilters();
+
+	showStartUpHelp();
 }
 
 MainWindow::~MainWindow() {
@@ -68,6 +71,20 @@ MainWindow::~MainWindow() {
 		m_shortcutList.removeAt(i);
 		delete shortcut;
 	}
+}
+
+void MainWindow::showStartUpHelp() {
+
+	if (!GlobalState::instance()->enHighFrequenceError().isEmpty()) {
+		QMessageBox *messageBox = new QMessageBox("Last session hegh frequence error help",
+			GlobalState::instance()->enHighFrequenceError(), 
+			QMessageBox::Information, 
+			QMessageBox::Ok,
+			QMessageBox::NoButton, 
+			QMessageBox::NoButton);
+		messageBox->exec();
+		delete messageBox;
+	}	
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

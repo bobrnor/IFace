@@ -17,7 +17,12 @@ GlobalState *GlobalState::instance() {
 GlobalState::GlobalState() {
 
 	LAST_PROJECTS_KEY = "last_projects";
+	EN_HIGH_FREQUENCE_ERROR_KEY = "en_hfe";
+	RU_HIGH_FREQUENCE_ERROR_KEY = "ru_hfe";
+
 	m_textHighlightColor = Qt::green;
+	m_enHighFrquenceError = "";
+	m_ruHighFrquenceError = "";
 
 	loadSettings();
 }
@@ -37,6 +42,8 @@ void GlobalState::saveSettings() {
 		}
 	}
 	settings.setValue(LAST_PROJECTS_KEY, pathList);
+	settings.setValue(EN_HIGH_FREQUENCE_ERROR_KEY, m_enHighFrquenceError);
+	settings.setValue(RU_HIGH_FREQUENCE_ERROR_KEY, m_ruHighFrquenceError);
 	settings.sync();
 }
 
@@ -49,6 +56,9 @@ void GlobalState::loadSettings() {
 		QString projectPath = path.toString();
 		m_lastProjects.append(projectPath);
 	}
+
+	m_enHighFrquenceError = settings.value(EN_HIGH_FREQUENCE_ERROR_KEY, "").toString();
+	m_ruHighFrquenceError = settings.value(RU_HIGH_FREQUENCE_ERROR_KEY, "").toString();
 }
 
 void GlobalState::projectOpened(Project *project) {
@@ -61,4 +71,46 @@ void GlobalState::projectOpened(Project *project) {
 		}
 		saveSettings();
 	}
+}
+
+void GlobalState::addErrors(QList<CompileError> enErrors, QList<CompileError>ruErrors) {
+
+	int count = -1;
+	QString errorPattern;
+
+	foreach (CompileError error, enErrors) {
+		QString pattern = error.errorPattern();
+		if (m_enErrorFrenquence.contains(pattern)) {
+			m_enErrorFrenquence[pattern]++;
+		}
+		else {
+			m_enErrorFrenquence[pattern] = 0;
+		}
+		if (count < m_enErrorFrenquence[pattern]) {
+			count = m_enErrorFrenquence[pattern];
+			errorPattern = pattern;
+		}
+	}
+
+	m_enHighFrquenceError = errorPattern;
+
+	count = -1;
+	errorPattern = "";
+
+	foreach (CompileError error, ruErrors) {
+		QString pattern = error.errorPattern();
+		if (m_ruErrorFrenquence.contains(pattern)) {
+			m_ruErrorFrenquence[pattern]++;
+		}
+		else {
+			m_ruErrorFrenquence[pattern] = 0;
+		}
+		if (count < m_ruErrorFrenquence[pattern]) {
+			count = m_ruErrorFrenquence[pattern];
+			errorPattern = pattern;
+		}
+	}
+
+	m_ruHighFrquenceError = errorPattern;
+	saveSettings();
 }
