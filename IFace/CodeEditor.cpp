@@ -222,7 +222,12 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 
 	qDebug() << __FUNCSIG__;
 	QPainter painter(m_leftArea);
-	painter.fillRect(event->rect(), Qt::lightGray);
+
+	QRect darkGreyRect = QRect(event->rect().x(), event->rect().y(), event->rect().width() - 25, event->rect().height());
+	QRect lightGreyRect = QRect(event->rect().x() + event->rect().width() - 25, event->rect().y(), 25, event->rect().height());
+
+	painter.fillRect(darkGreyRect, Qt::darkGray);
+	painter.fillRect(lightGreyRect, Qt::lightGray);
 
 	QTextBlock block = firstVisibleBlock();
 	int blockNumber = block.blockNumber();
@@ -238,13 +243,16 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 				}
 			}
 
-			QString number = QString::number(blockNumber + 1)
-				.append(" (")
-				.append(QString::number(count)).append(")");
+			QString number = QString::number(blockNumber + 1);
+			QString errorNumber = QString::number(count);
 
 			painter.setPen(Qt::black);
-			painter.drawText(0, top, m_leftArea->width(), fontMetrics().height(),
+			painter.drawText(22, top, m_leftArea->width() - 22 - 30, fontMetrics().height(),
 				Qt::AlignRight, number);
+			if (count > 0) {
+				painter.drawText(m_leftArea->width() - 24, top, 20, fontMetrics().height(),
+					Qt::AlignRight, errorNumber);
+			}
 
 			bool isWithBreakPoint = m_projectFile->checkLineForBreakPoints(blockNumber);
 			if (isWithBreakPoint) {
