@@ -70,6 +70,8 @@ void ErrorTableHelper::setErrorLists(QList<CompileError> ruErrorList, QList<Comp
 	processErrorList();
 	m_lastErrorRow = -1;
 	m_errorTableModel->setErrorList(m_currentErrorList);
+	m_linkedTable->resizeColumnsToContents();
+	m_linkedTable->resizeRowsToContents();
 }
 
 void ErrorTableHelper::currentTableRowChangedSlot(const QModelIndex &current, const QModelIndex &previous) {
