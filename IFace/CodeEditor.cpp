@@ -191,21 +191,20 @@ void CodeEditor::resizeEvent(QResizeEvent *e) {
 
 void CodeEditor::highlightCurrentLineSlot() {
 
-	qDebug() << __FUNCSIG__;
-	if (!isReadOnly() && hasFocus()) {
-		QTextEdit::ExtraSelection selection;
+	qDebug() << __FUNCSIG__;QTextEdit::ExtraSelection selection;
+	if (!isReadOnly() && hasFocus()) {		
 		QColor lineColor = QColor(Qt::yellow).lighter(160);
 
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 		selection.cursor = textCursor();
-		selection.cursor.clearSelection();
-		m_currentLineHighlght = selection;
+		selection.cursor.clearSelection();		
 
 		if (!m_isLastUpdateRequestFromErrorTable) {
 			emit codeCursorChangedSignal(m_projectFile, textCursor().positionInBlock(), textCursor().blockNumber());
 		}
 	}
+	m_currentLineHighlght = selection;
 
 	updateErrors();
 	updateHighlights();
