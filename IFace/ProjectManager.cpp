@@ -15,6 +15,8 @@ ProjectManager::ProjectManager() {
 
 	m_project = NULL;
 	m_tabsHelper = NULL;
+	m_compileHelper = NULL;
+	m_projectTreeHelper = NULL;
 	m_errorTableHelper = new ErrorTableHelper();
 
 	connect(m_errorTableHelper, SIGNAL(errorPositionChangedSignal(ProjectFile*, int, int)), 
@@ -29,6 +31,9 @@ ProjectManager::ProjectManager(const QString &path) {
 	else {
 		ProjectManager::ProjectManager();
 	}
+	m_tabsHelper = NULL;
+	m_compileHelper = NULL;
+	m_projectTreeHelper = NULL;
 	m_errorTableHelper = new ErrorTableHelper();
 	connect(m_errorTableHelper, SIGNAL(errorPositionChangedSignal(ProjectFile*, int, int)), 
 		this, SLOT(errorPositionChangedSlot(ProjectFile*, int, int)));
@@ -38,6 +43,18 @@ ProjectManager::~ProjectManager() {
 
 	if (m_project != NULL) {
 		delete m_project;
+	}
+	if (m_compileHelper != NULL) {
+		delete m_compileHelper;
+	}
+	if (m_errorTableHelper != NULL) {
+		delete m_errorTableHelper;
+	}
+	if (m_projectTreeHelper != NULL) {
+		delete m_projectTreeHelper;
+	}
+	if (m_tabsHelper != NULL) {
+		delete m_tabsHelper;
 	}
 }
 
@@ -165,6 +182,7 @@ void ProjectManager::compileCompleteSlot() {
 
 	qDebug() << "Compile compete!";
 	delete m_compileHelper;
+	m_compileHelper = NULL;
 
 	QList<CompileError> ruErrors;
 	QList<CompileError> enErrors;

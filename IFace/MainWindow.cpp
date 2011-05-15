@@ -236,7 +236,6 @@ void MainWindow::updateLastProjectsMenu() {
 		QAction *action = m_lastProjectsMenu->addAction(elidedString, this, SLOT(openProjectFromLastSlot()));
 		action->setToolTip(path);
 		action->setStatusTip(path);
-		connect(action, SIGNAL(hovered()), this, SLOT(showStatusBarInfo()));
 	}
 }
 
@@ -411,10 +410,22 @@ void MainWindow::openProjectFromLastSlot() {
 				}
 			}
 
-			m_currentProjectManager = new ProjectManager(path);
-			setupProjectEnvironment(m_currentProjectManager);
-			// TODO: update all
-			updateLastProjectsMenu();
+			if (QFile::exists(path)) {
+				m_currentProjectManager = new ProjectManager(path);
+				setupProjectEnvironment(m_currentProjectManager);
+				// TODO: update all
+				updateLastProjectsMenu();
+			}		
+			else {
+				QMessageBox *messageBox = new QMessageBox("File not found",
+					"Selected project not found.", 
+					QMessageBox::Critical, 
+					QMessageBox::Ok,
+					QMessageBox::NoButton, 
+					QMessageBox::NoButton);
+				messageBox->exec();
+				delete messageBox;
+			}
 		}
 	}
 }

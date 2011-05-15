@@ -16,12 +16,20 @@ TabsHelper::TabsHelper() {
 TabsHelper::TabsHelper(QTabWidget *tabWidget) {
 
 	qDebug() << __FUNCSIG__;
+	m_tabWidget = NULL;
 	setTabWidget(tabWidget);	
 }
 
 void TabsHelper::setTabWidget(QTabWidget *tabWidget) { 
 
+	if (m_tabWidget != NULL) {
+		disconnect(m_tabWidget);
+		delete m_tabWidget;
+	}
 	m_tabWidget = tabWidget; 
+	int rand = qrand();
+	qDebug() << "Id: " << rand;
+	m_tabWidget->setStatusTip(QString::number(rand));
 	connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), 
 		this, SLOT(tabCloseRequestSlot(int)));
 }
@@ -131,6 +139,7 @@ bool TabsHelper::tryCloseAll() {
 
 bool TabsHelper::tryCloseTab(int index) {
 
+	qDebug() << "rem_id: " << m_tabWidget->statusTip();
 	CodeEditorWidget *codeEditorWidget = static_cast<CodeEditorWidget *>(m_tabWidget->widget(index));
 	CodeEditor *codeEditor = codeEditorWidget->codeEditor();
 

@@ -46,7 +46,7 @@ void Project::loadFromFile() {
 	std::ifstream fileStream;
 	fileStream.open(m_projectFilePath.toStdString().c_str());
 	bool ok = reader.parse(fileStream, m_projectJson);
-	Q_ASSERT(ok);
+	/*Q_ASSERT(ok);*/
 	if (ok) {
 		m_projectFilePath = QString::fromStdString(m_projectJson["projectFilePath"].asString());
 		Json::Value files = m_projectJson["projectFilesList"];
