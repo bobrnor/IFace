@@ -33,13 +33,11 @@ void ErrorTableHelper::setErrorTable(QTableView *tableView) {
 
 		QShortcut *shortcut = new QShortcut(m_linkedTable);
 		shortcut->setKey(QKeySequence("Shift+F9"));
-		//shortcut->setEnabled(false);
 		connect(shortcut, SIGNAL(activated()), this, SLOT(checkAllSlot()));
 		m_shortcutList.append(shortcut);
 
 		shortcut = new QShortcut(m_linkedTable);
 		shortcut->setKey(QKeySequence("Alt+F9"));
-		//shortcut->setEnabled(false);
 		connect(shortcut, SIGNAL(activated()), this, SLOT(uncheckAllSlot()));
 		m_shortcutList.append(shortcut);
 	}
