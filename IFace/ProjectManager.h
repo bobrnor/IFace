@@ -53,6 +53,7 @@ public:
 	void setFocusToComments();
 	void setFocusToErros();
 	void setFocusToProjectTree();
+	void retranslate();
 
 signals:
 	void compileEndSignal();

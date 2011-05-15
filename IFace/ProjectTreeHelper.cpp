@@ -49,9 +49,9 @@ void ProjectTreeHelper::update() {
 void ProjectTreeHelper::contextMenuRequestSlot(const QPoint &pos) {
 
 	QMenu *menu = new QMenu(m_linkedTreeWidget);
-	menu->addAction("Add New File...", this, SIGNAL(addNewFileToProjectSignal()));
-	menu->addAction("Add Existing File...", this, SIGNAL(addExistingFileToProjectSignal()));
-	QAction *removeAction = menu->addAction("Remove File", this, SLOT(contextMenuRemoveFileSlot()));
+	menu->addAction(tr("Add New File..."), this, SIGNAL(addNewFileToProjectSignal()));
+	menu->addAction(tr("Add Existing File..."), this, SIGNAL(addExistingFileToProjectSignal()));
+	QAction *removeAction = menu->addAction(tr("Remove File"), this, SLOT(contextMenuRemoveFileSlot()));
 
 	QTreeWidgetItem *currentItem = m_linkedTreeWidget->currentItem();
 	if (currentItem != NULL && currentItem->data(0, Qt::UserRole).value<ProjectFile *>() != NULL) {

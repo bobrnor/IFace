@@ -16,9 +16,16 @@ GlobalState *GlobalState::instance() {
 
 GlobalState::GlobalState() {
 
+	m_translator = new QTranslator;
+	m_qtTranslator = new QTranslator;
+	m_qtTranslator->load("qt_ru.qm", ".");
+
+	m_lang = 0;
+
 	LAST_PROJECTS_KEY = "last_projects";
 	EN_HIGH_FREQUENCE_ERROR_KEY = "en_hfe";
 	RU_HIGH_FREQUENCE_ERROR_KEY = "ru_hfe";
+	LAST_LANG_KEY = "last_lang";
 
 	m_textHighlightColor = Qt::green;
 	m_enHighFrquenceError = "";
@@ -27,6 +34,13 @@ GlobalState::GlobalState() {
 	m_eventFilter = NULL;
 
 	loadSettings();
+
+	if (m_lang) {
+		m_translator->load("iface_ru.qm", ".");
+	}
+	else {
+		m_translator->load("iface_en.qm", ".");
+	}
 }
 
 GlobalState::~GlobalState() {
@@ -46,6 +60,7 @@ void GlobalState::saveSettings() {
 	settings.setValue(LAST_PROJECTS_KEY, pathList);
 	settings.setValue(EN_HIGH_FREQUENCE_ERROR_KEY, m_enHighFrquenceError);
 	settings.setValue(RU_HIGH_FREQUENCE_ERROR_KEY, m_ruHighFrquenceError);
+	settings.setValue(LAST_LANG_KEY, m_lang);
 	settings.sync();
 }
 
@@ -61,6 +76,7 @@ void GlobalState::loadSettings() {
 
 	m_enHighFrquenceError = settings.value(EN_HIGH_FREQUENCE_ERROR_KEY, "").toString();
 	m_ruHighFrquenceError = settings.value(RU_HIGH_FREQUENCE_ERROR_KEY, "").toString();
+	m_lang = settings.value(LAST_LANG_KEY, 0).toInt();
 }
 
 void GlobalState::projectOpened(Project *project) {

@@ -6,6 +6,7 @@
 #include "CompileError.h"
 
 class ErrorTableModel : public QAbstractTableModel {
+Q_OBJECT
 
 	QList<bool> m_checks;
 	QList<CompileError> m_errorList;

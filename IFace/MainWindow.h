@@ -68,6 +68,8 @@ class MainWindow : public QWidget {
 
 	void updateLastProjectsMenu();
 
+	void retranslate();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -102,6 +104,8 @@ private slots:
 	void paste();
 	void cut();
 	void copy();
+	void enLang();
+	void ruLang();
 };
 
 #endif // MAINWINDOW_H

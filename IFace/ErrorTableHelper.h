@@ -31,9 +31,11 @@ public:
 	void setErrorTable(QTableView *tableView);
 	QTableView *errorTable() { return m_linkedTable; }
 
-	void setErrorLists(QList<CompileError> ruErrorList, QList<CompileError> enErrorList);
+	void setErrorLists(QList<CompileError> enErrorList, QList<CompileError> ruErrorList);
 	QList<CompileError> errorRuList() { return m_ruErrorList; }
 	QList<CompileError> errorEnList() { return m_enErrorList; }
+
+	void retranslate();
 
 private slots:
 	void currentTableRowChangedSlot(const QModelIndex & current, const QModelIndex & previous);

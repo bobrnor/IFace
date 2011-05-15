@@ -4,6 +4,8 @@
 #include <QMenu>
 #include <QShortcut>
 
+#include "GlobalState.h"
+
 ErrorTableHelper::ErrorTableHelper() {
 
 	m_errorTableModel = new ErrorTableModel();
@@ -55,18 +57,23 @@ void ErrorTableHelper::processErrorList() {
 			errorEntries.insert(hash);
 
 			QString longText = error.text();
-			longText += ". [Extended error message]";
+			longText += tr(". [Extended error message]");
 			error.setText(longText);
 			m_currentErrorList.replace(i, error);
 		}
 	}
 }
 
-void ErrorTableHelper::setErrorLists(QList<CompileError> ruErrorList, QList<CompileError> enErrorList) {
+void ErrorTableHelper::setErrorLists(QList<CompileError> enErrorList, QList<CompileError> ruErrorList) {
 
 	m_ruErrorList = ruErrorList;
 	m_enErrorList = enErrorList;
-	m_currentErrorList = m_ruErrorList;
+	if (GlobalState::instance()->langId()) {
+		m_currentErrorList = m_ruErrorList;
+	}
+	else {
+		m_currentErrorList = m_enErrorList;
+	}	
 	processErrorList();
 	m_lastErrorRow = -1;
 	m_errorTableModel->setErrorList(m_currentErrorList);
@@ -188,8 +195,21 @@ void ErrorTableHelper::uncheckAllSlot() {
 void ErrorTableHelper::tableContextMenuRequestSlot(const QPoint &pos) {
 
 	QMenu *menu = new QMenu(m_linkedTable);
-	menu->addAction("Check All", this, SLOT(checkAllSlot()));
-	menu->addAction("Uncheck All", this, SLOT(uncheckAllSlot()));
+	menu->addAction(tr("Check All"), this, SLOT(checkAllSlot()));
+	menu->addAction(tr("Uncheck All"), this, SLOT(uncheckAllSlot()));
 
 	menu->exec(m_linkedTable->mapToGlobal(pos));
+}
+
+void ErrorTableHelper::retranslate() {
+
+	if (GlobalState::instance()->langId()) {
+		m_currentErrorList = m_ruErrorList;
+	}
+	else {
+		m_currentErrorList = m_enErrorList;
+	}
+
+	processErrorList();
+	m_errorTableModel->updateErrorList(m_currentErrorList);
 }

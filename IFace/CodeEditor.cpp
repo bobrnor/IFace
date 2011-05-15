@@ -671,8 +671,8 @@ void CodeEditor::uncheckAllSlot() {
 void CodeEditor::leftAreaContextMenuRequestSlot(const QPoint &pos) {
 
 	QMenu *menu = new QMenu(m_leftArea);
-	menu->addAction("Check All", this, SLOT(checkAllSlot()));
-	menu->addAction("Uncheck All", this, SLOT(uncheckAllSlot()));
+	menu->addAction(tr("Check All"), this, SLOT(checkAllSlot()));
+	menu->addAction(tr("Uncheck All"), this, SLOT(uncheckAllSlot()));
 
 	menu->exec(m_leftArea->mapToGlobal(pos));
 }

@@ -147,8 +147,8 @@ bool TabsHelper::tryCloseTab(int index) {
 		m_tabWidget->setCurrentIndex(index);
 		QMessageBox saveRequestBox;
 		saveRequestBox.setWindowTitle(codeEditor->projectFile()->fileName());
-		saveRequestBox.setText("File has been modified.");
-		saveRequestBox.setInformativeText("Do you want to save your changes?");
+		saveRequestBox.setText(tr("File has been modified."));
+		saveRequestBox.setInformativeText(tr("Do you want to save your changes?"));
 		saveRequestBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 		saveRequestBox.setDefaultButton(QMessageBox::Save);
 		int result = saveRequestBox.exec();

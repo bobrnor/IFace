@@ -190,7 +190,7 @@ void ProjectManager::compileCompleteSlot() {
 		ruErrors.append(projectFile->compileErrorsRu());
 		enErrors.append(projectFile->compileErrorsEn());
 	}
-	m_errorTableHelper->setErrorLists(ruErrors, enErrors);
+	m_errorTableHelper->setErrorLists(enErrors, ruErrors);
 	GlobalState::instance()->addErrors(enErrors, ruErrors);
 	if (m_tabsHelper->tabWidget()->currentWidget() != NULL) {
 		((CodeEditorWidget *) m_tabsHelper->tabWidget()->currentWidget())->codeEditor()->update();
@@ -247,5 +247,12 @@ void ProjectManager::setFocusToProjectTree() {
 
 	if (m_projectTreeHelper != NULL && m_projectTreeHelper->linkedTreeWidget() != NULL) {
 		m_projectTreeHelper->linkedTreeWidget()->setFocus(Qt::ShortcutFocusReason);
+	}
+}
+
+void ProjectManager::retranslate() {
+
+	if (m_errorTableHelper != NULL) {
+		m_errorTableHelper->retranslate();
 	}
 }

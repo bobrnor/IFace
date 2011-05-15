@@ -3,6 +3,7 @@
 #include <QString>
 #include <QList>
 #include <QColor>
+#include <QTranslator>
 
 #include "Project.h"
 #include "CompileError.h"
@@ -13,6 +14,7 @@ class GlobalState {
 	QString LAST_PROJECTS_KEY;
 	QString EN_HIGH_FREQUENCE_ERROR_KEY;
 	QString RU_HIGH_FREQUENCE_ERROR_KEY;
+	QString LAST_LANG_KEY;
 
 	QList<QString> m_lastProjects;
 	QColor m_textHighlightColor;
@@ -21,6 +23,10 @@ class GlobalState {
 	QString m_ruHighFrquenceError;
 	QMap<QString, int> m_enErrorFrenquence;
 	QMap<QString, int> m_ruErrorFrenquence;
+
+	int m_lang;
+	QTranslator *m_translator;
+	QTranslator *m_qtTranslator;
 
 	QObject *m_eventFilter;
 
@@ -35,6 +41,12 @@ public:
 
 	QObject *eventFilter() { return m_eventFilter; }
 	void setEventFilter(QObject *eventFilter) { m_eventFilter = eventFilter; }
+
+	int langId() { return m_lang; }
+	void setLangId(int langId) { m_lang = langId; }
+
+	QTranslator *translator() { return m_translator; }
+	QTranslator *qtTranslator() { return m_qtTranslator; }
 
 	void projectOpened(Project *project);
 	QList<QString> lastProjects() { return m_lastProjects; }
