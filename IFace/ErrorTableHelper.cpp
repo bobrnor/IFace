@@ -90,6 +90,7 @@ void ErrorTableHelper::currentTableRowChangedSlot(const QModelIndex &current, co
 
 		foreach (CompileError error, m_currentErrorList) {
 			if (!error.isValid()) {
+				i++;
 				continue;
 			}
 			if (currentError.projectFile()->path() == error.projectFile()->path()) {
@@ -120,6 +121,7 @@ void ErrorTableHelper::codeCursorChangedSlot(ProjectFile *file, int xPos, int yP
 	int i = 0;
 	foreach (CompileError error, m_currentErrorList) {
 		if (!error.isValid()) {
+			i++;
 			continue;
 		}
 		QString errorFilePath = error.projectFile()->path();
