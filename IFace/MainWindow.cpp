@@ -20,6 +20,7 @@
 #include "GlobalState.h"
 #include "CodeEditorWidget.h"
 #include "CodeEditor.h"
+#include "CommentsEditor.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow) {
 
@@ -194,13 +195,30 @@ QMenu *MainWindow::createFileMenu() {
 QMenu *MainWindow::createEditMenu() {
 
 	QMenu *editMenu = new QMenu("&Edit", m_menuBar);
+
+	QAction *action = editMenu->addAction("Cut", this, SLOT(cut()));
+	m_codeRelatedActions.append(action);
+	m_commentsRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
+
+	action = editMenu->addAction("Copy", this, SLOT(copy()));
+	m_codeRelatedActions.append(action);
+	m_commentsRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
+
+	action = editMenu->addAction("Paste", this, SLOT(paste()));
+	m_codeRelatedActions.append(action);
+	m_commentsRelatedActions.append(action);
+	m_projectRelatedActions.append(action);
+
+	editMenu->addSeparator();
+
 	m_highlightMenuAction = editMenu->addAction("Highlight", this, SLOT(highlightSelectedTextSlot()));
 	m_highlightMenuAction->setShortcut(QKeySequence("Ctrl+H"));
-	m_editorRelatedActions.append(m_highlightMenuAction);
+	m_codeRelatedActions.append(m_highlightMenuAction);
 	m_projectRelatedActions.append(m_highlightMenuAction);
 
-	QAction *action = editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
-	m_editorRelatedActions.append(action);
+	action = editMenu->addAction("Change Highlight Color", this, SLOT(changeTextHighlightColor()));
 	m_projectRelatedActions.append(action);
 
 	return editMenu;
@@ -544,15 +562,15 @@ void MainWindow::initEventFilters() {
 	ui->errorTable->installEventFilter(this);
 	ui->codeAndErrorsWidget->installEventFilter(this);
 	ui->projectTree->installEventFilter(this);
+	GlobalState::instance()->setEventFilter(this);
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
 	if (event->type() == QEvent::FocusIn) {
+
 		if (object->isWidgetType()) {
 			QPalette p(palette());
-
-			qDebug() << object->metaObject()->className();
 
 			QWidget *widget = NULL;
 			if (object->inherits("QMenuBar") || object->inherits("QMenu") || object->inherits("QAction")) {
@@ -562,10 +580,17 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 				p.setColor(QPalette::Mid, Qt::red);
 			}
 			else {
-				widget = static_cast<QWidget *>(object);
-				p.setColor(QPalette::Window, Qt::red);
+				m_isInCode = object->inherits("CodeEditor");
+				m_isInComments = object->inherits("CommentsEditor");
+				updateEnability();
+				if (!m_isInCode && !m_isInComments) {
+					widget = static_cast<QWidget *>(object);
+					p.setColor(QPalette::Window, Qt::red);
+				}
 			}
-			widget->setPalette(p);
+			if (widget != NULL) {
+				widget->setPalette(p);
+			}
 		}
 	}
 	else if (event->type() == QEvent::FocusOut) {
@@ -601,6 +626,7 @@ void MainWindow::highlightSelectedTextSlot() {
 			CodeEditorWidget *widget = static_cast<CodeEditorWidget *>(tabsHelper->tabWidget()->currentWidget());
 			CodeEditor *editor = widget->codeEditor();
 			editor->highlightCurrentSelection(GlobalState::instance()->textHighlightColor());
+			m_currentProjectManager->setFocusToCode();
 		}
 	}
 }
@@ -654,6 +680,76 @@ void MainWindow::updateEnability() {
 	if (projectOpen) {
 		foreach (QAction *action, m_compiletRelatedActions) {
 			action->setEnabled(!m_isInCompile);
+		}
+
+		foreach (QAction *action, m_codeRelatedActions) {
+			action->setEnabled(m_isInCode);
+		}
+
+		if (m_isInComments) {
+			foreach (QAction *action, m_commentsRelatedActions) {
+				action->setEnabled(m_isInComments);
+			}
+		}
+	}
+}
+
+void MainWindow::paste() {
+
+	if (m_currentProjectManager != NULL && m_currentProjectManager->tabsHelper() != NULL) {
+		TabsHelper *tabsHelper = m_currentProjectManager->tabsHelper();
+		if (tabsHelper->tabWidget() != NULL && tabsHelper->tabWidget()->currentWidget() != NULL) {
+			CodeEditorWidget *widget = static_cast<CodeEditorWidget *>(tabsHelper->tabWidget()->currentWidget());
+			if (m_isInCode) {
+				CodeEditor *editor = widget->codeEditor();
+				editor->paste();
+				m_currentProjectManager->setFocusToCode();
+			}
+			else if (m_isInComments) {
+				CommentsEditor *editor = widget->commentsArea();
+				editor->paste();
+				m_currentProjectManager->setFocusToComments();
+			}
+		}
+	}
+}
+
+void MainWindow::cut() {
+
+	if (m_currentProjectManager != NULL && m_currentProjectManager->tabsHelper() != NULL) {
+		TabsHelper *tabsHelper = m_currentProjectManager->tabsHelper();
+		if (tabsHelper->tabWidget() != NULL && tabsHelper->tabWidget()->currentWidget() != NULL) {
+			CodeEditorWidget *widget = static_cast<CodeEditorWidget *>(tabsHelper->tabWidget()->currentWidget());
+			if (m_isInCode) {
+				CodeEditor *editor = widget->codeEditor();
+				editor->cut();
+				m_currentProjectManager->setFocusToCode();
+			}
+			else if (m_isInComments) {
+				CommentsEditor *editor = widget->commentsArea();
+				editor->cut();
+				m_currentProjectManager->setFocusToComments();
+			}
+		}
+	}
+}
+
+void MainWindow::copy() {
+
+	if (m_currentProjectManager != NULL && m_currentProjectManager->tabsHelper() != NULL) {
+		TabsHelper *tabsHelper = m_currentProjectManager->tabsHelper();
+		if (tabsHelper->tabWidget() != NULL && tabsHelper->tabWidget()->currentWidget() != NULL) {
+			CodeEditorWidget *widget = static_cast<CodeEditorWidget *>(tabsHelper->tabWidget()->currentWidget());
+			if (m_isInCode) {
+				CodeEditor *editor = widget->codeEditor();
+				editor->copy();
+				m_currentProjectManager->setFocusToCode();
+			}
+			else if (m_isInComments) {
+				CommentsEditor *editor = widget->commentsArea();
+				editor->copy();
+				m_currentProjectManager->setFocusToComments();
+			}			
 		}
 	}
 }

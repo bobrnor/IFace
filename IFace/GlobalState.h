@@ -22,6 +22,8 @@ class GlobalState {
 	QMap<QString, int> m_enErrorFrenquence;
 	QMap<QString, int> m_ruErrorFrenquence;
 
+	QObject *m_eventFilter;
+
 	GlobalState();
 	void loadSettings();
 
@@ -30,6 +32,9 @@ public:
 	~GlobalState();
 
 	void saveSettings();
+
+	QObject *eventFilter() { return m_eventFilter; }
+	void setEventFilter(QObject *eventFilter) { m_eventFilter = eventFilter; }
 
 	void projectOpened(Project *project);
 	QList<QString> lastProjects() { return m_lastProjects; }

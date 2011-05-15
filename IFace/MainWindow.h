@@ -31,10 +31,13 @@ class MainWindow : public QWidget {
 	QAction *m_highlightMenuAction;
 
 	QList<QAction *> m_projectRelatedActions;
-	QList<QAction *> m_editorRelatedActions;
+	QList<QAction *> m_codeRelatedActions;
+	QList<QAction *> m_commentsRelatedActions;
 	QList<QAction *> m_compiletRelatedActions;
 
 	bool m_isInCompile;
+	bool m_isInCode;
+	bool m_isInComments;
 
     ProjectManager *m_currentProjectManager;
 
@@ -96,6 +99,9 @@ private slots:
 	void highlightSelectedTextSlot();
 	void showStatusBarInfo(QAction *action);
 	void hideStatusBarInfo();
+	void paste();
+	void cut();
+	void copy();
 };
 
 #endif // MAINWINDOW_H

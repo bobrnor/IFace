@@ -24,6 +24,8 @@ GlobalState::GlobalState() {
 	m_enHighFrquenceError = "";
 	m_ruHighFrquenceError = "";
 
+	m_eventFilter = NULL;
+
 	loadSettings();
 }
 

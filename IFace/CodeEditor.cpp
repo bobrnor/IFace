@@ -21,7 +21,7 @@
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QFont font("Monospace");
 	font.setStyleHint(QFont::TypeWriter);
 	setFont(font);
@@ -83,7 +83,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 CodeEditor::~CodeEditor() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 		m_projectFile->linkCodeEditor(NULL);
 	}
@@ -91,7 +91,7 @@ CodeEditor::~CodeEditor() {
 
 int CodeEditor::leftAreaWidth() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	int max = qMax(1, blockCount());
 	int digits = 5 + log10((double) max);
 
@@ -100,7 +100,7 @@ int CodeEditor::leftAreaWidth() {
 
 void CodeEditor::blockCountChangedSlot(int newBlockCount) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	setViewportMargins(leftAreaWidth(), 0, 0, 0);
 
 	if (!m_isLastUpdateRequestFromComments) {
@@ -117,7 +117,7 @@ void CodeEditor::blockCountChangedSlot(int newBlockCount) {
 
 void CodeEditor::updateRequestSlot(const QRect &rect, int dy) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (dy) {
 		m_leftArea->scroll(0, dy);
 	}
@@ -132,7 +132,7 @@ void CodeEditor::updateRequestSlot(const QRect &rect, int dy) {
 
 void CodeEditor::scrolledSlot(int y) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (!m_isLastUpdateRequestFromComments) {
 		emit commentsScrollRequestSignal(y);
 	}
@@ -142,7 +142,7 @@ void CodeEditor::scrolledSlot(int y) {
 
 void CodeEditor::updateBreakPointAndComments() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_isInit) {
 		if (m_lastCommentOffsetLine >= 0) {
 			moveDownComments(m_lastCommentOffsetLine);
@@ -182,7 +182,7 @@ void CodeEditor::updateBreakPointAndComments() {
 
 void CodeEditor::resizeEvent(QResizeEvent *e) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QPlainTextEdit::resizeEvent(e);
 
 	QRect cr = contentsRect();
@@ -191,7 +191,8 @@ void CodeEditor::resizeEvent(QResizeEvent *e) {
 
 void CodeEditor::highlightCurrentLineSlot() {
 
-	qDebug() << __FUNCSIG__;QTextEdit::ExtraSelection selection;
+	//qDebug() << __FUNCSIG__;
+	QTextEdit::ExtraSelection selection;
 	if (!isReadOnly() && hasFocus()) {		
 		QColor lineColor = QColor(Qt::yellow).lighter(160);
 
@@ -219,7 +220,7 @@ void CodeEditor::highlightCurrentLineSlot() {
 
 void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QPainter painter(m_leftArea);
 
 	QRect darkGreyRect = QRect(event->rect().x(), event->rect().y(), event->rect().width() - 25, event->rect().height());
@@ -272,13 +273,13 @@ void CodeEditor::leftAreaPaintEvent(QPaintEvent *event) {
 
 ProjectFile *CodeEditor::projectFile() const {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	return m_projectFile;
 }
 
 void CodeEditor::setProjectFile(ProjectFile *projectFile) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 		m_projectFile->linkCodeEditor(NULL);
 	}
@@ -289,7 +290,7 @@ void CodeEditor::setProjectFile(ProjectFile *projectFile) {
 
 void CodeEditor::loadProjectFile() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 		QFile file(m_projectFile->path());
 		if (file.open(QIODevice::ReadOnly)) {
@@ -307,7 +308,7 @@ void CodeEditor::loadProjectFile() {
 
 void CodeEditor::initCommentsAndBreakPoints() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextBlock block = blockWithNumber(0);
 	
 	while (block.isValid()) {
@@ -330,7 +331,7 @@ void CodeEditor::initCommentsAndBreakPoints() {
 
 void CodeEditor::saveProjectFile() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 		m_projectFile->setTmpPath("");
 		QString path = m_projectFile->path();
@@ -346,7 +347,7 @@ void CodeEditor::saveProjectFile() {
 
 void CodeEditor::tempSaveProjectFile() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 		QTemporaryFile tempFile;
 		tempFile.setAutoRemove(false);
@@ -365,7 +366,7 @@ void CodeEditor::tempSaveProjectFile() {
 
 void CodeEditor::updateErrors() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_projectFile != NULL) {
 
 		m_errorSymbols.clear();
@@ -401,13 +402,13 @@ void CodeEditor::updateErrors() {
 
 void CodeEditor::update() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	highlightCurrentLineSlot();
 }
 
 void CodeEditor::focusInEvent(QFocusEvent *e) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	foreach (QShortcut *shortcut, m_shortcutList) {
 		shortcut->setEnabled(true);
 	}
@@ -419,7 +420,7 @@ void CodeEditor::focusInEvent(QFocusEvent *e) {
 
 void CodeEditor::focusOutEvent(QFocusEvent *e) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	foreach (QShortcut *shortcut, m_shortcutList) {
 		shortcut->setEnabled(false);
 	}
@@ -428,7 +429,7 @@ void CodeEditor::focusOutEvent(QFocusEvent *e) {
 
 void CodeEditor::keyPressEvent(QKeyEvent *e) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextCursor cursor = textCursor();
 	int blockNumber = cursor.blockNumber();
 	int positionInBlock = cursor.positionInBlock();
@@ -443,7 +444,7 @@ void CodeEditor::keyPressEvent(QKeyEvent *e) {
 
 void CodeEditor::contentsChangedSlot(int position, int charsRemoved, int charsAdded) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextCursor cursor(textCursor());
 	cursor.setPosition(position);
 	qDebug() << "Changed from " << cursor.blockNumber() << ", " << cursor.positionInBlock();
@@ -452,7 +453,7 @@ void CodeEditor::contentsChangedSlot(int position, int charsRemoved, int charsAd
 
 void CodeEditor::moveDownComments(int fromBlockNumber) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextBlock block = blockWithNumber(fromBlockNumber);
 	
 	if (block.userData() != NULL) {
@@ -469,13 +470,13 @@ void CodeEditor::moveDownComments(int fromBlockNumber) {
 
 QTextBlock CodeEditor::blockWithNumber(int blockNumber) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	return this->document()->findBlockByNumber(blockNumber);
 }
 
 void CodeEditor::applyCommentsSlot() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QMap<int, QString> comments = m_projectFile->comments();
 	foreach (int key, comments.keys()) {
 		QString comment = comments.take(key);
@@ -493,13 +494,13 @@ void CodeEditor::applyCommentsSlot() {
 
 void CodeEditor::commentsScrolledSlot(int y) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	verticalScrollBar()->setValue(y);
 }
 
 void CodeEditor::commentsPositionChangedSlot(int yPos) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextCursor cursor = textCursor();
 	int delta = cursor.blockNumber() - yPos;
 	if (delta != 0) {
@@ -516,7 +517,7 @@ void CodeEditor::commentsPositionChangedSlot(int yPos) {
 
 void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	m_isLastUpdateRequestFromErrorTable = true;
 	m_currentXErrorPosition = xPos - 1;
 	m_currentYErrorPosition = yPos - 1;
@@ -559,7 +560,7 @@ void CodeEditor::errorPositionChangedSlot(int xPos, int yPos) {
 
 void CodeEditor::textChangedSlot() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	if (m_isLoaded) {
 		//m_isChanged = true;
 		emit modificationChanged(true);
@@ -568,7 +569,7 @@ void CodeEditor::textChangedSlot() {
 
 void CodeEditor::changeBreakPointSlot() {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextBlock block = textCursor().block();
 	CodeLineData *data = NULL;
 	if (block.userData() != NULL) {
@@ -589,7 +590,7 @@ void CodeEditor::changeBreakPointSlot() {
 
 void CodeEditor::leftAreaDoubleClickSlot(int x, int y) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextBlock block = firstVisibleBlock();
 	int blockNumber = block.blockNumber();
 	int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -623,7 +624,7 @@ void CodeEditor::leftAreaDoubleClickSlot(int x, int y) {
 
 void CodeEditor::setCheckStatusForAll(bool checked) {
 
-	qDebug() << __FUNCSIG__;
+	//qDebug() << __FUNCSIG__;
 	QTextBlock block = blockWithNumber(0);
 
 	while (block.isValid()) {

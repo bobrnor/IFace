@@ -7,6 +7,7 @@
 
 #include "CodeEditor.h"
 #include "CommentsEditor.h"
+#include "GlobalState.h"
 
 CodeEditorWidget::CodeEditorWidget(QWidget *parent) : QWidget(parent), ui(new Ui::CodeEditorWidget) {
 
@@ -49,6 +50,11 @@ void CodeEditorWidget::linkCodeWithComments() {
 	connect(m_commentsArea, SIGNAL(commentsChangedSignal()), m_codeEditor, SLOT(textChangedSlot()));
 
 	m_commentsArea->codeBlockCountChangedSlot(m_codeEditor->blockCount());
+
+	if (GlobalState::instance()->eventFilter() != NULL) {
+		m_codeEditor->installEventFilter(GlobalState::instance()->eventFilter());
+		m_commentsArea->installEventFilter(GlobalState::instance()->eventFilter());
+	}
 }
 
 CodeEditor *CodeEditorWidget::codeEditor() const {
