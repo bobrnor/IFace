@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	initEventFilters();
 
 	showStartUpHelp();
+	updateColorIcons();
 	updateEnability();
 }
 
