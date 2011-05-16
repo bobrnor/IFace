@@ -43,27 +43,27 @@
 <context>
     <name>ErrorTableModel</name>
     <message>
-        <location filename="ErrorTableModel.cpp" line="102"/>
+        <location filename="ErrorTableModel.cpp" line="104"/>
         <source>Error No</source>
         <translation>Error No</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="108"/>
+        <location filename="ErrorTableModel.cpp" line="107"/>
         <source>File name</source>
         <translation>File name</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="112"/>
+        <location filename="ErrorTableModel.cpp" line="110"/>
         <source>Line</source>
         <translation>Line</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="116"/>
+        <location filename="ErrorTableModel.cpp" line="113"/>
         <source>Character</source>
         <translation>Character</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="120"/>
+        <location filename="ErrorTableModel.cpp" line="116"/>
         <source>Error text</source>
         <translation>Error text</translation>
     </message>
@@ -99,11 +99,13 @@
     </message>
     <message>
         <location filename="MainWindow.cpp" line="155"/>
+        <location filename="MainWindow.cpp" line="329"/>
         <source>Create project...</source>
         <translation>Create project...</translation>
     </message>
     <message>
         <location filename="MainWindow.cpp" line="157"/>
+        <location filename="MainWindow.cpp" line="394"/>
         <source>Open project...</source>
         <translation>Open project...</translation>
     </message>
@@ -119,6 +121,7 @@
     </message>
     <message>
         <location filename="MainWindow.cpp" line="169"/>
+        <location filename="MainWindow.cpp" line="466"/>
         <source>Existing file...</source>
         <translation>Existing file...</translation>
     </message>
@@ -193,27 +196,32 @@
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="441"/>
+        <location filename="MainWindow.cpp" line="368"/>
+        <source>New file...</source>
+        <translation>New file...</translation>
+    </message>
+    <message>
+        <location filename="MainWindow.cpp" line="444"/>
         <source>File not found</source>
         <translation>File not found</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="442"/>
+        <location filename="MainWindow.cpp" line="445"/>
         <source>Selected project not found.</source>
         <translation>Selected project not found.</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="502"/>
+        <location filename="MainWindow.cpp" line="506"/>
         <source>Compilig...</source>
         <translation>Compilig...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="509"/>
+        <location filename="MainWindow.cpp" line="513"/>
         <source>Compiling</source>
         <translation>Compiling</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="510"/>
+        <location filename="MainWindow.cpp" line="514"/>
         <source>Compiling is done.</source>
         <translation>Compiling is done.</translation>
     </message>

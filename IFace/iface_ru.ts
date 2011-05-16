@@ -43,27 +43,27 @@
 <context>
     <name>ErrorTableModel</name>
     <message>
-        <location filename="ErrorTableModel.cpp" line="102"/>
+        <location filename="ErrorTableModel.cpp" line="104"/>
         <source>Error No</source>
         <translation>Номер ошибки</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="108"/>
+        <location filename="ErrorTableModel.cpp" line="107"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="112"/>
+        <location filename="ErrorTableModel.cpp" line="110"/>
         <source>Line</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="116"/>
+        <location filename="ErrorTableModel.cpp" line="113"/>
         <source>Character</source>
         <translation>Символ</translation>
     </message>
     <message>
-        <location filename="ErrorTableModel.cpp" line="120"/>
+        <location filename="ErrorTableModel.cpp" line="116"/>
         <source>Error text</source>
         <translation>Текст ошибки</translation>
     </message>
@@ -99,11 +99,13 @@
     </message>
     <message>
         <location filename="MainWindow.cpp" line="155"/>
+        <location filename="MainWindow.cpp" line="329"/>
         <source>Create project...</source>
         <translation>Создать проект...</translation>
     </message>
     <message>
         <location filename="MainWindow.cpp" line="157"/>
+        <location filename="MainWindow.cpp" line="394"/>
         <source>Open project...</source>
         <translation>Открыть проект...</translation>
     </message>
@@ -119,6 +121,7 @@
     </message>
     <message>
         <location filename="MainWindow.cpp" line="169"/>
+        <location filename="MainWindow.cpp" line="466"/>
         <source>Existing file...</source>
         <translation>Существующий файл...</translation>
     </message>
@@ -193,27 +196,32 @@
         <translation>По&amp;мощь</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="441"/>
+        <location filename="MainWindow.cpp" line="368"/>
+        <source>New file...</source>
+        <translation>Новый файл...</translation>
+    </message>
+    <message>
+        <location filename="MainWindow.cpp" line="444"/>
         <source>File not found</source>
         <translation>Файл не найден</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="442"/>
+        <location filename="MainWindow.cpp" line="445"/>
         <source>Selected project not found.</source>
         <translation>Выбранный проект не найден.</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="502"/>
+        <location filename="MainWindow.cpp" line="506"/>
         <source>Compilig...</source>
         <translation>Компилирую...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="509"/>
+        <location filename="MainWindow.cpp" line="513"/>
         <source>Compiling</source>
         <translation>Компиляция</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="510"/>
+        <location filename="MainWindow.cpp" line="514"/>
         <source>Compiling is done.</source>
         <translation>Компиляция завершена.</translation>
     </message>
