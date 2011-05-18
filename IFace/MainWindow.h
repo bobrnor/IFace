@@ -20,6 +20,9 @@ namespace Ui {
 class MainWindow : public QWidget {
     Q_OBJECT
 
+	static QString m_qtAssistantEnPath;
+	static QString m_qtAssistantRuPath;
+
     QStatusBar *m_statusBar;
 	QToolBar *m_toolBar;
 	QWidget *m_menuBarWrapper;
