@@ -1499,10 +1499,6 @@
 				RelativePath=".\iface_ru.ts"
 				>
 			</File>
-			<File
-				RelativePath=".\iface_ruu.ts"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -1,5 +1,7 @@
 #include <QtGui/QApplication>
 #include <QTextCodec>
+#include <QLocale>
+#include <QDebug>
 
 #include "MainWindow.h"
 #include "Project.h"
@@ -7,7 +9,11 @@
 
 int main(int argc, char *argv[]) {
 
+	qDebug() << "Locale is: " << setlocale(LC_ALL, "rus");
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("cp1251"));
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("cp1251"));
+
+	qDebug() << "System local: " << QLocale::system().name();
 
     QApplication a(argc, argv);
 

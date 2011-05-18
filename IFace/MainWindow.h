@@ -106,6 +106,7 @@ private slots:
 	void copy();
 	void enLang();
 	void ruLang();
+	void showHelp();
 };
 
 #endif // MAINWINDOW_H
