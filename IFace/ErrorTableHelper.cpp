@@ -86,6 +86,8 @@ void ErrorTableHelper::currentTableRowChangedSlot(const QModelIndex &current, co
 	int row = current.row();
 	if (!m_isLastUpdateRequestFromCodeEditor && row < m_currentErrorList.count()) {
 		CompileError currentError = m_currentErrorList.at(row);
+		m_currentEnError = m_enErrorList.at(row);
+		m_currentRuError = m_ruErrorList.at(row);
 		emit errorPositionChangedSignal(currentError.projectFile(), currentError.xPos(), currentError.yPos());
 
 		QList<int> currentErrorRows;

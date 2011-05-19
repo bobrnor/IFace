@@ -13,8 +13,6 @@ int main(int argc, char *argv[]) {
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("cp1251"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("cp1251"));
 
-	qDebug() << "System local: " << QLocale::system().name();
-
     QApplication a(argc, argv);
 
 	a.installTranslator(GlobalState::instance()->translator());

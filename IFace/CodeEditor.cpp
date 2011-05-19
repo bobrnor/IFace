@@ -697,3 +697,10 @@ void CodeEditor::updateHighlights() {
 
 	setExtraSelections(extraSelections);
 }
+
+QString CodeEditor::wordUnderCursor() {
+
+	QTextCursor cursor = textCursor();
+	cursor.select(QTextCursor::WordUnderCursor);
+	return cursor.selectedText();
+}

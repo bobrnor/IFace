@@ -71,6 +71,8 @@ public:
 
 	void highlightCurrentSelection(QColor &color);
 
+	QString wordUnderCursor();
+
 signals:
 	void commentsScrollRequestSignal(int y);
 	void commentsUpdateRequestSignal(int blockCount);

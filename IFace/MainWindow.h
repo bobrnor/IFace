@@ -10,6 +10,7 @@
 #include <QTreeView>
 #include <QTableView>
 #include <QToolBar>
+#include <QProcess>
 
 #include "ProjectManager.h"
 
@@ -42,6 +43,12 @@ class MainWindow : public QWidget {
 	bool m_isInCode;
 	bool m_isInComments;
 
+	QProcess *m_helpProcess;
+	QString m_lastEnHelpSource;
+	QString m_lastRuHelpSource;
+
+	bool m_needReopenHelp;
+
     ProjectManager *m_currentProjectManager;
 
     void initStatusBar();
@@ -72,6 +79,17 @@ class MainWindow : public QWidget {
 	void updateLastProjectsMenu();
 
 	void retranslate();
+	void reopenHelp();
+
+	void loadMenuHelp();
+	void loadKeywordHelp();
+	void loadCodeEditorHelp();
+	void loadErrorHelp();
+
+	void showRuSource(QString source);
+	void showEnSource(QString source);
+
+	QString trasliterate(QString rusText);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -110,6 +128,7 @@ private slots:
 	void enLang();
 	void ruLang();
 	void showHelp();
+	void showContextHelp();
 };
 
 #endif // MAINWINDOW_H

@@ -22,6 +22,9 @@ class ErrorTableHelper : public QObject {
 
 	bool m_isLastUpdateRequestFromCodeEditor;
 
+	CompileError m_currentEnError;
+	CompileError m_currentRuError;
+
 	void processErrorList();
 
 public:
@@ -30,6 +33,9 @@ public:
 
 	void setErrorTable(QTableView *tableView);
 	QTableView *errorTable() { return m_linkedTable; }
+
+	CompileError currentEnError() { return m_currentEnError; }
+	CompileError currentRuError() { return m_currentRuError; }
 
 	void setErrorLists(QList<CompileError> enErrorList, QList<CompileError> ruErrorList);
 	QList<CompileError> errorRuList() { return m_ruErrorList; }
