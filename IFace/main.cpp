@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[]) {
 
-	qDebug() << "Locale is: " << setlocale(LC_ALL, "rus");
+	setlocale(LC_ALL, "rus");
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("cp1251"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("cp1251"));
 

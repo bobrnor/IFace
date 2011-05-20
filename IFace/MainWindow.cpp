@@ -42,7 +42,10 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 	m_currentProjectManager = NULL;
 	m_highlightToolBarAction = NULL;
 	m_highlightMenuAction = NULL;
+	m_hoveredAction = NULL;
+	m_lastHelpAction = NULL;
 
+	m_isLastHelpForMenu = false;
 	m_isInCompile = false;
 	m_needReopenHelp = false;
 
@@ -168,31 +171,75 @@ void MainWindow::initErrorTable() {}
 
 QMenu *MainWindow::createFileMenu() {
 
+	QTranslator translator;
+	translator.load("iface_ru.qm", ".");
+
 	QMenu *menu = new QMenu(tr("&File"), m_menuBar);
+
+	QString translation = translator.translate("MainWindow", "&File");
+	m_ruEnRuMap["&File"] = translation;
+	m_ruEnRuMap[translation] = "&File";
+
 	QAction *action = menu->addAction(tr("Create project..."), this, SLOT(newProjectSlot()));
+
+	translation = translator.translate("MainWindow", "Create project...");
+	m_ruEnRuMap["Create project..."] = translation;
+	m_ruEnRuMap[translation] = "Create project...";
+
 	m_compiletRelatedActions.append(action);
 	action = menu->addAction(tr("Open project..."), this, SLOT(openProjectSlot()));
+
+	translation = translator.translate("MainWindow", "Open project...");
+	m_ruEnRuMap["Open project..."] = translation;
+	m_ruEnRuMap[translation] = "Open project...";
+
 	m_compiletRelatedActions.append(action);
 	menu->addSeparator();
 
 	QMenu *addMenu = new QMenu(tr("Add"), menu);
+
+	translation = translator.translate("MainWindow", "Add");
+	m_ruEnRuMap["Add"] = translation;
+	m_ruEnRuMap[translation] = "Add";
+
 	menu->addMenu(addMenu);
 
 	action = addMenu->addAction(tr("&New file..."), this, SLOT(newProjectFileSlot()));
+
+	translation = translator.translate("MainWindow", "&New file...");
+	m_ruEnRuMap["&New file..."] = translation;
+	m_ruEnRuMap[translation] = "&New file...";
+
 	action->setShortcut(QKeySequence("Ctrl+N"));
 	m_compiletRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
 
 	action = addMenu->addAction(tr("Existing file..."), this, SLOT(openProjectFileSlot()));
+
+	translation = translator.translate("MainWindow", "Existing file...");
+	m_ruEnRuMap["Existing file..."] = translation;
+	m_ruEnRuMap[translation] = "Existing file...";
+
 	m_compiletRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
 	menu->addSeparator();
 
 	action = menu->addAction(tr("&Save"), this, SLOT(saveCurrentFileSlot()));
+
+	translation = translator.translate("MainWindow", "&Save");
+	m_ruEnRuMap["&Save"] = translation;
+	m_ruEnRuMap[translation] = "&Save";
+
 	action->setShortcut(QKeySequence("Ctrl+S"));
 	m_compiletRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
+
 	action = menu->addAction(tr("Save all"), this, SLOT(saveAllSlot()));
+
+	translation = translator.translate("MainWindow", "Save all");
+	m_ruEnRuMap["Save all"] = translation;
+	m_ruEnRuMap[translation] = "Save all";
+
 	action->setShortcut(QKeySequence("Ctrl+Shift+S"));
 	m_compiletRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
@@ -200,30 +247,61 @@ QMenu *MainWindow::createFileMenu() {
 	menu->addSeparator();
 
 	m_lastProjectsMenu = menu->addMenu(tr("Last Projects"));
+
+	translation = translator.translate("MainWindow", "Last Projects");
+	m_ruEnRuMap["Last Projects"] = translation;
+	m_ruEnRuMap[translation] = "Last Projects";
+
 	updateLastProjectsMenu();
 
 	menu->addSeparator();
 
 	menu->addAction(tr("Exit"), this, SLOT(close()));
 
+	translation = translator.translate("MainWindow", "Exit");
+	m_ruEnRuMap["Exit"] = translation;
+	m_ruEnRuMap[translation] = "Exit";
+
 	return menu;
 }
 
 QMenu *MainWindow::createEditMenu() {
 
+	QTranslator translator;
+	translator.load("iface_ru.qm", ".");
+
 	QMenu *editMenu = new QMenu(tr("&Edit"), m_menuBar);
 
+	QString translation = translator.translate("MainWindow", "&Edit");
+	m_ruEnRuMap["&Edit"] = translation;
+	m_ruEnRuMap[translation] = "&Edit";
+
 	QAction *action = editMenu->addAction(tr("Cut"), this, SLOT(cut()));
+
+	translation = translator.translate("MainWindow", "Cut");
+	m_ruEnRuMap["Cut"] = translation;
+	m_ruEnRuMap[translation] = "Cut";
+
 	m_codeRelatedActions.append(action);
 	m_commentsRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
 
 	action = editMenu->addAction(tr("Copy"), this, SLOT(copy()));
+
+	translation = translator.translate("MainWindow", "Copy");
+	m_ruEnRuMap["Copy"] = translation;
+	m_ruEnRuMap[translation] = "Copy";
+
 	m_codeRelatedActions.append(action);
 	m_commentsRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
 
 	action = editMenu->addAction(tr("Paste"), this, SLOT(paste()));
+
+	translation = translator.translate("MainWindow", "Paste");
+	m_ruEnRuMap["Paste"] = translation;
+	m_ruEnRuMap[translation] = "Paste";
+
 	m_codeRelatedActions.append(action);
 	m_commentsRelatedActions.append(action);
 	m_projectRelatedActions.append(action);
@@ -231,11 +309,21 @@ QMenu *MainWindow::createEditMenu() {
 	editMenu->addSeparator();
 
 	m_highlightMenuAction = editMenu->addAction(tr("Highlight"), this, SLOT(highlightSelectedTextSlot()));
+
+	translation = translator.translate("MainWindow", "Highlight");
+	m_ruEnRuMap["Highlight"] = translation;
+	m_ruEnRuMap[translation] = "Highlight";
+
 	m_highlightMenuAction->setShortcut(QKeySequence("Ctrl+H"));
 	m_codeRelatedActions.append(m_highlightMenuAction);
 	m_projectRelatedActions.append(m_highlightMenuAction);
 
 	action = editMenu->addAction(tr("Change Highlight Color"), this, SLOT(changeTextHighlightColor()));
+
+	translation = translator.translate("MainWindow", "Change Highlight Color");
+	m_ruEnRuMap["Change Highlight Color"] = translation;
+	m_ruEnRuMap[translation] = "Change Highlight Color";
+
 	m_projectRelatedActions.append(action);
 
 	return editMenu;
@@ -243,8 +331,21 @@ QMenu *MainWindow::createEditMenu() {
 
 QMenu *MainWindow::createBuildMenu() {
 
+	QTranslator translator;
+	translator.load("iface_ru.qm", ".");
+
 	QMenu *buildMenu = new QMenu(tr("&Build"), m_menuBar);
+
+	QString translation = translator.translate("MainWindow", "&Build");
+	m_ruEnRuMap["&Build"] = translation;
+	m_ruEnRuMap[translation] = "&Build";
+
 	QAction *action = buildMenu->addAction(tr("Compile"), this, SLOT(compile()));
+
+	translation = translator.translate("MainWindow", "Compile");
+	m_ruEnRuMap["Compile"] = translation;
+	m_ruEnRuMap[translation] = "Compile";
+
 	action->setShortcut(QKeySequence("F5"));
 	m_projectRelatedActions.append(action);
 	m_compiletRelatedActions.append(action);
@@ -253,16 +354,47 @@ QMenu *MainWindow::createBuildMenu() {
 
 QMenu *MainWindow::createLanguageMenu() {
 
+	QTranslator translator;
+	translator.load("iface_ru.qm", ".");
+
 	QMenu *langMenu = new QMenu(tr("&Language"), m_menuBar);
+
+	QString translation = translator.translate("MainWindow", "&Language");
+	m_ruEnRuMap["&Language"] = translation;
+	m_ruEnRuMap[translation] = "&Language";
+
 	langMenu->addAction(tr("Russian"), this, SLOT(ruLang()));
+
+	translation = translator.translate("MainWindow", "Russian");
+	m_ruEnRuMap["Russian"] = translation;
+	m_ruEnRuMap[translation] = "Russian";
+
 	langMenu->addAction(tr("English"), this, SLOT(enLang()));
+
+	translation = translator.translate("MainWindow", "English");
+	m_ruEnRuMap["English"] = translation;
+	m_ruEnRuMap[translation] = "English";
+
 	return langMenu;
 }
 
 QMenu *MainWindow::createHelpMenu() {
 
+	QTranslator translator;
+	translator.load("iface_ru.qm", ".");
+
 	QMenu *helpMenu = new QMenu(tr("&Help"), m_menuBar);
+
+	QString translation = translator.translate("MainWindow", "&Help");
+	m_ruEnRuMap["&Help"] = translation;
+	m_ruEnRuMap[translation] = "&Help";
+
 	helpMenu->addAction(tr("Help"), this, SLOT(showHelp()));
+
+	translation = translator.translate("MainWindow", "Help");
+	m_ruEnRuMap["Help"] = translation;
+	m_ruEnRuMap[translation] = "Help";
+
 	return helpMenu;
 }
 
@@ -703,11 +835,13 @@ void MainWindow::showStatusBarInfo(QAction *action) {
 		statusTipText = action->text();
 	}
 	m_statusBar->showMessage(statusTipText.replace("&", ""));
+	m_hoveredAction = action;
 }
 
 void MainWindow::hideStatusBarInfo() {
 
 	m_statusBar->showMessage("");
+	m_hoveredAction = NULL;
 }
 
 void MainWindow::updateEnability() {
@@ -941,41 +1075,70 @@ void MainWindow::showContextHelp() {
 			qDebug() << "Widget under cursor: " << widgetUnderCursor->metaObject()->className();
 		}
 
-		if (widgetInFocus->inherits("CodeEditor")) {
-			loadKeywordHelp();
+		if ((widgetUnderCursor->inherits("MenuBar") || widgetUnderCursor->inherits("QMenu")) 
+			&& m_hoveredAction != NULL) {
+				m_isLastHelpForMenu = true;
+				m_lastHelpAction = m_hoveredAction;
+				loadMenuHelp();
 		}
 		else if (widgetInFocus->inherits("QTableView")) {
+			m_isLastHelpForMenu = false;
 			loadErrorHelp();
 		}
-
-// 		QWidget *widget = qApp->widgetAt(QCursor::pos());
-// 		widget = widget->parentWidget();
-// 		if (widget != NULL) {
-// 			qDebug() << "Widget under cursor: " << widget->metaObject()->className();
-// 		}
-// 		else {
-// 			qDebug() << "No widget under cursor";
-// 		}
-// 
-// 		QWidget *_widget = focusWidget();
-// 		if (_widget != NULL) {
-// 			qDebug() << "Widget under focus: " << _widget->metaObject()->className();
-// 		}
-// 		else {
-// 			qDebug() << "No widget under focus";
-// 		}
-// 
-// 		if (widget->inherits(_widget->metaObject()->className())) {
-// 			qDebug() << "inherits";
-// 		}
-// 		else {
-// 			qDebug() << "not inherits";
-// 		}
+		else if (widgetInFocus->inherits("CodeEditor")) {
+			m_isLastHelpForMenu = false;
+			loadKeywordHelp();
+		}
+		else if (widgetInFocus->inherits("CommentsEditor") || widgetUnderCursor->inherits("CommentsEditor")) {
+			m_isLastHelpForMenu = false;
+			loadCommentsHelp();
+		}
+		else if (widgetUnderCursor->inherits("LeftArea")) {
+			m_isLastHelpForMenu = false;
+			loadBreakpointsHelp();
+		}
+		else if (widgetUnderCursor->inherits("CodeEditor")) {
+			m_isLastHelpForMenu = false;
+			loadEditorHelp();
+		}
 	}
 }
 
 void MainWindow::loadMenuHelp() {
 
+	static QRegExp rx1("(\\W|\\d)");
+
+	QString ru;
+	QString en;
+
+	if (GlobalState::instance()->langId()) {
+		ru = m_hoveredAction->text();
+		en = m_ruEnRuMap.value(ru, "");
+
+		ru.replace(rx1, "");
+		ru = trasliterate(ru);
+		en.replace(rx1, "");
+		en = en.toLower();
+	}
+	else {
+		en = m_hoveredAction->text();
+		ru = m_ruEnRuMap.value(en, "");
+
+		ru.replace(rx1, "");
+		ru = trasliterate(ru);
+		en.replace(rx1, "");
+		en = en.toLower();
+	}
+
+	m_lastEnHelpSource = en + ".html";
+	m_lastRuHelpSource = ru + ".html";
+
+	if (GlobalState::instance()->langId()) {
+		showRuSource(m_lastRuHelpSource);
+	}
+	else {
+		showEnSource(m_lastEnHelpSource);
+	}
 }
 
 void MainWindow::loadKeywordHelp() {
@@ -1000,8 +1163,37 @@ void MainWindow::loadKeywordHelp() {
 	}
 }
 
-void MainWindow::loadCodeEditorHelp() {
+void MainWindow::loadEditorHelp() {
 
+	m_lastEnHelpSource = m_lastRuHelpSource = "editor.html";
+	if (GlobalState::instance()->langId()) {
+		showRuSource(m_lastRuHelpSource);
+	}
+	else {
+		showEnSource(m_lastEnHelpSource);
+	}
+}
+
+void MainWindow::loadBreakpointsHelp() {
+
+	m_lastEnHelpSource = m_lastRuHelpSource = "breakpoints.html";
+	if (GlobalState::instance()->langId()) {
+		showRuSource(m_lastRuHelpSource);
+	}
+	else {
+		showEnSource(m_lastEnHelpSource);
+	}
+}
+
+void MainWindow::loadCommentsHelp() {
+
+	m_lastEnHelpSource = m_lastRuHelpSource = "comments.html";
+	if (GlobalState::instance()->langId()) {
+		showRuSource(m_lastRuHelpSource);
+	}
+	else {
+		showEnSource(m_lastEnHelpSource);
+	}
 }
 
 void MainWindow::loadErrorHelp() {
@@ -1085,6 +1277,10 @@ QString MainWindow::trasliterate(QString rusText) {
 	QString res;
 	foreach (QChar ch, rusText.toLower())
 		res += dict.contains(ch) ? dict[ch] : eng.contains(ch) ? ch : QString("");
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("1251"));
+
+	setlocale(LC_ALL, "rus");
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("cp1251"));
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("cp1251"));
+
 	return res;
 }

@@ -30,12 +30,12 @@
         <translation>. [Расширенное сообщение об ошибке]</translation>
     </message>
     <message>
-        <location filename="ErrorTableHelper.cpp" line="198"/>
+        <location filename="ErrorTableHelper.cpp" line="200"/>
         <source>Check All</source>
         <translation>Отметить все</translation>
     </message>
     <message>
-        <location filename="ErrorTableHelper.cpp" line="199"/>
+        <location filename="ErrorTableHelper.cpp" line="201"/>
         <source>Uncheck All</source>
         <translation>Снять отметку со всех</translation>
     </message>
@@ -76,152 +76,180 @@
         <translation>ГлавноеОкно</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="88"/>
+        <location filename="MainWindow.cpp" line="108"/>
         <source>Last session hegh frequence error help</source>
         <translation>Наиболее распространённая ошибка последней сессии</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="144"/>
-        <location filename="MainWindow.cpp" line="216"/>
+        <location filename="MainWindow.cpp" line="164"/>
+        <location filename="MainWindow.cpp" line="321"/>
+        <location filename="MainWindow.cpp" line="323"/>
         <source>Highlight</source>
         <translation>Подсветить</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="145"/>
-        <location filename="MainWindow.cpp" line="221"/>
+        <location filename="MainWindow.cpp" line="165"/>
+        <location filename="MainWindow.cpp" line="331"/>
+        <location filename="MainWindow.cpp" line="333"/>
         <source>Change Highlight Color</source>
         <translation>Сменить цвет подсветки</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="154"/>
+        <location filename="MainWindow.cpp" line="177"/>
+        <location filename="MainWindow.cpp" line="179"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="155"/>
-        <location filename="MainWindow.cpp" line="329"/>
+        <location filename="MainWindow.cpp" line="184"/>
+        <location filename="MainWindow.cpp" line="186"/>
+        <location filename="MainWindow.cpp" line="496"/>
         <source>Create project...</source>
         <translation>Создать проект...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="157"/>
-        <location filename="MainWindow.cpp" line="394"/>
+        <location filename="MainWindow.cpp" line="192"/>
+        <location filename="MainWindow.cpp" line="194"/>
+        <location filename="MainWindow.cpp" line="561"/>
         <source>Open project...</source>
         <translation>Открыть проект...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="161"/>
+        <location filename="MainWindow.cpp" line="202"/>
+        <location filename="MainWindow.cpp" line="204"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="164"/>
+        <location filename="MainWindow.cpp" line="211"/>
+        <location filename="MainWindow.cpp" line="213"/>
         <source>&amp;New file...</source>
         <translation>&amp;Новый файл...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="169"/>
-        <location filename="MainWindow.cpp" line="466"/>
+        <location filename="MainWindow.cpp" line="222"/>
+        <location filename="MainWindow.cpp" line="224"/>
+        <location filename="MainWindow.cpp" line="633"/>
         <source>Existing file...</source>
         <translation>Существующий файл...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="174"/>
+        <location filename="MainWindow.cpp" line="233"/>
+        <location filename="MainWindow.cpp" line="235"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="178"/>
+        <location filename="MainWindow.cpp" line="244"/>
+        <location filename="MainWindow.cpp" line="246"/>
         <source>Save all</source>
         <translation>Сохранить всё</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="185"/>
+        <location filename="MainWindow.cpp" line="257"/>
+        <location filename="MainWindow.cpp" line="259"/>
         <source>Last Projects</source>
         <translation>Недавно открываеме проекты</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="190"/>
+        <location filename="MainWindow.cpp" line="268"/>
+        <location filename="MainWindow.cpp" line="270"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="197"/>
+        <location filename="MainWindow.cpp" line="283"/>
+        <location filename="MainWindow.cpp" line="285"/>
         <source>&amp;Edit</source>
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="199"/>
+        <location filename="MainWindow.cpp" line="289"/>
+        <location filename="MainWindow.cpp" line="291"/>
         <source>Cut</source>
         <translation>Вырезать</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="204"/>
+        <location filename="MainWindow.cpp" line="299"/>
+        <location filename="MainWindow.cpp" line="301"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="209"/>
+        <location filename="MainWindow.cpp" line="309"/>
+        <location filename="MainWindow.cpp" line="311"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="229"/>
+        <location filename="MainWindow.cpp" line="347"/>
+        <location filename="MainWindow.cpp" line="349"/>
         <source>&amp;Build</source>
         <translation>&amp;Сборка</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="230"/>
+        <location filename="MainWindow.cpp" line="353"/>
+        <location filename="MainWindow.cpp" line="355"/>
         <source>Compile</source>
         <translation>Компилировать</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="239"/>
+        <location filename="MainWindow.cpp" line="370"/>
+        <location filename="MainWindow.cpp" line="372"/>
         <source>&amp;Language</source>
         <translation>&amp;Язык</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="240"/>
+        <location filename="MainWindow.cpp" line="376"/>
+        <location filename="MainWindow.cpp" line="378"/>
         <source>Russian</source>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="241"/>
+        <location filename="MainWindow.cpp" line="382"/>
+        <location filename="MainWindow.cpp" line="384"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="247"/>
+        <location filename="MainWindow.cpp" line="396"/>
+        <location filename="MainWindow.cpp" line="398"/>
         <source>&amp;Help</source>
         <translation>По&amp;мощь</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="368"/>
+        <location filename="MainWindow.cpp" line="402"/>
+        <location filename="MainWindow.cpp" line="404"/>
+        <source>Help</source>
+        <translation>Помощь</translation>
+    </message>
+    <message>
+        <location filename="MainWindow.cpp" line="535"/>
         <source>New file...</source>
         <translation>Новый файл...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="444"/>
+        <location filename="MainWindow.cpp" line="611"/>
         <source>File not found</source>
         <translation>Файл не найден</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="445"/>
+        <location filename="MainWindow.cpp" line="612"/>
         <source>Selected project not found.</source>
         <translation>Выбранный проект не найден.</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="506"/>
+        <location filename="MainWindow.cpp" line="673"/>
         <source>Compilig...</source>
         <translation>Компилирую...</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="513"/>
+        <location filename="MainWindow.cpp" line="680"/>
         <source>Compiling</source>
         <translation>Компиляция</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="514"/>
+        <location filename="MainWindow.cpp" line="681"/>
         <source>Compiling is done.</source>
         <translation>Компиляция завершена.</translation>
     </message>
@@ -242,6 +270,21 @@
         <location filename="ProjectTreeHelper.cpp" line="54"/>
         <source>Remove File</source>
         <translation>Удалить файл</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="MainWindow.cpp" line="998"/>
+        <location filename="MainWindow.cpp" line="1034"/>
+        <source>Simple Text Viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="MainWindow.cpp" line="999"/>
+        <location filename="MainWindow.cpp" line="1035"/>
+        <source>Unable to launch Qt Assistant (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

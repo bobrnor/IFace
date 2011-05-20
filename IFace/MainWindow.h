@@ -11,6 +11,7 @@
 #include <QTableView>
 #include <QToolBar>
 #include <QProcess>
+#include <QTranslator>
 
 #include "ProjectManager.h"
 
@@ -33,6 +34,9 @@ class MainWindow : public QWidget {
 
 	QAction *m_highlightToolBarAction;
 	QAction *m_highlightMenuAction;
+	QAction *m_hoveredAction;
+
+	QMap<QString, QString> m_ruEnRuMap;
 
 	QList<QAction *> m_projectRelatedActions;
 	QList<QAction *> m_codeRelatedActions;
@@ -46,6 +50,8 @@ class MainWindow : public QWidget {
 	QProcess *m_helpProcess;
 	QString m_lastEnHelpSource;
 	QString m_lastRuHelpSource;
+	bool m_isLastHelpForMenu;
+	QAction *m_lastHelpAction;
 
 	bool m_needReopenHelp;
 
@@ -83,7 +89,9 @@ class MainWindow : public QWidget {
 
 	void loadMenuHelp();
 	void loadKeywordHelp();
-	void loadCodeEditorHelp();
+	void loadEditorHelp();
+	void loadBreakpointsHelp();
+	void loadCommentsHelp();
 	void loadErrorHelp();
 
 	void showRuSource(QString source);
